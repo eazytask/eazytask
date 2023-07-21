@@ -1,0 +1,48 @@
+/**
+ * @license
+ * Copyright 2019 Google LLC. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/* 
+ * Always set the map height explicitly to define the size of the div element
+ * that contains the map. 
+ */
+ #map {
+    height: 100%;
+  }
+  
+  /* 
+   * Optional: Makes the sample page fill the window. 
+   */
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+#pac-input{
+  background: none rgb(255, 255, 255);
+  border: 0px;
+  margin: 10px;
+  padding: 0px;
+  padding-left: 5px;
+  /* text-transform: none;
+  appearance: none; */
+  position: absolute;
+  /* cursor: pointer; */
+  /* user-select: none; */
+  border-radius: 2px;
+  height: 40px;
+  /* width: 50%px; */
+  /* box-shadow: rgba(61, 95, 243, 0.3) 0px 1px 4px -1px; */
+  font-size: 16px;
+  /* overflow: hidden; */
+  top: 0px;
+  right: 50px !important;
+  left: 175px !important;
+}  
+
+.pac-container {
+  z-index: 10000 !important;
+}
