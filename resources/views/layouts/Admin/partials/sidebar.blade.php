@@ -300,7 +300,7 @@
                             class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
                 </li>
 
-                <li class="nav-item {{ request()->is('home/messages') ? 'active' : '' }}"><a
+                {{-- <li class="nav-item {{ request()->is('home/messages') ? 'active' : '' }}"><a
                         class="d-flex align-items-center" href="/home/messages"><i
                             data-feather="message-square"></i><span class="menu-title text-truncate"
                             data-i18n="Messages">Messages</span><span
@@ -312,7 +312,7 @@
                         <span class="menu-title text-truncate" data-i18n="Dashboards">
                             Compliance</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
                     </a>
-                </li>
+                </li> --}}
 
 
                 <!-- <li class="nav-item {{ request()->is('user/roster/schedule') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/user/roster/schedule">
