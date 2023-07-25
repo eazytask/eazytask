@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Message;
 use App\Models\MessageReply;
 use App\Models\MessageConfirm;
+use App\Models\Compliance;
 
 class HomeController extends Controller
 {
@@ -203,7 +204,9 @@ class HomeController extends Controller
             }
         }
 
-        return view('pages.User.index',compact('roasters', 'projects','job_types','roaster_status','upcoming_roasters','past_roasters','unconfirm_roasters','upcomingevents','timesheets','payments','unavailabilities', 'leaves', 'leave_types', 'messages'));
+        $compliances = Compliance::get();
+
+        return view('pages.User.index',compact('roasters', 'projects','job_types','roaster_status','upcoming_roasters','past_roasters','unconfirm_roasters','upcomingevents','timesheets','payments','unavailabilities', 'leaves', 'leave_types', 'messages', 'compliances'));
         // return redirect('home/sign/in');
     }
 

@@ -18,27 +18,50 @@ class UserComplianceController extends Controller
         return view('pages.User.compliance.index', compact('compliances'));
     }
 
-    public function fetch()
+    public function fetch(Request $request)
     {
-        $compliances = UserCompliance::where('user_id',Auth::id())->orderBy('expire_date', 'asc')->get();
+        if(!empty($request->get('get'))) {
+            $compliances = UserCompliance::where('user_id',Auth::id())->orderBy('expire_date', 'asc')->limit(3)->get();
 
-        $html = '';
-        foreach ($compliances as $loop => $row) {
-            $json = json_encode($row->toArray(), false);
-            $html .= "
-            <tr>
-                            <td>" . $loop + 1 . "</td>
-                            <td>".$row->compliance->name."</td>
-                            <td>$row->certificate_no</td>
-                              <td>$row->expire_date</td>
-                            <td>$row->comment</td>
-                              <td>
-                                    <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
-                                    <a class='btn btn-gradient-danger text-white del' data-id='$row->id'><i data-feather='trash-2'></i></a>
-                              </td>
-                          </tr>
-            ";
+            $html = '';
+            foreach ($compliances as $loop => $row) {
+                $json = json_encode($row->toArray(), false);
+                $html .= "
+                <tr>
+                                <td>" . $loop + 1 . "</td>
+                                <td>".$row->compliance->name."</td>
+                                <td>$row->certificate_no</td>
+                                <td>$row->expire_date</td>
+                                <td>$row->comment</td>
+                                <td>
+                                        <button class='edit-btn-compliance btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
+                                        <a class='btn btn-gradient-danger text-white del-compliance' data-id='$row->id'><i data-feather='trash-2'></i></a>
+                                </td>
+                            </tr>
+                ";
+            }
+        }else{
+            $compliances = UserCompliance::where('user_id',Auth::id())->orderBy('expire_date', 'asc')->get();
+
+            $html = '';
+            foreach ($compliances as $loop => $row) {
+                $json = json_encode($row->toArray(), false);
+                $html .= "
+                <tr>
+                                <td>" . $loop + 1 . "</td>
+                                <td>".$row->compliance->name."</td>
+                                <td>$row->certificate_no</td>
+                                <td>$row->expire_date</td>
+                                <td>$row->comment</td>
+                                <td>
+                                        <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
+                                        <a class='btn btn-gradient-danger text-white del' data-id='$row->id'><i data-feather='trash-2'></i></a>
+                                </td>
+                            </tr>
+                ";
+            }
         }
+
         return response()->json(['data' => $html]);
     }
 
