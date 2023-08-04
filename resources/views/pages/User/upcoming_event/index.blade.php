@@ -23,12 +23,15 @@
     <div class="row" id="table-hover-animation">
         <div class="col-12">
             <div class="card">
-                {{-- <div class="card-header">
+                
+                <div class="mt-2">
+                    {{-- <div class="card-header">
                     <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#addEvent">Add Event</a>
                 </div>
                 @include(
                     'pages.Admin.upcoming_event.modals.addUpcomingeventModal'
                 ) --}}
+                </div>
 
                 <div class="container">
                     <div class="table-responsive">

@@ -76,7 +76,7 @@ $end_date = Session::get('toDate')->format('d-m-Y');
     <div class="row" id="table-hover-animation">
             <div class="col-12">
                 <div class="card">
-                    <div class="container">
+                    <div class="container pt-2">
                         <div class="table-responsive">
                             <table id="example" class="table table-hover-animation table-bordered">
                                 <thead>

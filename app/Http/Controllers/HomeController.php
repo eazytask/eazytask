@@ -169,7 +169,7 @@ class HomeController extends Controller
             ])
             ->orderBy('Payment_Date', 'desc')
             ->limit(3)->get();
-
+            
         //time off
         $unavailabilities = Myavailability::where([
             ['employee_id', Auth::user()->employee->id],
@@ -203,10 +203,10 @@ class HomeController extends Controller
                 $message->my_confirm = false;
             }
         }
-
+        
         $compliances = Compliance::get();
 
-        return view('pages.User.index',compact('roasters', 'projects','job_types','roaster_status','upcoming_roasters','past_roasters','unconfirm_roasters','upcomingevents','timesheets','payments','unavailabilities', 'leaves', 'leave_types', 'messages', 'compliances'));
+        return view('pages.User.index',compact('roasters', 'projects','job_types','roaster_status','upcoming_roasters','past_roasters','unconfirm_roasters','upcomingevents','timesheets','payments', 'unavailabilities','leaves','leave_types', 'messages', 'compliances'));
         // return redirect('home/sign/in');
     }
 

@@ -334,7 +334,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::post('home/messages/destroy', [MessagesController::class, 'destroy'])->middleware('auth');
     Route::post('home/messages/update-reply', [MessagesController::class, 'updateReply'])->middleware('auth');
     Route::post('home/messages/destroy-reply', [MessagesController::class, 'destroyReply'])->middleware('auth');
-
+    
     Route::get('admin/home/payment/list/{id}/{company}', [PaymentListcontroller::class, 'download']);
 
     #switch company
@@ -465,7 +465,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::post('admin/home/contractor/store', [ContractorController::class, 'store'])->name('store-contractor')->middleware('is_admin');
     Route::post('admin/home/contractor/update', [ContractorController::class, 'update'])->name('update-contractor')->middleware('is_admin');
     Route::get('admin/home/contractor/delete/{id}', [ContractorController::class, 'delete'])->middleware('is_admin');
-
+    
     //admin add project
     Route::get('admin/home/fetch/project', [ProjectController::class, 'fetch'])->middleware('is_admin');
     Route::get('admin/home/project/{id}', [ProjectController::class, 'index'])->middleware('is_admin');

@@ -128,6 +128,7 @@
                     <h3 class="card-title text-primary d-inline">
                         Messages
                     </h3>
+
                     @if (auth()->user()->company_roles->pluck('role')->contains(fn($role) => in_array($role, [2, 4])))
                         <span class="float-right">
                             <button class="create-post-btn btn btn-primary" onclick="openModal()">Create New Post</button>

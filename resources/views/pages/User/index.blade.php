@@ -362,30 +362,30 @@
                                                         </div>
                                                     </div>
                                                     <!-- <div class="col-md-12 ">
-                                                                                                                                                                                                                                                                                                                                                                                                <label for="">Roster Status</label>
-                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group">
-                                                                                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" name="roaster_status_id" id="roster" aria-label="Default select example" disabled>
-                                                                                                                                                                                                                                                                                                                                                                                                        <option value="" disabled selected hidden>Please Choose...
-                                                                                                                                                                                                                                                                                                                                                                                                        </option>
-                                                                                                                                                                                                                                                                                                                                                                                                        @foreach ($roaster_status as $row)
+                                                                                                                                                                                                                                                                                    <label for="">Roster Status</label>
+                                                                                                                                                                                                                                                                                    <div class="form-group">
+                                                                                                                                                                                                                                                                                        <select class="form-control select2" name="roaster_status_id" id="roster" aria-label="Default select example" disabled>
+                                                                                                                                                                                                                                                                                            <option value="" disabled selected hidden>Please Choose...
+                                                                                                                                                                                                                                                                                            </option>
+                                                                                                                                                                                                                                                                                            @foreach ($roaster_status as $row)
     <option value="{{ $row->id }}">{{ $row->name }}
-                                                                                                                                                                                                                                                                                                                                                                                                        </option>
+                                                                                                                                                                                                                                                                                            </option>
     @endforeach
 
-                                                                                                                                                                                                                                                                                                                                                                                                    </select>
-                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                        </select>
+                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                            <div class="col-md-12 ">
-                                                                                                                                                                                                                                                                                                                                                                                                <label for="roaster_type" class="form-label">Roster Type</label>
-                                                                                                                                                                                                                                                                                                                                                                                                <div class="form-group">
-                                                                                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" id="roasterType" disabled>
-                                                                                                                                                                                                                                                                                                                                                                                                        <option value="">Select Roster Type</option>
-                                                                                                                                                                                                                                                                                                                                                                                                        <option value="Unschedueled">Unschedueled</option>
-                                                                                                                                                                                                                                                                                                                                                                                                        <option value="Schedueled">Schedueled</option>
-                                                                                                                                                                                                                                                                                                                                                                                                    </select>
-                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                                                                                                                <div class="col-md-12 ">
+                                                                                                                                                                                                                                                                                    <label for="roaster_type" class="form-label">Roster Type</label>
+                                                                                                                                                                                                                                                                                    <div class="form-group">
+                                                                                                                                                                                                                                                                                        <select class="form-control select2" id="roasterType" disabled>
+                                                                                                                                                                                                                                                                                            <option value="">Select Roster Type</option>
+                                                                                                                                                                                                                                                                                            <option value="Unschedueled">Unschedueled</option>
+                                                                                                                                                                                                                                                                                            <option value="Schedueled">Schedueled</option>
+                                                                                                                                                                                                                                                                                        </select>
+                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                </div> -->
                                                     <div class="col-md-12 col-12">
                                                         <label for="email-id-column">Remarks</label>
                                                         <div class="form-group">
@@ -525,8 +525,8 @@
                         <p class="card-title text-primary d-inline">Upcoming shifts</p>
                     </div>
                     <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                                            <a href="/home/upcoming/shift" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                <a href="/home/upcoming/shift" class="btn btn-gradient-primary ">See more</a>
+                                                                                                                                                                                                                                                            </div> -->
                 </div>
 
                 <div class="row" id="table-hover-animation">
@@ -599,8 +599,8 @@
                                                 </tr>
                                             @endfor
                                             <!-- <tr class="text-center" {{ $upcoming_roasters->count() == 0 ? '' : 'hidden' }}>
-                                                                                                                                                                                                                                                                                                                                        <td colspan="8">No data found!</td>
-                                                                                                                                                                                                                                                                                                                                    </tr> -->
+                                                                                                                                                                                                                            <td colspan="8">No data found!</td>
+                                                                                                                                                                                                                        </tr> -->
                                             <tr class="bg-light" {{ $upcoming_roasters->count() == 0 ? 'hidden' : '' }}>
                                                 <td>#</td>
                                                 <td colspan="4" class="text-center">Total</td>
@@ -663,8 +663,8 @@
                     </div>
 
                     <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                                            <a href="/home/unconfirmed/shift" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                <a href="/home/unconfirmed/shift" class="btn btn-gradient-primary ">See more</a>
+                                                                                                                                                                                                                                                            </div> -->
                 </div>
 
                 <div class="card-body">
@@ -741,8 +741,8 @@
                         <p class="card-title text-primary d-inline">Past shifts</p>
                     </div>
                     <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                                            <a href="/home/past/shift" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                <a href="/home/past/shift" class="btn btn-gradient-primary ">See more</a>
+                                                                                                                                                                                                                                                            </div> -->
                 </div>
 
                 <div class="row" id="table-hover-animation">
@@ -855,8 +855,8 @@
                         <p class="card-title text-primary d-inline">Upcoming Events</p>
                     </div>
                     <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                                            <a href="/user/home/upcomingevent/go" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                <a href="/user/home/upcomingevent/go" class="btn btn-gradient-primary ">See more</a>
+                                                                                                                                                                                                                                                            </div> -->
                 </div>
                 <div class="card-body">
 
@@ -929,10 +929,10 @@
                                                 @endfor
 
                                                 <!-- <tr>
-                                                                                                                                                                                                                                                                                                                                                                                                            <td colspan="8" class="bg-light-primary text-center">
-                                                                                                                                                                                                                                                                                                                                                                                                                <a href="/user/home/upcomingevent/go">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                                                            </td>
-                                                                                                                                                                                                                                                                                                                                                                                                        </tr> -->
+                                                                                                                                                                                                                                                                                                <td colspan="8" class="bg-light-primary text-center">
+                                                                                                                                                                                                                                                                                                    <a href="/user/home/upcomingevent/go">See more</a>
+                                                                                                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                                                                                            </tr> -->
                                             </tbody>
                                         </table>
                                     </div>
@@ -961,8 +961,8 @@
                         <p class="card-title text-primary d-inline">Timesheet</p>
                     </div>
                     <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                                            <a href="/home/timesheet" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                <a href="/home/timesheet" class="btn btn-gradient-primary ">See more</a>
+                                                                                                                                                                                                                                                            </div> -->
                 </div>
                 <div class="card-body">
 
@@ -1066,8 +1066,8 @@
                         <p class="card-title text-primary d-inline">Payments</p>
                     </div>
                     <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                                            <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
+                                                                                                                                                                                                                                                            </div> -->
                 </div>
                 <div class="card-body">
 
@@ -1170,8 +1170,8 @@
                                     <p class="card-title text-primary d-inline">Time Off</p>
                                 </div>
                                 <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                                                        <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                                                                                                                                                                                                                                                            <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
+                                                                                                                                                                                                                                                                        </div> -->
                             </div>
                             <div class="card-body">
                                 <div class="">
@@ -1482,7 +1482,6 @@ margin-top: 0px;font-size: 18px;"
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="card p-0">
                                         <div class="container p-0">
                                             <div
@@ -1536,7 +1535,7 @@ margin-top: 0px;font-size: 18px;"
                 </div>
             </div>
         </div>
-
+        
         <!-- Compliances -->
         <div class="col-md-6">
             <div class="card">
@@ -1546,8 +1545,8 @@ margin-top: 0px;font-size: 18px;"
                         <p class="card-title text-primary d-inline">Compliances</p>
                     </div>
                     <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                                            <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                                                                                                                                                                                                                                                                                                <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
+                                                                                                                                                                                                                                                                                                            </div> -->
                 </div>
                 <div class="card-body">
 
@@ -1557,8 +1556,7 @@ margin-top: 0px;font-size: 18px;"
                                 <div class="card">
                                     <div class="container">
                                         <div class="table-responsive">
-                                            <table id="exampleCompliance"
-                                                class="table table-hover-animation table-bordered">
+                                            <table id="exampleCompliance" class="table table-hover-animation table-bordered">
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
@@ -1589,7 +1587,7 @@ margin-top: 0px;font-size: 18px;"
             </div>
         </div>
         @include('pages.User.compliance.modals.complianceModal')
-
+        
     </div>
 @endsection
 @push('scripts')

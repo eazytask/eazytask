@@ -25,20 +25,25 @@
     <div class="row match-height">
         <!-- Medal Card -->
         <div class="col-xl-4 col-md-6 col-12">
-            <div class="card">
-                <div class="container  mb-1 p-1 d-flex justify-content-center">
-                    <div class="image d-flex flex-column justify-content-center align-items-center">
-                        <span class="name mt-1"
-                            style="font-size: 26px; font-weight: bold; color: #000;">{{ Auth::user()->employee->fname }}
-                            {{ Auth::user()->employee->mname }} {{ Auth::user()->employee->lname }}</span>
-                        <p class="mt-1">{{ Auth::user()->employee->license_no }}</p>
-                        <img src="https://api.eazytask.au/{{ Auth::user()->image }}" height="80" width="80"
-                            alt="view sales" class="rounded-circle">
-                        <a href="/admin/company/profile-settings/{{ Auth::user()->id }}"
-                            class="btn btn-primary waves-effect waves-light mt-2">Edit Profile</a>
+        <div class="card">
+            <div class="d-flex align-items-center row">
+                <div class="col-7">
+                    <div class="card-body text-nowrap">
+                    <h5>Hello {{Auth::user()->name}}!</h5>
+                    <!-- <p class="card-text font-small-3">Welcome to your dashboard</p> -->
+                    <h3 class="mb-2">
+                        <a href="javascript:void(0);">{{ \Carbon\Carbon::now()->format('d F, Y')}}</a>
+                    </h3>
+                        <a href="/admin/company/profile-settings/{{ Auth::user()->id }}" class="btn btn-primary waves-effect waves-light">View Profile</a>
+                    </div>
+                </div>
+                <div class="col-5 text-center text-sm-left">
+                    <div class="card-body pb-0 px-0">
+                        <img src="https://api.eazytask.au/{{Auth::user()->image}}" height="70" width="70" alt="view sales" class="rounded-circle">
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         <!--/ Medal Card -->
 

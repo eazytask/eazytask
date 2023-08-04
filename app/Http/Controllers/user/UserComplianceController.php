@@ -61,7 +61,7 @@ class UserComplianceController extends Controller
                 ";
             }
         }
-
+        
         return response()->json(['data' => $html]);
     }
 
