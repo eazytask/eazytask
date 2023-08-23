@@ -116,7 +116,7 @@ class SignInStatusController extends Controller
                             <td>" . $row->signin_comment . "</td>
                             <td>" . $row->signout_comment . "</td>
                             <td>" . $row->project->pName . "</td>
-                            <td><a href='https://www.google.com/maps/search/$address' target='blank'>$address</a> <br>Distance: ($distance) KM</td>
+                            <td>Distance: ($distance KM) <br><a href='https://www.google.com/maps/search/$address' target='blank'>$address</a></td>
                           </tr>
             ";
             }
