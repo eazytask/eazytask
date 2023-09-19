@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Models\RoasterStatus;
 
 class UserRosterCalendar extends Controller
 {
@@ -89,7 +90,7 @@ class UserRosterCalendar extends Controller
 
         $projects = $this->get_projects();
 
-        $filter_project = $request->project ? ['project_id', $request->project] : ['employee_id', '>', 0];
+        $filter_project = $request->project ? ['project_id', $request->project] : ['project_id', '>', 0];
 
         $start_date = Carbon::parse($week)->startOfWeek();
         $end_date = Carbon::parse($week)->endOfWeek();
@@ -106,15 +107,15 @@ class UserRosterCalendar extends Controller
             ->leftJoin('employees as e', 'e.id', 'time_keepers.employee_id')
             ->where([
                 ['e.company', Auth::user()->company_roles->first()->company->id],
-                ['e.role', 3],
+                // ['e.role', 3],
                 $filter_project,
             ])
             ->where(function ($q) {
-                $q->where('roaster_type', 'Schedueled');
-                $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
-                $q->orWhere(function ($q) {
-                    $q->where('roaster_type', 'Unschedueled');
-                });
+                // $q->where('roaster_type', 'Schedueled');
+                // $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
+                // $q->orWhere(function ($q) {
+                //     $q->where('roaster_type', 'Unschedueled');
+                // });
             })
             ->groupBy("e.id")
             ->whereBetween('roaster_date', [$start_date, $end_date])
@@ -137,14 +138,30 @@ class UserRosterCalendar extends Controller
                 ])
                     ->where(function ($q) {
                         $q->where('roaster_type', 'Schedueled');
-                        $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
-                        $q->orWhere(function ($q) {
-                            $q->where('roaster_type', 'Unschedueled');
-                        });
+                        // $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
+                        // $q->orWhere(function ($q) {
+                        //     $q->where('roaster_type', 'Unschedueled');
+                        // });
                     })->whereBetween('roaster_date', [$start_date, $end_date])
                     ->get();
 
                 foreach ($timekeepers as $timekeeper) {
+                    $check_is_applied = 0;
+
+                    if ($timekeeper->roaster_type == 'Unschedueled') {
+                        $check_is_applied = 1;
+                    }elseif ($timekeeper->roaster_status_id == $this->roaster_status('Rejected')) {
+                        $check_is_applied = 3;
+                    } elseif ($timekeeper->roaster_status_id == $this->roaster_status('Accepted')) {
+                        $check_is_applied = 1;
+                    } else {
+                        $check_is_applied = 0;
+                    }
+
+                    if ($check_is_applied == 0) {
+                        continue;
+                    }
+
                     $roaster_day = Carbon::parse($timekeeper->roaster_date)->format('D');
                     $json = json_encode($timekeeper->toArray(), false);
 
@@ -437,5 +454,14 @@ class UserRosterCalendar extends Controller
         //     'notification' => '',
         //     'search_date' => $search_date
         // ]);
+    }
+    
+    private function roaster_status($name)
+    {
+        $roaster_status = RoasterStatus::where([
+            ['company_code', Auth::user()->company_roles->first()->company->id],
+            ['name',$name]
+        ])->first();
+        return $roaster_status->id;
     }
 }
