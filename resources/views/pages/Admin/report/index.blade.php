@@ -23,15 +23,15 @@
                     </h3>
                     <span class="float-right">
                         <div class=" text-center">
-                            <button class="p-50 btn">
+                            {{-- <button class="p-50 btn">
                                 <span class="bullet mr-50" style='background:#00cfe8 !important'></span>Unscheduled
-                            </button>
-                            @foreach ($roaster_status as $row)
+                            </button> --}}
+                            {{-- @foreach ($roaster_status as $row)
                                 <button class="p-50 btn">
                                     <span class="bullet mr-50"
                                         style='background: {{ $row->color }} !important'></span>{{ $row->name }}
                                 </button>
-                            @endforeach
+                            @endforeach --}}
                         </div>
                     </span>
                 </div>

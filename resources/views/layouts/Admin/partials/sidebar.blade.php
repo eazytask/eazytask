@@ -28,7 +28,7 @@
                 <li class="nav-item {{ request()->is('admin/home/schedule/status') ? 'active' : '' }}"><a
                         class="d-flex align-items-center" href="/admin/home/schedule/status"><i
                             data-feather='alert-circle'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Live operation</span><span
+                            data-i18n="Dashboards">Schedule</span><span
                             class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
 
 
@@ -63,7 +63,8 @@
                                 href="/admin/home/view/schedule/{{ Auth::user()->company_roles->first()->company->id }}"><i
                                     data-feather='eye'></i><span class="menu-title text-truncate"
                                     data-i18n="Dashboards">View Timesheet</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
+                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
+                        </li>
                     </ul>
 
                 </li>
@@ -375,8 +376,8 @@
             </li> -->
             @endif
 
-            <li class="nav-item {{ auth()->user()->user_roles->unique('company_code')->count() - 1? '': 'hidden' }}"><a
-                    class="d-flex align-items-center" href="/admin/home/project"><i
+            <li class="nav-item {{ auth()->user()->user_roles->unique('company_code')->count() - 1? '': 'hidden' }}">
+                <a class="d-flex align-items-center" href="/admin/home/project"><i
                         data-feather='refresh-cw'></i><span class="menu-title text-truncate"
                         data-i18n="Dashboards">Switch Company</span><span
                         class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
@@ -399,7 +400,8 @@
                                     href="/home/switch/company/{{ $company->company_code }}"><i
                                         data-feather='circle'></i><span class="menu-title text-truncate"
                                         data-i18n="Dashboards"> {{ $company->company->company_code }}</span><span
-                                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
+                                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
+                            </li>
                         @endif
                     @endforeach
 
