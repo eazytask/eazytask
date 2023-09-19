@@ -272,7 +272,7 @@ class ReportController extends Controller
 
                     $colors = "style='width: 125px'";
                     if ($timekeeper->roaster_type == 'Unschedueled') {
-                        $colors = "style='border-radius: 5px; width:125px;color:#000 !important; background:#00cfe8 !important'";
+                        $colors = "style='border-radius: 5px; width:125px;color:#fff !important; background:#82868b !important'";
                     } else {
                         $colors = "style='border-radius: 5px; width:125px;color:" . $timekeeper->roaster_status->text_color . " !important; background:" . $timekeeper->roaster_status->color . " !important'";
                     }
@@ -310,8 +310,11 @@ class ReportController extends Controller
                     </div>
                 </div>
                 <div>$project_name" . "<span class='font-small-2 font-weight-bold'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" .
+                        // "<span class='font-small-2'>" . $timekeeper->job_type->name . "</span>
+                        // <span class='font-small-2' style='background-color: ".$timekeeper->roaster_status->color."; color: ".$timekeeper->roaster_status->text_color."; padding: 5px;'>" . $timekeeper->roaster_status->name 
+                        
                         "<span class='font-small-2'>" . $timekeeper->job_type->name . "</span>
-                        <span class='font-small-2' style='background-color: ".$timekeeper->roaster_status->color."; color: ".$timekeeper->roaster_status->text_color."; padding: 5px;'>" . $timekeeper->roaster_status->name . "</span>
+                        <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 100%;'>" . $timekeeper->roaster_status->name . "</span>
                  </div></div>";
                  
                     $val_r = "<div class='text-uppercase p-50 roster $colors><span class='font-small-2 font-weight-bolder'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $timekeeper->job_type->name . "</span></div><br>";
