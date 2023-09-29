@@ -20,8 +20,17 @@ class MessagesController extends Controller
     public function index()
     {
         $projects = Project::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('pName', 'asc')->get();
+
+        $id_projects = clone $projects;
+        $id_projects = $id_projects->pluck('id')->toArray();
+
         $messages = Message::with('replies', 'confirms')->orderBy('created_at', 'DESC')->get();
-        foreach ($messages as $message) {
+        foreach ($messages as $key => $message) {
+            if (empty(array_diff($message->list_venue, ["all"]))) {
+                // Thats all
+            }elseif(!empty(array_diff($message->list_venue, $id_projects))) {
+                unset($messages[$key]);
+            }
             // Access message properties
             $message->purposes = $message->getListVenue();
             $message->replies = $message->replies;
@@ -33,11 +42,17 @@ class MessagesController extends Controller
             }
         }
         
+        $messages = array_values($messages->toArray()); // 'reindex' array
+
         return view('pages.Admin.messages.index', compact('messages', 'projects'));
     }
 
     public function store(Request $request)
     {
+        if (empty(array_diff($request->list_venue, ["all"]))) {
+            $request->list_venue = Project::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('pName', 'asc')->get()->pluck('id')->toArray();
+        }
+        
         Message::create([
             'user_id' => Auth::user()->id,
             'heading' => $request->heading,
@@ -86,6 +101,10 @@ class MessagesController extends Controller
         $message = Message::where('id', $request->message_id)->first();
 
         if (!empty($request->list_venue)) {
+            if (empty(array_diff($request->list_venue, ["all"]))) {
+                $request->list_venue = Project::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('pName', 'asc')->get()->pluck('id')->toArray();
+            }
+            
             $message->list_venue = $request->list_venue;
         }
         
