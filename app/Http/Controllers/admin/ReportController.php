@@ -272,9 +272,9 @@ class ReportController extends Controller
 
                     $colors = "style='width: 125px'";
                     if ($timekeeper->roaster_type == 'Unschedueled') {
-                        $colors = "style='border-radius: 5px; width:125px;color:#fff !important; background:#82868b !important'";
+                        $colors = "style='width:125px;color:#fff !important; background:#82868b !important'";
                     } else {
-                        $colors = "style='border-radius: 5px; width:125px;color:" . $timekeeper->roaster_status->text_color . " !important; background:" . $timekeeper->roaster_status->color . " !important'";
+                        $colors = "style='width:125px;color:" . $timekeeper->roaster_status->text_color . " !important; background:" . $timekeeper->roaster_status->color . " !important'";
                     }
 
                     $unique_id = 'drag' . $timekeeper->id;
@@ -285,8 +285,8 @@ class ReportController extends Controller
                     }
 
                     $has_app = $timekeeper->payment_status || $timekeeper->is_approved ? true : false;
-
-                    $val = "<div id='$unique_id' $colors draggable='" . ($has_app ? 'false' : 'true') . "' ondragstart='drag(event,$timekeeper->id)' class='font-weight-bolder text-uppercase shadow p-50 roster mb-50 mt-50'>
+                    //mb-50 dan border-radius
+                    $val = "<div id='$unique_id' $colors draggable='" . ($has_app ? 'false' : 'true') . "' ondragstart='drag(event,$timekeeper->id)' class='font-weight-bolder text-uppercase shadow p-50 roster mt-50'>
                     <div class='dropdown-items-wrapper'>
                     <i data-feather='more-vertical' id='dropdownMenuLink1' role='button' data-toggle='dropdown' aria-expanded='false' style='margin-left:-5px;' class='float-right' " . ($has_app ? 'hidden' : '') . "></i>
                     <i data-feather='" . ($timekeeper->payment_status ? 'dollar-sign' : 'check-circle') . "' class='float-right' " . ($has_app ? '' : 'hidden') . "></i>
