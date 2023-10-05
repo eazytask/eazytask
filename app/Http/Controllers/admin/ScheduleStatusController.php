@@ -78,10 +78,10 @@ class ScheduleStatusController extends Controller
                 $filter_project,
             ])
             ->where(function ($q) {
-                $q->where('roaster_type', 'Schedueled');
+                // $q->where('roaster_type', 'Schedueled');
                 $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
                 $q->orWhere(function ($q) {
-                    $q->where('roaster_type', 'Unschedueled');
+                    // $q->where('roaster_type', 'Unschedueled');
                 });
             })
             ->groupBy("e.id")
@@ -104,10 +104,10 @@ class ScheduleStatusController extends Controller
                     $filter_project
                 ])
                     ->where(function ($q) {
-                        $q->where('roaster_type', 'Schedueled');
+                        // $q->where('roaster_type', 'Schedueled');
                         $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
                         $q->orWhere(function ($q) {
-                            $q->where('roaster_type', 'Unschedueled');
+                            // $q->where('roaster_type', 'Unschedueled');
                         });
                     })->whereBetween('roaster_date', [$start_date, $end_date])
                     ->get();
