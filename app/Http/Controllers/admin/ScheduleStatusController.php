@@ -79,7 +79,7 @@ class ScheduleStatusController extends Controller
             ])
             ->where(function ($q) {
                 // $q->where('roaster_type', 'Schedueled');
-                $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
+                // $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
                 $q->orWhere(function ($q) {
                     // $q->where('roaster_type', 'Unschedueled');
                 });
