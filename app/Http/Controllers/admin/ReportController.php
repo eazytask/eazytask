@@ -235,7 +235,7 @@ class ReportController extends Controller
                 ['e.company', Auth::user()->company_roles->first()->company->id],
                 ['e.role', 3],
                 $filter_project,
-                // ['roaster_type', 'Schedueled']
+                ['roaster_type', 'Schedueled']
             ])
             ->groupBy("e.id")
             ->whereBetween('roaster_date', [$start_date, $end_date])
@@ -261,7 +261,7 @@ class ReportController extends Controller
                 $timekeepers = TimeKeeper::where([
                     ['employee_id', $employee->id],
                     ['company_code', Auth::user()->company_roles->first()->company->id],
-                    // ['roaster_type', 'Schedueled'],
+                    ['roaster_type', 'Schedueled'],
                     $filter_project
                 ])->whereBetween('roaster_date', [$start_date, $end_date])
                     ->get();
