@@ -146,7 +146,7 @@ class UserRosterCalendar extends Controller
                     ->get();
 
                 foreach ($timekeepers as $timekeeper) {
-                    $check_is_applied = 0;
+                    // $check_is_applied = 0;
 
                     if ($timekeeper->roaster_type == 'Unschedueled') {
                         $check_is_applied = 1;
@@ -158,9 +158,9 @@ class UserRosterCalendar extends Controller
                         $check_is_applied = 0;
                     }
 
-                    if ($check_is_applied == 0) {
-                        continue;
-                    }
+                    // if ($check_is_applied == 0) {
+                    //     continue;
+                    // }
 
                     $roaster_day = Carbon::parse($timekeeper->roaster_date)->format('D');
                     $json = json_encode($timekeeper->toArray(), false);
