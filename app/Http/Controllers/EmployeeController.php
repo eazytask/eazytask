@@ -94,7 +94,11 @@ class EmployeeController extends Controller
 
     public function filter_compliance(Request $request)
     {
-        $compliances = UserCompliance::where('email', $request->email)->orderBy('id', 'desc')->get();
+        if (!empty($request->email) || $request->email != '') {
+            $compliances = UserCompliance::where('email', $request->email)->orderBy('id', 'desc')->get();
+        }else{
+            $compliances = [];
+        }
         $user = User::where('email',$request->email)->first();
         return response()->json(['compliances' => $compliances, 'user'=>$user]);
     }
