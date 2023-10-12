@@ -104,6 +104,8 @@ $(function () {
           
         });
 
+        console.log($form.serialize());
+
         if (isValid) {
           if (fullFormIsValid) {
             $.ajax({

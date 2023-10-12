@@ -282,6 +282,21 @@ class EmployeeController extends Controller
                         ['compliance_id', $compliance['compliance']]
                     ])->first();
 
+                    $image = $compliance['document'];
+                    $filename = null;
+            
+                    if ($image) {
+                        $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                        $folderPath = "images/compliance/";
+                        $image_parts = explode(";base64,", $image);
+                        $image_type_aux = explode("image/", $image_parts[0]);
+                        $image_type = $image_type_aux[1];
+                        $image_base64 = base64_decode($image_parts[1]);
+                        $img_name = date('sihdmy') .'.'. $image_type;
+                        $filename = $folderPath . $img_name;
+                        Image::make($image_base64)->save($basePath.$filename);
+                    }
+
                     if (!$exist_comp) {
                         $user_compliance = new UserCompliance;
                         $user_compliance->user_id = $employee->userID;
@@ -290,11 +305,17 @@ class EmployeeController extends Controller
                         $user_compliance->certificate_no = $compliance['certificate_no'];
                         $user_compliance->comment = $compliance['comment'];
                         $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
+                        if ($filename) {
+                            $employee->document = $filename;
+                        }
                         $user_compliance->save();
                     } else {
                         $exist_comp->certificate_no = $compliance['certificate_no'];
                         $exist_comp->comment = $compliance['comment'];
                         $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
+                        if ($filename) {
+                            $employee->document = $filename;
+                        }
                         $exist_comp->save();
                     }
                 }
