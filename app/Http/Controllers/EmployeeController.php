@@ -278,8 +278,7 @@ class EmployeeController extends Controller
             $user_role->sub_domain = Auth::user()->company_roles->first()->company->sub_domain ? 1 : 0;
             $user_role->save();
 
-
-            if ($request->has_compliance) {
+            if ($request->has_compliance == 'on' || $request->has_compliance == 1) {
                 foreach ($request->Compliance as $compliance) {
                     $exist_comp = UserCompliance::where([
                         ['user_id', $employee->userID],
