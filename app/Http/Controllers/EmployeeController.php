@@ -308,17 +308,15 @@ class EmployeeController extends Controller
                         $user_compliance->certificate_no = $compliance['certificate_no'];
                         $user_compliance->comment = $compliance['comment'];
                         $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
-                        if ($filename) {
-                            $employee->document = $filename;
-                        }
+                        $user_compliance->document = $filename;
+                        
                         $user_compliance->save();
                     } else {
                         $exist_comp->certificate_no = $compliance['certificate_no'];
                         $exist_comp->comment = $compliance['comment'];
                         $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
-                        if ($filename) {
-                            $employee->document = $filename;
-                        }
+                        $user_compliance->document = $filename;
+                        
                         $exist_comp->save();
                     }
                 }
