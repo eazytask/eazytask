@@ -152,7 +152,7 @@ Route::get('/super-admin/company/delete/{id}', [CompanyController::class, 'delet
 Route::get('/super-admin/compliance', [ComplianceController::class, 'index'])->name('compliance')->middleware('super_admin');
 Route::post('/super-admin/compliance/store', [ComplianceController::class, 'store'])->name('compliance.store')->middleware('super_admin');
 Route::post('/super-admin/compliance/update', [ComplianceController::class, 'update'])->name('compliance.update')->middleware('super_admin');
-// Route::get('/super-admin/compliance/delete/{id}', [ComplianceController::class, 'destroy'])->middleware('super_admin');
+Route::get('/super-admin/compliance/delete/{id}', [ComplianceController::class, 'destroy'])->middleware('super_admin');
 
 //super admin profile
 Route::get('/super-admin/profile-settings/{id}', [CompanyController::class, 'SuperAdminProfile'])->middleware('super_admin');

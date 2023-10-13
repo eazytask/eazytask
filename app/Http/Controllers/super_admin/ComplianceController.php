@@ -24,6 +24,7 @@ class ComplianceController extends Controller
         $single = new Compliance;
         $single->name= $request->name;
         $single->remarks= $request->remarks;
+        $single->is_required= $request->is_required;
         $single->save();
         
         return redirect()->back();
@@ -39,6 +40,7 @@ class ComplianceController extends Controller
         if($single){
         $single->name= $request->name;
         $single->remarks= $request->remarks;
+        $single->is_required= $request->is_required;
 
         $single->save();
         }
