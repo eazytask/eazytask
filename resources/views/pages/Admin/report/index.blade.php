@@ -61,8 +61,8 @@
                                     data-feather='arrow-right'></i></button>
                             <button type="button" class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" id="publishAll"><i
                                     data-feather='calendar' class="mr-50"></i>Publish All</button>
-                            <button type="button" disabled class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25"
-                                id="copyWeek"><i data-feather='copy' class="mr-50"></i>Copy All</button>
+                            {{-- <button type="button" disabled class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" --}}
+                            {{-- id="copyWeek"><i data-feather='copy' class="mr-50"></i>Copy All</button> --}}
 
                             <button class="btn p-0 pt-50 pb-50 mr-50 mt-25">
                                 <select id="project" class="form-control"
