@@ -220,6 +220,13 @@ class CompanyController extends Controller
         $company->image = $filename;
         $company->save();
 
+        User::findOrFail($company->user_id)->update([
+            'name' => $request->name,
+            'mname' => $request->mname,
+            'lname' => $request->lname,
+            'email' => $request->email,
+        ]);
+
         $notification = array(
             'message' => 'Company Updated Successfully',
             'alert-type' => 'success'

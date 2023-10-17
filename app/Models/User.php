@@ -23,15 +23,7 @@ class User extends Authenticatable
 
         'name' => 'required',
     ];
-    protected $fillable = [
-
-        'name',
-        'email',
-        'password',
-        'created_at',
-        'status',
-        'job_type',
-        'updated_at'
+    protected $guarded = [
     ];
 
     /**
