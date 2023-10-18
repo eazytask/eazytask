@@ -315,7 +315,7 @@
                     clearInterval(reload)
                     reload = setInterval(() => {
                         searchNow('current')
-                    }, 60000);
+                    }, 1000);
                 },
                 error: function(err) {
                     console.log(err)
@@ -323,7 +323,7 @@
                     clearInterval(reload)
                     reload = setInterval(() => {
                         searchNow('current')
-                    }, 60000);
+                    }, 1000);
                 }
             });
         }
