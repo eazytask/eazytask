@@ -24,7 +24,7 @@
     </div>
 
     <!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
-                                                                                                                                        <div id="googleMap" style="width:100%;height:400px;"></div> -->
+                                                                                                                                                                    <div id="googleMap" style="width:100%;height:400px;"></div> -->
     <!-- Basic Tables start -->
     <!-- Table Hover Animation start -->
     <div class="row" id="table-hover-animation">
@@ -353,22 +353,43 @@
                 AUTOCOMPLETE_OPTIONS);
 
             autocompleteAddress.addListener('place_changed', function() {
-                fillInAddress(autocompleteAddress, 'project_address')
+                fillInAddress(autocompleteAddress)
             });
         }
 
-        function fillInAddress(autoCompleteObject, source) {
+        function fillInAddress(autoCompleteObject) {
             var place = autoCompleteObject.getPlace();
-            var name = place.name || "";
-            if (name) name += ": "
-            name += autoCompleteObject.getPlace().formatted_address;
-            setSelectedAddress(name, source);
+            // var name = place.name || "";
+            // if (name) name += ": "
+            // name += autoCompleteObject.getPlace().formatted_address;
+            // setSelectedAddress(name);
+            var address = place.formatted_address;
+            var value = address.split(",");
+            var count = value.length;
+            var country = value[count - 1] ?? '';
+            var state = value[count - 2] ?? '';
+            var city = value[count - 3] ?? '';
+            var z = state.split(" ");
+            // document.getElementById("selCountry").text = country;
+            var i = z.length;
+            document.getElementById("project_state").value = z[1];
+            if (i > 2)
+                document.getElementById("postal_code").value = z[2];
+            document.getElementById("suburb").value = city;
+            var latitude = place.geometry.location.lat();
+            var longitude = place.geometry.location.lng();
+            var mesg = address;
+            document.getElementById("project_address").value = mesg;
+            var lati = latitude;
+            document.getElementById("plati").value = lati;
+            var longi = longitude;
+            document.getElementById("plongi").value = longi;
         }
 
-        function setSelectedAddress(name, source) {
-            var selected = $("#" + source);
-            selected.val(name);
-        }
+        // function setSelectedAddress(name) {
+        //     var selected = $("#project_address");
+        //     selected.val(name);
+        // }
     </script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUiC49n0UCoKfiz4TrHQwK-BCsLzc_LY4&callback=myMap&libraries=places">

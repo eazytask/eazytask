@@ -1,4 +1,5 @@
-<div class="modal fade text-left p-md-1 p-0" id="addProject" role="dialog" aria-labelledby="myModalLabel17" aria-hidden="true">
+<div class="modal fade text-left p-md-1 p-0" id="addProject" role="dialog" aria-labelledby="myModalLabel17"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-gradient-primary">
@@ -67,33 +68,44 @@
                                                             <div class="col-md-6 col-6 pl-25 pr-25">
                                                                 <div class="form-group">
                                                                     <label for="first-name-column">Venue Name *</label>
-                                                                    <input type="text" class="form-control" placeholder="Venue Name" name="pName" id="pName" required />
+                                                                    <input type="text" class="form-control"
+                                                                        placeholder="Venue Name" name="pName"
+                                                                        id="pName" required />
                                                                 </div>
                                                             </div>
 
                                                             <div class="col-md-6 col-6 pl-25 pr-25">
                                                                 <div class="form-group">
                                                                     <label for="last-name-column">Contact Name *</label>
-                                                                    <input type="text" class="form-control" placeholder="Contact Name" name="cName" id="cName" required />
+                                                                    <input type="text" class="form-control"
+                                                                        placeholder="Contact Name" name="cName"
+                                                                        id="cName" required />
                                                                 </div>
                                                             </div>
 
                                                             <div class="col-md-6 col-6 pl-25 pr-25">
                                                                 <div class="form-group">
-                                                                    <label for="email-id-column">Contact Number *</label>
-                                                                    <input type="text" class="form-control" minlength="10" maxlength="10" name="cNumber" id="cNumber" placeholder="contact number" required />
+                                                                    <label for="email-id-column">Contact Number
+                                                                        *</label>
+                                                                    <input type="text" class="form-control"
+                                                                        minlength="10" maxlength="10" name="cNumber"
+                                                                        id="cNumber" placeholder="Contact number"
+                                                                        required />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6 pl-25 pr-25">
                                                                 <label for="email-id-column">Clients *</label>
                                                                 <div class="form-group">
-                                                                    <select class="form-control select2" name="clientName" id="clientName" aria-label="Default select example" required>
-                                                                        <option value="" disabled selected hidden>Please Choose...
+                                                                    <select class="form-control select2"
+                                                                        name="clientName" id="clientName"
+                                                                        aria-label="Default select example" required>
+                                                                        <option value="" disabled selected
+                                                                            hidden>Please Choose...
                                                                         </option>
                                                                         @foreach ($clients as $client)
-                                                                        <option value="{{ $client->id }}">
-                                                                            {{ $client->cname }}
-                                                                        </option>
+                                                                            <option value="{{ $client->id }}">
+                                                                                {{ $client->cname }}
+                                                                            </option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -101,8 +113,11 @@
                                                             <div class="col-md-6 col-6 pl-25 pr-25">
                                                                 <label for="email-id-column">Select Status *</label>
                                                                 <div class="form-group">
-                                                                    <select class="form-control select2" name="Status" id="Status" aria-label="Default select example" required>
-                                                                        <option value="" disabled selected hidden>Please Choose...
+                                                                    <select class="form-control select2"
+                                                                        name="Status" id="Status"
+                                                                        aria-label="Default select example" required>
+                                                                        <option value="" disabled selected
+                                                                            hidden>Please Choose...
                                                                         </option>
                                                                         <option value="1">Active</option>
                                                                         <option value="2">Inactive</option>
@@ -114,13 +129,19 @@
                                                         </div>
                                                     </form>
                                                     <div class="d-flex justify-content-between">
-                                                        <button type="button" class="btn btn-outline-secondary btn-prev" disabled>
-                                                            <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                                                            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                                        <button type="button"
+                                                            class="btn btn-outline-secondary btn-prev" disabled>
+                                                            <i data-feather="arrow-left"
+                                                                class="align-middle mr-sm-25 mr-0"></i>
+                                                            <span
+                                                                class="align-middle d-sm-inline-block d-none">Previous</span>
                                                         </button>
-                                                        <button type="button" class="btn btn-gradient-primary btn-next">
-                                                            <span class="align-middle d-sm-inline-block d-none">Next</span>
-                                                            <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                                                        <button type="button"
+                                                            class="btn btn-gradient-primary btn-next">
+                                                            <span
+                                                                class="align-middle d-sm-inline-block d-none">Next</span>
+                                                            <i data-feather="arrow-right"
+                                                                class="align-middle ml-sm-25 ml-0"></i>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -137,41 +158,60 @@
                                                             <div class="col-md-6 col-12 pl-25 pr-25">
                                                                 <div class="form-group">
                                                                     <label for="email-id-column">Street*</label>
-                                                                    <input type="text" class="form-control" name="project_address" id="project_address" placeholder="Venue Address" required />
+                                                                    <input type="text" class="form-control"
+                                                                        name="project_address" id="project_address"
+                                                                        placeholder="Venue Address" required />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-12 pl-25 pr-25">
                                                                 <div class="form-group">
                                                                     <label for="email-id-column">Suburb*</label>
-                                                                    <input type="text" id="suburb" class="form-control" name="suburb" placeholder="Address" required />
+                                                                    <input type="text" id="suburb"
+                                                                        class="form-control" name="suburb"
+                                                                        placeholder="Address" required />
                                                                 </div>
                                                             </div>
 
                                                             <div class="col-md-6 col-6 pl-25 pr-25">
                                                                 <div class="form-group">
                                                                     <label for="email-id-column">State*</label>
-                                                                    <input type="text" class="form-control" name="project_state" id="project_state" placeholder="Venue State" required />
+                                                                    <input type="text" class="form-control"
+                                                                        name="project_state" id="project_state"
+                                                                        placeholder="Venue State" required />
                                                                 </div>
                                                             </div>
 
                                                             <div class="col-md-3 col-6 pl-25 pr-25">
                                                                 <div class="form-group">
                                                                     <label for="email-id-column">Post Code*</label>
-                                                                    <input type="number" id="postal_code" minlength="4" maxlength="4" class="form-control" name="postal_code" value="3381" placeholder="Postal Code" required />
+                                                                    <input type="number" id="postal_code"
+                                                                        minlength="4" maxlength="4"
+                                                                        class="form-control" name="postal_code"
+                                                                        value="3381" placeholder="Postal Code"
+                                                                        required />
                                                                 </div>
                                                             </div>
+
+                                                            <input type="hidden" id="plongi">
+                                                            <input type="hidden" id="plati">
 
                                                         </div>
                                                     </form>
                                                     <div class="d-flex justify-content-between">
-                                                        <button type="button" class="btn btn-gradient-primary btn-prev">
-                                                            <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                                                            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                                        <button type="button"
+                                                            class="btn btn-gradient-primary btn-prev">
+                                                            <i data-feather="arrow-left"
+                                                                class="align-middle mr-sm-25 mr-0"></i>
+                                                            <span
+                                                                class="align-middle d-sm-inline-block d-none">Previous</span>
                                                         </button>
 
-                                                        <button type="button" class="btn btn-gradient-primary btn-next location">
-                                                            <span class="align-middle d-sm-inline-block d-none">Next</span>
-                                                            <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                                                        <button type="button"
+                                                            class="btn btn-gradient-primary btn-next location">
+                                                            <span
+                                                                class="align-middle d-sm-inline-block d-none">Next</span>
+                                                            <i data-feather="arrow-right"
+                                                                class="align-middle ml-sm-25 ml-0"></i>
                                                         </button>
                                                     </div>
 
@@ -188,49 +228,62 @@
 
                                                         <div class="row mb-2">
                                                             <div class="col-12 mb-1">
-                                                                <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
-                                                                <div id="googleMap" style="width:100%;height:400px;"></div>
+                                                                <input id="pac-input" class="controls" type="text"
+                                                                    placeholder="Search Box" />
+                                                                <div id="googleMap" style="width:100%;height:400px;">
+                                                                </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">
                                                                 <div class="form-group">
                                                                     <label for="email-id-column">Latitude</label>
-                                                                    <input type="text" class="form-control" name="lat" id="lat" readonly />
+                                                                    <input type="text" class="form-control"
+                                                                        name="lat" id="lat" readonly />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">
                                                                 <div class="form-group">
                                                                     <label for="email-id-column">Longitude</label>
-                                                                    <input type="text" class="form-control" name="lon" id="lon" readonly />
+                                                                    <input type="text" class="form-control"
+                                                                        name="lon" id="lon" readonly />
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </form>
                                                     <div class="d-flex justify-content-between">
-                                                        <button type="button" class="btn btn-gradient-primary btn-prev">
-                                                            <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
-                                                            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                                        <button type="button"
+                                                            class="btn btn-gradient-primary btn-prev">
+                                                            <i data-feather="arrow-left"
+                                                                class="align-middle mr-sm-25 mr-0"></i>
+                                                            <span
+                                                                class="align-middle d-sm-inline-block d-none">Previous</span>
                                                         </button>
                                                         <button type="button" class="btn  btn-success btn-submit">
-                                                            <span class="align-middle d-sm-inline-block d-none">Submit</span>
-                                                            <i data-feather="save" class="align-middle mr-sm-25 mr-0"></i>
+                                                            <span
+                                                                class="align-middle d-sm-inline-block d-none">Submit</span>
+                                                            <i data-feather="save"
+                                                                class="align-middle mr-sm-25 mr-0"></i>
                                                         </button>
                                                         <!-- <button type="button" class="btn btn-success btn-submit">Submit</button> -->
                                                     </div>
                                                 </div>
 
                                                 <hr>
-                                            <form enctype="multipart/form-data" id="full_form">
-                                            </form>
-                                            <div class="d-flex justify-content-between p-1" id="buttom_bar">
-                                                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">
-                                                    <span class="align-middle d-sm-inline-block d-none">Cancel</span>
-                                                    <i data-feather="x" class="align-middle mr-sm-25 mr-0"></i>
-                                                </button>
-                                                <button type="button" class="btn bg-gradient-success btn-submit">
-                                                    <span class="align-middle d-sm-inline-block d-none">Update</span>
-                                                    <i data-feather="check" class="align-middle mr-sm-25 mr-0"></i>
-                                                </button>
-                                            </div>
+                                                <form enctype="multipart/form-data" id="full_form">
+                                                </form>
+                                                <div class="d-flex justify-content-between p-1" id="buttom_bar">
+                                                    <button type="button" class="btn btn-outline-dark"
+                                                        data-dismiss="modal">
+                                                        <span
+                                                            class="align-middle d-sm-inline-block d-none">Cancel</span>
+                                                        <i data-feather="x" class="align-middle mr-sm-25 mr-0"></i>
+                                                    </button>
+                                                    <button type="button" class="btn bg-gradient-success btn-submit">
+                                                        <span
+                                                            class="align-middle d-sm-inline-block d-none">Update</span>
+                                                        <i data-feather="check"
+                                                            class="align-middle mr-sm-25 mr-0"></i>
+                                                    </button>
+                                                </div>
 
                                             </div>
                                         </div>
