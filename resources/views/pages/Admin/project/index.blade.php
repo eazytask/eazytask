@@ -24,7 +24,7 @@
     </div>
 
     <!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
-                                                                                                                                                                    <div id="googleMap" style="width:100%;height:400px;"></div> -->
+                                                                                                                                                                                                                                                    <div id="googleMap" style="width:100%;height:400px;"></div> -->
     <!-- Basic Tables start -->
     <!-- Table Hover Animation start -->
     <div class="row" id="table-hover-animation">
@@ -349,7 +349,7 @@
                 }
             };
             autocompleteAddress = new google.maps.places.Autocomplete(document.getElementById(
-                    'project_address'),
+                    'search_address'),
                 AUTOCOMPLETE_OPTIONS);
 
             autocompleteAddress.addListener('place_changed', function() {
@@ -359,11 +359,13 @@
 
         function fillInAddress(autoCompleteObject) {
             var place = autoCompleteObject.getPlace();
+            console.log(place)
             // var name = place.name || "";
             // if (name) name += ": "
             // name += autoCompleteObject.getPlace().formatted_address;
             // setSelectedAddress(name);
             var address = place.formatted_address;
+            // console.log(address);
             var value = address.split(",");
             var count = value.length;
             var country = value[count - 1] ?? '';
@@ -379,11 +381,55 @@
             var latitude = place.geometry.location.lat();
             var longitude = place.geometry.location.lng();
             var mesg = address;
-            document.getElementById("project_address").value = mesg;
+            // document.getElementById("project_address").value = mesg;
             var lati = latitude;
             document.getElementById("plati").value = lati;
             var longi = longitude;
             document.getElementById("plongi").value = longi;
+
+            address1Field = document.querySelector("#project_address");
+            let address1 = "";
+
+            for (const component of place.address_components) {
+                // @ts-ignore remove once typings fixed
+                const componentType = component.types[0];
+
+                switch (componentType) {
+                    case "street_number": {
+                        address1 = `${component.long_name} ${address1}`;
+                        break;
+                    }
+
+                    case "route": {
+                        address1 += component.short_name;
+                        break;
+                    }
+
+                    case "postal_code": {
+                        document.querySelector("#postal_code").value = component.long_name;
+                        // postcode = `${component.long_name}${postcode}`;
+                        break;
+                    }
+
+                    case "postal_code_suffix": {
+                        postcode = `${postcode}-${component.long_name}`;
+                        break;
+                    }
+                    case "locality":
+                        document.querySelector("#suburb").value = component.long_name;
+                        break;
+                    case "administrative_area_level_1": {
+                        document.querySelector("#project_state").value = component.short_name;
+                        break;
+                    }
+                    // case "country":
+                    //     document.querySelector("#country").value = component.long_name;
+                    //     break;
+                }
+            }
+
+            address1Field.value = address1;
+            // postalField.value = postcode;
         }
 
         // function setSelectedAddress(name) {

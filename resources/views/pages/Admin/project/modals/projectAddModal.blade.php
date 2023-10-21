@@ -155,6 +155,14 @@
                                                         <input type="hidden" name="id" id="id">
                                                         <div class="row">
 
+                                                            <div class="col-md-12 col-12 pl-25 pr-25">
+                                                                <div class="form-group">
+                                                                    <label for="email-id-column">Search Address</label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="search_address"
+                                                                        placeholder="Type your address here.." />
+                                                                </div>
+                                                            </div>
                                                             <div class="col-md-6 col-12 pl-25 pr-25">
                                                                 <div class="form-group">
                                                                     <label for="email-id-column">Street*</label>
