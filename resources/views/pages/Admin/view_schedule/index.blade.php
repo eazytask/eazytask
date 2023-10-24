@@ -3,6 +3,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css') }}">
 @endpush
 <meta name="csrf-token" content="{{ csrf_token() }}">
+
 @php
 
     function getTime($date)
@@ -41,6 +42,7 @@
                     <form action="{{ route('view-search') }}" method="POST" id="dates_form">
                         @csrf
                         <div class="row row-xs">
+                            <input type="hidden" name="type_print_excel" id="type_print_excel">
                             <div class="col-lg-4 pl-25 pr-25 mt-1">
                                 <input type="text" name="start_date" required class="form-control format-picker"
                                     placeholder="Start Date" value="{{ $start_date }}" />
@@ -116,13 +118,11 @@
                                     <button class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" type="button"
                                         onclick="pdf_preview('summery_report')"><span>Summary
                                             PDF</span></button>
-                                    <a class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25"
-                                        download="full_report.xls" href="#"
-                                        onclick="return ExcellentExport.excel(this, 'excel_full_table', 'full_report');">
+                                    <a class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" href="#"
+                                        onclick="fullExcelPrint();">
                                         Full Excel</a>
-                                    <a class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25"
-                                        download="summary_report.xls" href="#"
-                                        onclick="return ExcellentExport.excel(this, 'excel_summary_table', 'summary_report');">
+                                    <a class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" href="#"
+                                        onclick="summaryExcelPrint();">
                                         Summary Excel</a>
                                     <!-- <button class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" type="button" onclick="email_modal()"><span>Send Mail</span></button> -->
                                 </div>
@@ -418,240 +418,6 @@
                                                 </div>
                                             </div>
 
-                                            <table id="excel_full_table" style="display:none">
-                                                <thead>
-                                                    <tr>
-                                                        <th><input type="checkbox" class="mt-75 taskcheckAllID"
-                                                                onclick="taskcheckAllID()"></th>
-                                                        <th>Employee Name</th>
-                                                        <th>Venue</th>
-                                                        <th>Roster Date</th>
-                                                        <th>Shift Start</th>
-                                                        <th>Shift End</th>
-                                                        <th>Sign In</th>
-                                                        <th>Sign Out</th>
-                                                        <th>Rate</th>
-                                                        <th>App. Start</th>
-                                                        <th>App. End</th>
-                                                        <th>App. Rate</th>
-                                                        <th>App. Duration</th>
-                                                        <th>App. Amount</th>
-                                                        <th>Details</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody>
-                                                    @php
-                                                        $total_hours = 0;
-                                                        $total_amount = 0;
-                                                    @endphp
-                                                    @foreach ($timekeepers as $i => $timekeeper)
-                                                        @php
-
-                                                            if (Session::get('sort_by')) {
-                                                                $sort = Session::get('sort_by');
-                                                                if ($sort == 'Venue') {
-                                                                    $filter_sort_by = ['project_id', $timekeeper->id];
-                                                                } elseif ($sort == 'Date') {
-                                                                    $filter_sort_by = ['roaster_date', $timekeeper->id];
-                                                                } elseif ($sort == 'Client') {
-                                                                    $filter_sort_by = ['client_id', $timekeeper->id];
-                                                                } else {
-                                                                    $filter_sort_by = ['employee_id', $timekeeper->id];
-                                                                }
-                                                            } else {
-                                                                $filter_sort_by = ['employee_id', $timekeeper->id];
-                                                            }
-                                                            $filter_roaster_type = Session::get('schedule') && Session::get('schedule') != 'All' ? ['roaster_type', Session::get('schedule')] : ['employee_id', '>', 0];
-                                                            $filter_employee = Session::get('employee_id') ? ['employee_id', Session::get('employee_id')] : ['employee_id', '>', 0];
-                                                            $filter_project = Session::get('project_id') ? ['project_id', Session::get('project_id')] : ['employee_id', '>', 0];
-                                                            //$filter_client = Session::get('client_id') ? ['client_id',Session::get('client_id')]:['employee_id','>',0];
-
-                                                            $fromDate = Session::get('fromDate');
-                                                            $toDate = Session::get('toDate');
-
-                                                            $timekeeperDataExcel = App\Models\TimeKeeper::where([
-                                                                ['company_code', Auth::user()->company_roles->first()->company->id],
-                                                                $filter_sort_by,
-                                                                $filter_roaster_type,
-                                                                $filter_employee,
-                                                                $filter_project,
-                                                                //$filter_client
-                                                            ])
-                                                                ->orderBy('roaster_date', 'asc')
-                                                                ->orderBy('shift_start', 'asc')
-                                                                ->whereBetween('roaster_date', [$fromDate, $toDate])
-                                                                //->where(function ($q) {
-                                                                //avoid_rejected_key($q);
-                                                                //})
-                                                                ->get();
-
-                                                            $duration = $timekeeperDataExcel->sum('duration');
-                                                            $amount = $timekeeperDataExcel->sum('amount');
-                                                            $total_hours += floatval($duration);
-                                                            $total_amount += floatval($amount);
-                                                        @endphp
-                                                        @foreach ($timekeeperDataExcel as $k => $row)
-                                                            @php
-                                                                $json = json_encode($row->toArray(), false);
-
-                                                            @endphp
-                                                            <tr
-                                                                class="{{ $row->roaster_type == 'Unschedueled' ? 'bg-light-primary' : '' }} {{ $row->sing_in ? '' : 'bg-light-danger' }}">
-                                                                <td class="p-0">
-                                                                    @if ($row->is_approved)
-                                                                        <i data-feather="{{ $row->payment_status ? 'dollar-sign' : 'check-circle' }}"
-                                                                            class="text-primary"></i>
-                                                                    @else
-                                                                        <input type="checkbox" class="taskCheckID"
-                                                                            value="{{ $row->id }}">
-                                                                    @endif
-                                                                    {{ $k + 1 }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ $row->employee->fname }}
-                                                                </td>
-                                                                <td>
-                                                                    @if (isset($row->project->pName))
-                                                                        {{ $row->project->pName }}
-                                                                    @else
-                                                                        Null
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    {{ \Carbon\Carbon::parse($row->roaster_date)->format('d-m-Y') }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ getTime($row->shift_start) }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ getTime($row->shift_end) }}
-                                                                </td>
-                                                                <td class="">
-                                                                    {{ $row->sing_in ? getTime($row->sing_in) : 'unspecified' }}
-                                                                </td>
-                                                                <td class="">
-                                                                    {{ $row->sing_out ? getTime($row->sing_out) : 'unspecified' }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ $row->ratePerHour }}
-                                                                </td>
-                                                                <td class="">
-                                                                    {{ getTime($row->Approved_start_datetime) }}
-                                                                </td>
-                                                                <td class="">
-                                                                    {{ getTime($row->Approved_end_datetime) }}
-                                                                </td>
-                                                                <td>{{ $row->app_rate }}</td>
-                                                                <td>{{ $row->app_duration }}</td>
-                                                                <td>{{ $row->app_amount }}</td>
-                                                                <td>
-                                                                    {{ $row->remarks }}
-                                                                </td>
-
-                                                                <td>
-                                                                    <div class="p-50">
-                                                                        @if ($row->is_approved == 0)
-                                                                            <button
-                                                                                class="edit-btn btn btn-gradient-primary mb-25"
-                                                                                data-row="{{ $json }}"><i
-                                                                                    data-feather='edit'></i></button>
-                                                                            <a class="btn btn-gradient-danger del text-white"
-                                                                                url="/admin/home/view/schedule/delete/{{ $row->id }}"><i
-                                                                                    data-feather='trash-2'></i></a>
-                                                                        @else
-                                                                            <button
-                                                                                class="edit-btn btn btn-gradient-primary mb-25"
-                                                                                data-row="{{ $json }}"><i
-                                                                                    data-feather='eye'></i></button>
-                                                                        @endif
-                                                                    </div>
-
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                        <tr>
-                                                            <td colspan=12>
-                                                            </td>
-                                                            <td>Hours : {{ $duration }}</td>
-                                                            <td>Amount : {{ $amount }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td colspan="14"></td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan=12>
-                                                        </td>
-                                                        <td>Total Hours : {{ $total_hours }}</td>
-                                                        <td>Total Amount : {{ $total_amount }}</td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-
-                                            <table id="excel_summary_table" style="display:none;">
-                                                <tr>
-                                                    <td>Employee</td>
-                                                    <td>Total Hours</td>
-                                                    <td>Total Amount</td>
-                                                </tr>
-                                                @foreach ($timekeepers as $i => $timekeeper)
-                                                    @php
-
-                                                        if (Session::get('sort_by')) {
-                                                            $sort = Session::get('sort_by');
-                                                            if ($sort == 'Venue') {
-                                                                $filter_sort_by = ['project_id', $timekeeper->id];
-                                                            } elseif ($sort == 'Date') {
-                                                                $filter_sort_by = ['roaster_date', $timekeeper->id];
-                                                            } elseif ($sort == 'Client') {
-                                                                $filter_sort_by = ['client_id', $timekeeper->id];
-                                                            } else {
-                                                                $filter_sort_by = ['employee_id', $timekeeper->id];
-                                                            }
-                                                        } else {
-                                                            $filter_sort_by = ['employee_id', $timekeeper->id];
-                                                        }
-                                                        $filter_roaster_type = Session::get('schedule') && Session::get('schedule') != 'All' ? ['roaster_type', Session::get('schedule')] : ['employee_id', '>', 0];
-                                                        $filter_employee = Session::get('employee_id') ? ['employee_id', Session::get('employee_id')] : ['employee_id', '>', 0];
-                                                        $filter_project = Session::get('project_id') ? ['project_id', Session::get('project_id')] : ['employee_id', '>', 0];
-                                                        //$filter_client = Session::get('client_id') ? ['client_id',Session::get('client_id')]:['employee_id','>',0];
-
-                                                        $fromDate = Session::get('fromDate');
-                                                        $toDate = Session::get('toDate');
-
-                                                        $timekeeperDataExcel = App\Models\TimeKeeper::where([
-                                                            ['company_code', Auth::user()->company_roles->first()->company->id],
-                                                            $filter_sort_by,
-                                                            $filter_roaster_type,
-                                                            $filter_employee,
-                                                            $filter_project,
-                                                            //$filter_client
-                                                        ])
-                                                            ->orderBy('roaster_date', 'asc')
-                                                            ->orderBy('shift_start', 'asc')
-                                                            ->whereBetween('roaster_date', [$fromDate, $toDate])
-                                                            //->where(function ($q) {
-                                                            //avoid_rejected_key($q);
-                                                            //})
-                                                            ->get();
-
-                                                        $duration = $timekeeperDataExcel->sum('duration');
-                                                        $amount = $timekeeperDataExcel->sum('amount');
-                                                    @endphp
-                                                    <tr>
-                                                        <td>
-                                                            {{ Session::get('sort_by') == 'Date' ? \Carbon\Carbon::parse($timekeeper->roaster_date)->format('d-m-Y') : $timekeeper->name }}
-                                                        </td>
-                                                        <td>{{ $duration }}</td>
-                                                        <td>{{ $amount }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </table>
-
                                         </div>
                                     </div>
                                 </div>
@@ -764,10 +530,17 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/excellentexport@3.4.3/dist/excellentexport.min.js">
-    </script>
-
     <script>
+        fullExcelPrint = function() {
+            $("#type_print_excel").val('full');
+            $("#dates_form").submit();
+        }
+
+        summaryExcelPrint = function() {
+            $("#type_print_excel").val('summary');
+            $("#dates_form").submit();
+        }
+
         pdf_preview = function(rep) {
             if ((!window.scheduleFullReport && rep == 'full_report') || (!window.scheduleSummeryReport && rep ==
                     'summery_report')) {

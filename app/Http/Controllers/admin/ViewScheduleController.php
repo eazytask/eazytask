@@ -16,6 +16,7 @@ use App\Http\Controllers\NewTimeKeeperController;
 use App\Models\TimeKeeper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Classes\HtmlExcel;
 
 class ViewScheduleController extends Controller
 {
@@ -50,6 +51,7 @@ class ViewScheduleController extends Controller
 
     public function search(Request $request)
     {
+        // type_print_excel
         $fromDate = $request->input('start_date');
         $fromDate = Carbon::parse($fromDate);
 
@@ -59,6 +61,7 @@ class ViewScheduleController extends Controller
         $schedule = $request->input('schedule');
         $employee_id = $request->input('employee_id');
         $project_id = $request->input('project_id');
+        $type_print_excel = $request->input('type_print_excel');
         $sortby = $request->input('sort_by');
 
         Session::put('fromDate', $fromDate);
@@ -66,11 +69,12 @@ class ViewScheduleController extends Controller
         Session::put('schedule', $schedule);
         Session::put('employee_id', $employee_id);
         Session::put('project_id', $project_id);
+        Session::put('type_print_excel', $type_print_excel);
         Session::put('sort_by', $sortby);
 
         Session::put('current_employee', '');
 
-        return $this->searchModule($fromDate, $toDate, $schedule, $employee_id, $project_id);
+        return $this->searchModule($fromDate, $toDate, $schedule, $employee_id, $project_id, $type_print_excel);
     }
 
     public function update(Request $request)
@@ -121,7 +125,7 @@ class ViewScheduleController extends Controller
         return $this->searchModule($fromDate, $toDate, $schedule, $employee_id, $project_id);
     }
 
-    public function searchModule($fromDate, $toDate, $schedule, $employee_id, $project_id)
+    public function searchModule($fromDate, $toDate, $schedule, $employee_id, $project_id, $type_print_excel = null)
     {
         $filter_roaster_type = $schedule && $schedule != 'All' ? ['roaster_type', $schedule] : ['employee_id', '>', 0];
         // dd($filter_roaster_type);
@@ -241,7 +245,76 @@ class ViewScheduleController extends Controller
                 ->orderBy('name')
                 ->get();
         } // dd($timekeepers);
-        return view('pages.Admin.view_schedule.index', compact('employees', 'projects', 'timekeepers', 'job_types', 'roaster_types'));
+
+        if($type_print_excel == 'full') {
+            $xls = new HtmlExcel();
+            $css = "
+            .bg-primary {
+                background-color: #7367f0 !important;
+                font-weight: bolder !important;
+                color: white;
+            }
+            .bordered-top-down {
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+            }
+            .bordered-left {
+                border-left: 1px solid black;
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+            }
+            .bordered-right {
+                border-right: 1px solid black;
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+            }
+            .title {
+                font-weight: bolder !important;
+                text-align: center;
+            ";
+            $xls->setCss($css);
+
+            $view = \View::make('pages.Admin.view_schedule.excel.full_table', compact('employees', 'projects', 'timekeepers', 'job_types', 'roaster_types'))->render();
+            
+            $xls->addSheet('MAIN', $view);
+            $xls->headers();
+            return $xls->buildFile();
+        }elseif($type_print_excel == 'summary') {
+            $xls = new HtmlExcel();
+            $css = "
+            .bg-primary {
+                background-color: #7367f0 !important;
+                font-weight: bolder !important;
+                color: white;
+            }
+            .bordered-top-down {
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+            }
+            .bordered-left {
+                border-left: 1px solid black;
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+            }
+            .bordered-right {
+                border-right: 1px solid black;
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+            }
+            .title {
+                font-weight: bolder !important;
+                text-align: center;
+            ";
+            $xls->setCss($css);
+
+            $view = \View::make('pages.Admin.view_schedule.excel.summary_table', compact('employees', 'projects', 'timekeepers', 'job_types', 'roaster_types'))->render();
+            
+            $xls->addSheet('MAIN', $view);
+            $xls->headers();
+            return $xls->buildFile();
+        }else{
+            return view('pages.Admin.view_schedule.index', compact('employees', 'projects', 'timekeepers', 'job_types', 'roaster_types'));
+        }
     }
 
     public function approve($ids)

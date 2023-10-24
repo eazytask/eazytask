@@ -382,6 +382,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::get('admin/home/task/descriptions/manage', [HomeController::class, 'manageTaskDescriptions'])->middleware('is_admin');
 
     //admin view-schedule
+    Route::get('admin/home/view/schedule/excel/print', [ViewScheduleController::class, 'printExcel'])->name('view-print-excel')->middleware('is_admin');
     Route::get('admin/home/view/schedule/{id}', [ViewScheduleController::class, 'index'])->middleware('is_admin');
     Route::post('admin/home/view/schedule/search', [ViewScheduleController::class, 'search'])->name('view-search')->middleware('is_admin');
     Route::post('admin/home/view/schedule/update', [ViewScheduleController::class, 'update'])->name('view-update-timekeeper')->middleware('is_admin');
