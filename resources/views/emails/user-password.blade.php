@@ -16,7 +16,7 @@
                         </p>
                         <p style="line-height: 24px; margin-bottom:15px;">
                             Your account has been setup and you are ready to explore Eazytask features from
-                            {{ strtoupper($company) }}.
+                            {{ strtoupper($company ?? '-') }}.
                         </p>
 
                         <p style="line-height: 24px; margin-bottom:20px;">

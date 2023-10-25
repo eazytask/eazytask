@@ -64,6 +64,7 @@ class CompanyController extends Controller
         $email_data['mname'] = $request['mname'];
         $email_data['lname'] = $request['lname'];
         $email_data['password'] = $password;
+        $email_data['company']= $request['company'];
 
 
         $user = User::where('email', $request->email)->first();
@@ -77,16 +78,16 @@ class CompanyController extends Controller
             $user->save();
             $GLOBALS['data'] = $user;
 
-            // try {
-            //     $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
-            // } catch (\Exception $e) {
-            //     $GLOBALS['data']->delete();
-            //     $notification = array(
-            //         'message' => 'Sorry! this email is incorrect.',
-            //         'alert-type' => 'warning'
-            //     );
-            //     return Redirect()->back()->with($notification);
-            // }
+            try {
+                $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
+            } catch (\Exception $e) {
+                $GLOBALS['data']->delete();
+                $notification = array(
+                    'message' => 'Sorry! this email is incorrect.',
+                    'alert-type' => 'warning'
+                );
+                return Redirect()->back()->with($notification);
+            }
         } else {
             $GLOBALS['data'] = $user;
         }
