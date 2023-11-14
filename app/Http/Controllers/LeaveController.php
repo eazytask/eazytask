@@ -192,4 +192,28 @@ class LeaveController extends Controller
 
         return redirect()->back();
     }
+
+    public function approve($id) 
+    {
+        $single = Myavailability::find($id);
+        if ($single) {
+            $single->status = 'approved';
+            $single->save();
+        }
+
+        if ($single->status == 'approved') {
+            try {
+                Mail::to($single->employee->email)->send(new LeaveDay((object)[
+                    'name'=>$single->employee->fname,
+                    'start_date'=>$single->start_date,
+                    'end_date'=>$single->end_date,
+                    'total'=>$single->total,
+                    'leave_type'=>$single->leave_type->name,
+                ]));
+            } catch (\Exception $e) {
+            }
+        }
+
+        return redirect()->back();
+    }
 }

@@ -513,6 +513,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::post('admin/home/myavailability/store', [MyavailabilityController::class, 'admin_store']);
     Route::post('admin/home/myavailability/update', [MyavailabilityController::class, 'admin_update']);
     Route::get('admin/home/myavailability/delete/{id}', [MyavailabilityController::class, 'destroy']);
+    Route::get('admin/home/myavailability/approve/{id}', [MyavailabilityController::class, 'approve']);
 
     #add leave
     Route::get('admin/home/leave/{company_code}', [LeaveController::class, 'index']);
@@ -520,6 +521,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::post('admin/home/leave/store', [LeaveController::class, 'admin_store']);
     Route::post('admin/home/leave/update', [LeaveController::class, 'admin_update']);
     Route::get('admin/home/leave/delete/{id}', [LeaveController::class, 'destroy']);
+    Route::get('admin/home/leave/approve/{id}', [LeaveController::class, 'approve']);
 
     // Upcoming event routes user
     Route::get('user/home/upcomingevent/{id}', [UpcomingeventController::class, 'userIndex']);
