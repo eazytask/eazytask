@@ -132,7 +132,10 @@
                                                             url="/admin/home/leave/delete/{{ $row->id }}"><i
                                                                 data-feather='trash-2'></i></a>
                                                     @else
-                                                        <p class="badge badge-light-primary p-75">running</p>
+                                                        {{-- <p class="badge badge-light-primary p-75">running</p> --}}
+                                                        <a class="btn btn-gradient-danger text-white del mt-lg-25"
+                                                            url="/admin/home/leave/delete/{{ $row->id }}"><i
+                                                                data-feather='trash-2'></i></a>
                                                     @endif
                                                 </td>
                                             </tr>
