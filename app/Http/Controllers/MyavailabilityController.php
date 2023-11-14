@@ -24,8 +24,8 @@ class MyavailabilityController extends Controller
 
     public function admin_search(Request $request)
     {
-        $start_date = Carbon::parse($request->start_date);
-        $end_date = Carbon::parse($request->end_date);
+        $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
+        $end_date = Carbon::parse($request->end_date)->format('Y-m-d');
 
         Session::put('availity_start_date', $start_date);
         Session::put('availity_end_date', $end_date);
@@ -48,8 +48,9 @@ class MyavailabilityController extends Controller
             ->where([
                 ['myavailabilities.status', 'approved'],
                 ['myavailabilities.company_code', Auth::user()->company_roles->first()->company->id],
-                ['myavailabilities.start_date', '>=', Carbon::parse($start_date)->toDateString()],
-                ['myavailabilities.end_date', '<=', Carbon::parse($end_date)->toDateString()],
+                ['myavailabilities.start_date', '>=', $start_date],
+                // ['myavailabilities.end_date', '<=', $end_date],
+                ['myavailabilities.start_date', '<=', $end_date],
                 ['myavailabilities.is_leave', 0]
             ])
             ->groupBy("e.id")
