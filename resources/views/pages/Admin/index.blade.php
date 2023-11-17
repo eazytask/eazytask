@@ -16,8 +16,8 @@
         }
 
         /*.fc-timegrid-axis,.fc-timegrid-slot-label,.fc-scrollgrid-shrink{
-            display: none;
-        }*/
+                display: none;
+            }*/
     </style>
 
     <!--<h1 class="text-center">Welcome to Admin Dashboard</h1>-->
@@ -30,9 +30,9 @@
                     <div class="container  mb-1 p-1 d-flex justify-content-center">
                         <div class="image d-flex flex-column justify-content-center align-items-center">
                             <span class="name mt-1"
-                                style="font-size: 26px; font-weight: bold; color: #000;">{{ Auth::user()->employee->fname ?? '' }}
-                                {{ Auth::user()->employee->mname ?? '' }} {{ Auth::user()->employee->lname ?? '' }}</span>
-                            <p class="mt-1">{{ Auth::user()->employee->license_no ?? '' }}</p>
+                                style="font-size: 26px; font-weight: bold; color: #000;">{{ Auth::user()->name ?? '' }}
+                                {{ Auth::user()->mname ?? '' }} {{ Auth::user()->lname ?? '' }}</span>
+                            <p class="mt-1">{{ Auth::user()->license_no ?? '' }}</p>
                             <img src="https://api.eazytask.au/{{ Auth::user()->image }}" height="80" width="80"
                                 alt="view sales" class="rounded-circle">
                             <a href="/admin/company/profile-settings/{{ Auth::user()->id }}"
@@ -141,8 +141,8 @@
                                             {{ \Carbon\Carbon::now()->subWeeks(2)->endOfWeek()->format('d M, y') }}</div>
                                         <h5 class="mb-1">${{ $data['monthly_earning'] }}</h5>
                                         <!-- <p class="card-text text-muted font-small-2">
-                                            <span> default earning percentage is 10%.</span>
-                                        </p> -->
+                                                <span> default earning percentage is 10%.</span>
+                                            </p> -->
                                     </div>
                                     <div class="col-6">
                                         <div id="earnings-chart"></div>
@@ -268,10 +268,10 @@
                                 <tbody>
                                     @foreach ($data['employee_report'] as $i => $val)
                                         @php
-                                            if (!file_exists($val->employee->image)) {
+                                            if (!file_exists($val->image)) {
                                                 $image = 'images/app/no-image.png';
                                             } else {
-                                                $image = $val->employee->image;
+                                                $image = $val->image;
                                             }
                                         @endphp
                                         <tr>
@@ -283,7 +283,7 @@
                                                                 alt="">
                                                         </div>
                                                     </div>
-                                                    <span>{{ $val->employee->fname }}</span>
+                                                    <span>{{ $val->name }}</span>
                                                 </div>
                                             </td>
                                             <td>{{ $val->hours }}</td>
@@ -361,78 +361,78 @@
 
             <!-- Goal Overview Card -->
             <!-- <div class="col-lg-4 col-md-6 col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">Total Payment Status</h4>
-                        <i data-feather="help-circle" class="font-medium-3 text-muted cursor-pointer"></i>
-                    </div>
-                    <div class="card-body p-0">
-                        <div id="goal-overview-radial-bar-chart" class="my-2"></div>
-                        <div class="row border-top text-center mx-0">
-                            <div class="col-6 border-right py-1">
-                                <p class="card-text text-muted mb-0">Paid</p>
-                                <h3 class="font-weight-bolder mb-0">{{ $data['payment_status']['paid'] }}</h3>
-                            </div>
-                            <div class="col-6 py-1">
-                                <p class="card-text text-muted mb-0">Pending</p>
-                                <h3 class="font-weight-bolder mb-0">{{ $data['payment_status']['pending'] }}</h3>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="card-title">Total Payment Status</h4>
+                            <i data-feather="help-circle" class="font-medium-3 text-muted cursor-pointer"></i>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="goal-overview-radial-bar-chart" class="my-2"></div>
+                            <div class="row border-top text-center mx-0">
+                                <div class="col-6 border-right py-1">
+                                    <p class="card-text text-muted mb-0">Paid</p>
+                                    <h3 class="font-weight-bolder mb-0">{{ $data['payment_status']['paid'] }}</h3>
+                                </div>
+                                <div class="col-6 py-1">
+                                    <p class="card-text text-muted mb-0">Pending</p>
+                                    <h3 class="font-weight-bolder mb-0">{{ $data['payment_status']['pending'] }}</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div> -->
+                </div> -->
             <!--/ Goal Overview Card -->
 
 
             <!-- Developer Meetup Card -->
             <!-- <div class="col-lg-4 col-md-6 col-12">
-                <div class="card card-developer-meetup">
-                    <div class="meetup-img-wrapper rounded-top text-center">
-                        <img src="../../../app-assets/images/illustration/email.svg" alt="Meeting Pic" height="170" />
-                    </div>
-                    <div class="card-body">
-                        @if ($data['next_event'])
+                    <div class="card card-developer-meetup">
+                        <div class="meetup-img-wrapper rounded-top text-center">
+                            <img src="../../../app-assets/images/illustration/email.svg" alt="Meeting Pic" height="170" />
+                        </div>
+                        <div class="card-body">
+                            @if ($data['next_event'])
     <div class="meetup-header d-flex align-items-center">
-                            <div class="meetup-day">
-                                <h6 class="mb-0">{{ \Carbon\Carbon::parse($data['next_event']['event_date'])->format('D') }}</h6>
-                                <h3 class="mb-0">{{ \Carbon\Carbon::parse($data['next_event']['event_date'])->format('d') }}</h3>
-                            </div>
-                            <div class="my-auto">
-                                <h4 class="card-title mb-25">Upcoming Event</h4>
-                                <p class="card-text mb-0">{{ $data['next_event']['remarks'] }}</p>
-                            </div>
-                        </div>
-                        <div class="media">
-                            <div class="avatar bg-light-primary rounded mr-1">
-                                <div class="avatar-content">
-                                    <i data-feather="calendar" class="avatar-icon font-medium-3"></i>
+                                <div class="meetup-day">
+                                    <h6 class="mb-0">{{ \Carbon\Carbon::parse($data['next_event']['event_date'])->format('D') }}</h6>
+                                    <h3 class="mb-0">{{ \Carbon\Carbon::parse($data['next_event']['event_date'])->format('d') }}</h3>
+                                </div>
+                                <div class="my-auto">
+                                    <h4 class="card-title mb-25">Upcoming Event</h4>
+                                    <p class="card-text mb-0">{{ $data['next_event']['remarks'] }}</p>
                                 </div>
                             </div>
-                            <div class="media-body">
-                                <h6 class="mb-0">{{ \Carbon\Carbon::parse($data['next_event']['event_date'])->format('D, M d, Y') }}</h6>
-                                <small>{{ \Carbon\Carbon::parse($data['next_event']['shift_start'])->format('H:i') }} to {{ \Carbon\Carbon::parse($data['next_event']['shift_end'])->format('H:i') }}</small>
-                            </div>
-                        </div>
-                        <div class="media mt-2">
-                            <div class="avatar bg-light-primary rounded mr-1">
-                                <div class="avatar-content">
-                                    <i data-feather="map-pin" class="avatar-icon font-medium-3"></i>
+                            <div class="media">
+                                <div class="avatar bg-light-primary rounded mr-1">
+                                    <div class="avatar-content">
+                                        <i data-feather="calendar" class="avatar-icon font-medium-3"></i>
+                                    </div>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="mb-0">{{ \Carbon\Carbon::parse($data['next_event']['event_date'])->format('D, M d, Y') }}</h6>
+                                    <small>{{ \Carbon\Carbon::parse($data['next_event']['shift_start'])->format('H:i') }} to {{ \Carbon\Carbon::parse($data['next_event']['shift_end'])->format('H:i') }}</small>
                                 </div>
                             </div>
-                            <div class="media-body">
-                                <h6 class="mb-0">{{ $data['next_event']->project->pName }}</h6>
-                                <small>Australia</small>
+                            <div class="media mt-2">
+                                <div class="avatar bg-light-primary rounded mr-1">
+                                    <div class="avatar-content">
+                                        <i data-feather="map-pin" class="avatar-icon font-medium-3"></i>
+                                    </div>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="mb-0">{{ $data['next_event']->project->pName }}</h6>
+                                    <small>Australia</small>
+                                </div>
                             </div>
-                        </div>
 @else
     <div class="my-auto">
-                            <h4 class="card-title mb-25">Upcoming Event</h4>
-                            <p class="card-text mb-0">No event found!</p>
-                        </div>
+                                <h4 class="card-title mb-25">Upcoming Event</h4>
+                                <p class="card-text mb-0">No event found!</p>
+                            </div>
     @endif
+                        </div>
                     </div>
-                </div>
-            </div> -->
+                </div> -->
             <!--/ Developer Meetup Card -->
             <!-- Company Table Card -->
 
