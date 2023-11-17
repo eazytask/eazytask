@@ -156,20 +156,20 @@ class EmployeeController extends Controller
             try {
                 $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
             } catch (\Exception $e) {
-                return response()->json([
-                    'message' => 'Sorry! this email is incorrect.',
-                    'alertType' => 'warning'
-                ]);
+                // return response()->json([
+                //     'message' => 'Sorry! this email is incorrect.',
+                //     'alertType' => 'warning'
+                // ]);
             }
         } else {
             $GLOBALS['data'] = $user;
             try {
                 $mail = $GLOBALS['data']->notify(new ExistingUserNotification($request->name,Auth::user()->company->company));
             } catch (\Exception $e) {
-                return response()->json([
-                    'message' => 'Sorry! this email is incorrect.',
-                    'alertType' => 'warning'
-                ]);
+                // return response()->json([
+                //     'message' => 'Sorry! this email is incorrect.',
+                //     'alertType' => 'warning'
+                // ]);
             }
         }
         // $GLOBALS['data']->notify(new UserCredential($email_data));
