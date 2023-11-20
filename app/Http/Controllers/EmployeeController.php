@@ -16,6 +16,10 @@ use App\Notifications\UserCredential;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Image;
+use App\Models\Company;
+use App\Models\CompanyType;
+use App\Models\JobType;
+use App\Models\RoasterStatus;
 
 class EmployeeController extends Controller
 {
@@ -114,219 +118,330 @@ class EmployeeController extends Controller
         ];
         $this->validate($request, $rules, $customMessages);
 
-        $total_employee = Employee::where([
-            ['email', $request->email],
-            ['company', Auth::user()->company_roles->first()->company->id],
-            ['role', $request->role]
-        ])->count();
-        if ($total_employee > 0) {
-            return response()->json([
-                'message' => 'Sorry! this email is already used.',
-                'alertType' => 'warning'
-            ]);
-        }
+        if($request->role == 2) {
+            // WILL CREATE ADMIN
+            $image = $request->file('file');
+            $filename = null;
 
-        $image = $request->file;
-        $filename = null;
-
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
             if ($request->password) {
                 $password = $request->password;
             } else {
                 $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 $password = substr(str_shuffle($chars), 0, 10);
             }
+
             $email_data['email'] = $request['email'];
-            $email_data['name'] = $request['name'];
+            $email_data['name'] = $request['fname'];
             $email_data['mname'] = $request['mname'];
             $email_data['lname'] = $request['lname'];
             $email_data['password'] = $password;
-            $email_data['company']=Auth::user()->company->company;
+            $email_data['company']= Auth::user()->company->company;
 
-            $user = new User;
-            $user->name = $request->fname;
-            $user->mname = $request->mname;
-            $user->lname = $request->lname;
-            $user->email = $request->email;
-            $user->password = Hash::make($password);
-            $user->save();
-            $GLOBALS['data'] = $user;
 
-            try {
-                $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
-            } catch (\Exception $e) {
-                // return response()->json([
-                //     'message' => 'Sorry! this email is incorrect.',
-                //     'alertType' => 'warning'
-                // ]);
-            }
-        } else {
-            $GLOBALS['data'] = $user;
-            try {
-                $mail = $GLOBALS['data']->notify(new ExistingUserNotification($request->name,Auth::user()->company->company));
-            } catch (\Exception $e) {
-                // return response()->json([
-                //     'message' => 'Sorry! this email is incorrect.',
-                //     'alertType' => 'warning'
-                // ]);
-            }
-        }
-        // $GLOBALS['data']->notify(new UserCredential($email_data));
-        if ($image) {
-            $basePath = "/home/eklaw543/api.eazytask.au/public/";
-            $folderPath = "images/employees/";
-            $image_parts = explode(";base64,", $image);
-            $image_type_aux = explode("image/", $image_parts[0]);
-            $image_type = $image_type_aux[1];
-            $image_base64 = base64_decode($image_parts[1]);
-            $img_name = date('sihdmy') .'.'. $image_type;
-            $filename = $folderPath . $img_name;
-            Image::make($image_base64)->save($basePath.$filename);
-        }
-        $employee = new Employee;
-        $employee->user_id = Auth::user()->id;
-        $employee->userID = $GLOBALS['data']->id;
-        // $employee->fname = $GLOBALS['data']->name;
-        // $employee->mname = $GLOBALS['data']->mname;
-        // $employee->lname = $GLOBALS['data']->lname;
-            $employee->fname = $request->fname;
-            $employee->mname = $request->mname;
-            $employee->lname = $request->lname;
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                $user = new User;
+                $user->name = $request->fname;
+                $user->mname = $request->mname;
+                $user->lname = $request->lname;
+                $user->email = $request->email;
+                $user->password = Hash::make($password);
+                $user->save();
+                $GLOBALS['data'] = $user;
 
-        $employee->address = $request->address;
-        $employee->suburb = $request->suburb;
-        $employee->state = $request->state;
-        $employee->postal_code = $request->postal_code;
-        $employee->email = $request->email;
-        $employee->contact_number = $request->contact_number;
-        $employee->status = $request->status;
-
-        function set_date($date=null){
-            return $date? Carbon::parse($date)->toDateString():null;
-        }
-
-        $employee->date_of_birth = set_date($request->date_of_birth);
-        $employee->license_no = $request->license_no;
-        $employee->license_expire_date = set_date($request->license_expire_date);
-        $employee->first_aid_license = $request->first_aid_license;
-        $employee->first_aid_expire_date = set_date($request->first_aid_expire_date);
-        
-        $employee->company = Auth::user()->company_roles->first()->company->id;
-        $employee->role = $request->role;
-        $employee->image = $filename;
-        if ($filename) {
-            $employee->image = $filename;
-            $user = User::find($employee->userID);
-            
-            try{
-                unlink($basePath.$user->image);
-            }catch(\Throwable $e){}
-
-            $user->image = $filename;
-            $user->save();
-            DB::table('employees')->where('userID', $employee->userID)->update(array(
-                'image' => $filename,
-            ));
-            
-        }
-        
-
-        if ($employee->save()) {
-            $employees = Employee::where([
-                ['userID', $employee->userID],
-                ['role',$request->role]
-            ])->get();
-    
-            foreach ($employees as $row) {
-                $row->fname = $request->fname;
-                $row->mname = $request->mname;
-                $row->lname = $request->lname;
-                $row->address = $request->address;
-                $row->suburb = $request->suburb;
-                $row->state = $request->state;
-                $row->status = $request->status;
-                $row->postal_code = $request->postal_code;
-                // $row->email = $request->email;
-                $row->contact_number = $request->contact_number;
-                $row->date_of_birth = set_date($request->date_of_birth);
-                $row->license_no = $request->license_no;
-                $row->license_expire_date = set_date($request->license_expire_date);
-                $row->first_aid_license = $request->first_aid_license;
-                $row->first_aid_expire_date = set_date($request->first_aid_expire_date);
-                
-                if ($filename) {
-                    $employee->image = $filename;
-    
-                    $user = User::find($employee->userID);
-                    $user->image = $filename;
-                    $user->save();
-                    $row->image = $filename;
+                try {
+                    $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
+                } catch (\Exception $e) {
+                    // $GLOBALS['data']->delete();
+                    // $notification = array(
+                    //     'message' => 'Sorry! this email is incorrect.',
+                    //     'alert-type' => 'warning'
+                    // );
+                    // return Redirect()->back()->with($notification);
                 }
-                $row->save();
-            }
-
-            $user_role = new UserRole;
-            $user_role->company_code = Auth::user()->company_roles->first()->company->id;
-            $user_role->user_id = $employee->userID;
-            $user_role->role = $request->role;
-            if ($request->status == 1) {
-                $user_role->status = 1;
             } else {
-                $user_role->status = 0;
+                $GLOBALS['data'] = $user;
             }
-            $user_role->sub_domain = Auth::user()->company_roles->first()->company->sub_domain ? 1 : 0;
-            $user_role->save();
 
-            if ($request->has_compliance == 'on' || $request->has_compliance == 1) {
-                foreach ($request->Compliance as $compliance) {
-                    $exist_comp = UserCompliance::where([
-                        ['user_id', $employee->userID],
-                        ['compliance_id', $compliance['compliance']]
-                    ])->first();
+            if ($image) {
+                $ext = strtolower($image->getClientOriginalExtension());
+                $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                $folderPath = "images/superadmin/";
+                $img_name = date('sihdmy');
+                $full_name = $img_name . '.' . $ext;
+                $filename = $folderPath . $full_name;
 
-                    $image = $compliance['document'];
-                    $filename = null;
+                $image->move($basePath, $filename);
+            }
+            //=========================================================================//
+            //================Store Company Details in Company Table===================//
+            $company = Auth::user()->company;
+
+            if ($company->Save()) {
+                JobType::create([
+                    'name' => 'core',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                ]);
+                JobType::create([
+                    'name' => 'Ad hoc',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                ]);
+
+                RoasterStatus::create([
+                    'name' => 'Not published',
+                    'user_id' => $GLOBALS['data']->id,
+                    'color' => '#ff9f43',
+                    'company_code' => $company->id,
+                ]);
+                RoasterStatus::create([
+                    'name' => 'Published',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                    'color' => '#7367f0',
+                    'text_color' => '#fff',
+                ]);
+                RoasterStatus::create([
+                    'name' => 'Accepted',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                    'color' => '#28c76f',
+                ]);
+                RoasterStatus::create([
+                    'name' => 'Rejected',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                    'color' => '#ea5455',
+                ]);
+
+                UserRole::create([
+                    'role' => 2,
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                    'status' =>  $request->status,
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Admin Added Successfully Added.',
+                'alertType' => 'success'
+            ]);
+        }else{
+            $total_employee = Employee::where([
+                ['email', $request->email],
+                ['company', Auth::user()->company_roles->first()->company->id],
+                ['role', $request->role]
+            ])->count();
+            if ($total_employee > 0) {
+                return response()->json([
+                    'message' => 'Sorry! this email is already used.',
+                    'alertType' => 'warning'
+                ]);
+            }
+    
+            $image = $request->file;
+            $filename = null;
+    
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                if ($request->password) {
+                    $password = $request->password;
+                } else {
+                    $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    $password = substr(str_shuffle($chars), 0, 10);
+                }
+                $email_data['email'] = $request['email'];
+                $email_data['name'] = $request['name'];
+                $email_data['mname'] = $request['mname'];
+                $email_data['lname'] = $request['lname'];
+                $email_data['password'] = $password;
+                $email_data['company']=Auth::user()->company->company;
+    
+                $user = new User;
+                $user->name = $request->fname;
+                $user->mname = $request->mname;
+                $user->lname = $request->lname;
+                $user->email = $request->email;
+                $user->password = Hash::make($password);
+                $user->save();
+                $GLOBALS['data'] = $user;
+    
+                try {
+                    $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
+                } catch (\Exception $e) {
+                    // return response()->json([
+                    //     'message' => 'Sorry! this email is incorrect.',
+                    //     'alertType' => 'warning'
+                    // ]);
+                }
+            } else {
+                $GLOBALS['data'] = $user;
+                try {
+                    $mail = $GLOBALS['data']->notify(new ExistingUserNotification($request->name,Auth::user()->company->company));
+                } catch (\Exception $e) {
+                    // return response()->json([
+                    //     'message' => 'Sorry! this email is incorrect.',
+                    //     'alertType' => 'warning'
+                    // ]);
+                }
+            }
+            // $GLOBALS['data']->notify(new UserCredential($email_data));
+            if ($image) {
+                $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                $folderPath = "images/employees/";
+                $image_parts = explode(";base64,", $image);
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1];
+                $image_base64 = base64_decode($image_parts[1]);
+                $img_name = date('sihdmy') .'.'. $image_type;
+                $filename = $folderPath . $img_name;
+                Image::make($image_base64)->save($basePath.$filename);
+            }
+            $employee = new Employee;
+            $employee->user_id = Auth::user()->id;
+            $employee->userID = $GLOBALS['data']->id;
+            // $employee->fname = $GLOBALS['data']->name;
+            // $employee->mname = $GLOBALS['data']->mname;
+            // $employee->lname = $GLOBALS['data']->lname;
+                $employee->fname = $request->fname;
+                $employee->mname = $request->mname;
+                $employee->lname = $request->lname;
+    
+            $employee->address = $request->address;
+            $employee->suburb = $request->suburb;
+            $employee->state = $request->state;
+            $employee->postal_code = $request->postal_code;
+            $employee->email = $request->email;
+            $employee->contact_number = $request->contact_number;
+            $employee->status = $request->status;
+    
+            function set_date($date=null){
+                return $date? Carbon::parse($date)->toDateString():null;
+            }
+    
+            $employee->date_of_birth = set_date($request->date_of_birth);
+            $employee->license_no = $request->license_no;
+            $employee->license_expire_date = set_date($request->license_expire_date);
+            $employee->first_aid_license = $request->first_aid_license;
+            $employee->first_aid_expire_date = set_date($request->first_aid_expire_date);
             
-                    if ($image) {
-                        $basePath = "/home/eklaw543/api.eazytask.au/public/";
-                        $folderPath = "images/compliance/";
-                        $image_parts = explode(";base64,", $image);
-                        $image_type_aux = explode("image/", $image_parts[0]);
-                        $image_type = $image_type_aux[1];
-                        $image_base64 = base64_decode($image_parts[1]);
-                        $img_name = date('sihdmy') .'.'. $image_type;
-                        $filename = $folderPath . $img_name;
-                        Image::make($image_base64)->save($basePath.$filename);
+            $employee->company = Auth::user()->company_roles->first()->company->id;
+            $employee->role = $request->role;
+            $employee->image = $filename;
+            if ($filename) {
+                $employee->image = $filename;
+                $user = User::find($employee->userID);
+                
+                try{
+                    unlink($basePath.$user->image);
+                }catch(\Throwable $e){}
+    
+                $user->image = $filename;
+                $user->save();
+                DB::table('employees')->where('userID', $employee->userID)->update(array(
+                    'image' => $filename,
+                ));
+                
+            }
+            
+    
+            if ($employee->save()) {
+                $employees = Employee::where([
+                    ['userID', $employee->userID],
+                    ['role',$request->role]
+                ])->get();
+        
+                foreach ($employees as $row) {
+                    $row->fname = $request->fname;
+                    $row->mname = $request->mname;
+                    $row->lname = $request->lname;
+                    $row->address = $request->address;
+                    $row->suburb = $request->suburb;
+                    $row->state = $request->state;
+                    $row->status = $request->status;
+                    $row->postal_code = $request->postal_code;
+                    // $row->email = $request->email;
+                    $row->contact_number = $request->contact_number;
+                    $row->date_of_birth = set_date($request->date_of_birth);
+                    $row->license_no = $request->license_no;
+                    $row->license_expire_date = set_date($request->license_expire_date);
+                    $row->first_aid_license = $request->first_aid_license;
+                    $row->first_aid_expire_date = set_date($request->first_aid_expire_date);
+                    
+                    if ($filename) {
+                        $employee->image = $filename;
+        
+                        $user = User::find($employee->userID);
+                        $user->image = $filename;
+                        $user->save();
+                        $row->image = $filename;
                     }
-
-                    if (!$exist_comp) {
-                        $user_compliance = new UserCompliance;
-                        $user_compliance->user_id = $employee->userID;
-                        $user_compliance->email = $request->email;
-                        $user_compliance->compliance_id = $compliance['compliance'];
-                        $user_compliance->certificate_no = $compliance['certificate_no'];
-                        $user_compliance->comment = $compliance['comment'];
-                        $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
-                        $user_compliance->document = $filename;
-                        
-                        $user_compliance->save();
-                    } else {
-                        $exist_comp->certificate_no = $compliance['certificate_no'];
-                        $exist_comp->comment = $compliance['comment'];
-                        $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
-                        $user_compliance->document = $filename;
-                        
-                        $exist_comp->save();
+                    $row->save();
+                }
+    
+                $user_role = new UserRole;
+                $user_role->company_code = Auth::user()->company_roles->first()->company->id;
+                $user_role->user_id = $employee->userID;
+                $user_role->role = $request->role;
+                if ($request->status == 1) {
+                    $user_role->status = 1;
+                } else {
+                    $user_role->status = 0;
+                }
+                $user_role->sub_domain = Auth::user()->company_roles->first()->company->sub_domain ? 1 : 0;
+                $user_role->save();
+    
+                if ($request->has_compliance == 'on' || $request->has_compliance == 1) {
+                    foreach ($request->Compliance as $compliance) {
+                        $exist_comp = UserCompliance::where([
+                            ['user_id', $employee->userID],
+                            ['compliance_id', $compliance['compliance']]
+                        ])->first();
+    
+                        $image = $compliance['document'];
+                        $filename = null;
+                
+                        if ($image) {
+                            $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                            $folderPath = "images/compliance/";
+                            $image_parts = explode(";base64,", $image);
+                            $image_type_aux = explode("image/", $image_parts[0]);
+                            $image_type = $image_type_aux[1];
+                            $image_base64 = base64_decode($image_parts[1]);
+                            $img_name = date('sihdmy') .'.'. $image_type;
+                            $filename = $folderPath . $img_name;
+                            Image::make($image_base64)->save($basePath.$filename);
+                        }
+    
+                        if (!$exist_comp) {
+                            $user_compliance = new UserCompliance;
+                            $user_compliance->user_id = $employee->userID;
+                            $user_compliance->email = $request->email;
+                            $user_compliance->compliance_id = $compliance['compliance'];
+                            $user_compliance->certificate_no = $compliance['certificate_no'];
+                            $user_compliance->comment = $compliance['comment'];
+                            $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
+                            $user_compliance->document = $filename;
+                            
+                            $user_compliance->save();
+                        } else {
+                            $exist_comp->certificate_no = $compliance['certificate_no'];
+                            $exist_comp->comment = $compliance['comment'];
+                            $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
+                            $user_compliance->document = $filename;
+                            
+                            $exist_comp->save();
+                        }
                     }
                 }
             }
+            
+            return response()->json([
+                'message' => 'Employee Added Successfully Added.',
+                'alertType' => 'success'
+            ]);
         }
-        
-        return response()->json([
-            'message' => 'Employee Added Successfully Added.',
-            'alertType' => 'success'
-        ]);
     }
 
     public function update(Request $request)

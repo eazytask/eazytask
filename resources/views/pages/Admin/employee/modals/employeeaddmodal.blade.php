@@ -160,6 +160,8 @@
                                                                         <option value="" disabled selected
                                                                             hidden>Please Choose...
                                                                         </option>
+                                                                        <option value="2" selected>Admin
+                                                                        </option>
                                                                         <option value="3" selected>Employee
                                                                         </option>
                                                                         <option value="4">Supervisor</option>
