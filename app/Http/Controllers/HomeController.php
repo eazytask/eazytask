@@ -48,15 +48,15 @@ class HomeController extends Controller
         ])->get();
         $employee = $employees->first();
 
-        if (!$employee) {
-            $notification = array(
-                'message' => 'Sorry! you are not an active employee.',
-                'alert-type' => 'error'
-            );
-            Auth::logout();
-            return redirect('https://eazytask.au/autologout');
-            // return redirect('http://localhost:8000/autologout');
-        }
+        // if (!$employee) {
+        //     $notification = array(
+        //         'message' => 'Sorry! you are not an active employee.',
+        //         'alert-type' => 'error'
+        //     );
+        //     Auth::logout();
+        //     return redirect('https://eazytask.au/autologout');
+        //     // return redirect('http://localhost:8000/autologout');
+        // }
 
         // return Auth::user()->employee;
         // return redirect(url('http://'.$employees->first()->company.'.' . env('SITE_URL', 'myroaster.info').'/home'));

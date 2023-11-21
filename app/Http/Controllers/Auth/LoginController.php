@@ -127,6 +127,7 @@ class LoginController extends Controller
                             }
                             Session::put('roaster_status', $roaster_status);
                         }
+                        // dd(auth()->user()->company_roles);
                         if (auth()->user()->company_roles->first()->role== 2 || auth()->user()->company_roles->first()->role== 5) {
                             return redirect('/admin/home/{id}');
                         } elseif (auth()->user()->company_roles->first()->role== 1) {

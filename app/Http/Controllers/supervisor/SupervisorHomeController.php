@@ -28,14 +28,14 @@ class SupervisorHomeController extends Controller
             ['company',auth()->user()->company_roles->first()->company_code],
             ['role', auth()->user()->company_roles->first()->role]
         ])->first();
-        if (!$spervisor) {
-            $notification = array(
-                'message' => 'Sorry! you are not an active supervisor.',
-                'alert-type' => 'error'
-            );
-            Auth::logout();
-            return Redirect()->route('login')->with($notification);
-        }
+        // if (!$spervisor) {
+        //     $notification = array(
+        //         'message' => 'Sorry! you are not an active supervisor.',
+        //         'alert-type' => 'error'
+        //     );
+        //     Auth::logout();
+        //     return Redirect()->route('login')->with($notification);
+        // }
 
 
         $data = [];

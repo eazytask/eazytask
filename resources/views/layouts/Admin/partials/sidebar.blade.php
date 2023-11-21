@@ -250,6 +250,50 @@
                             class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
                 </li>
 
+                <li class="nav-item {{ request()->is('admin/home/employee/*') ? 'active' : '' }}"><a
+                        class="d-flex align-items-center"
+                        href="/admin/home/employee/{{ Auth::user()->company_roles->first()->company->id }}"><i
+                            data-feather='user-check'></i><span class="menu-title text-truncate"
+                            data-i18n="Dashboards">Employee</span><span
+                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
+                    <ul>
+                        <li class="nav-item {{ request()->is('admin/home/employee/*') ? 'active' : '' }}"><a
+                                class="d-flex align-items-center"
+                                href="/admin/home/employee/{{ Auth::user()->company_roles->first()->company->id }}"><i
+                                    data-feather='users'></i><span class="menu-title text-truncate"
+                                    data-i18n="Dashboards">Profile</span><span
+                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
+                        </li>
+                        <!-- <li class="nav-item {{ request()->is('admin/home/myavailability/*') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/admin/home/myavailability/{{ Auth::user()->company_roles->first()->company->id }}"><i data-feather='battery-charging'></i><span class="menu-title text-truncate" data-i18n="Dashboards">
+                                Availavility</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
+                    </li> -->
+
+                        <li><a class="d-flex align-items-center" href="#"><i
+                                    data-feather="battery-charging"></i><span class="menu-item text-truncate">Time
+                                    off</span></a>
+                            <ul class="menu-content">
+                                <li class="{{ request()->is('admin/home/myavailability/*') ? 'active' : '' }}"><a
+                                        class="d-flex align-items-center" href="/admin/home/myavailability/go"><span
+                                            class="menu-item text-truncate"
+                                            data-i18n="Third Level">Unavailavility</span></a>
+                                </li>
+                                <li class="{{ request()->is('admin/home/leave/*') ? 'active' : '' }}"><a
+                                        class="d-flex align-items-center" href="/admin/home/leave/go"><span
+                                            class="menu-item text-truncate" data-i18n="Third Level">Leave</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item {{ request()->is('admin/home/inducted/site/*') ? 'active' : '' }}"><a
+                                class="d-flex align-items-center"
+                                href="/admin/home/inducted/site/{{ Auth::user()->company_roles->first()->company->id }}"><i
+                                    data-feather='alert-octagon'></i><span class="menu-title text-truncate"
+                                    data-i18n="Dashboards">Inducted Site</span><span
+                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
+                        </li>
+                    </ul>
+
+                </li>
+
                 <li class="nav-item {{ request()->is('supervisor/home/roster/calender') ? 'active' : '' }}"><a
                         class="d-flex align-items-center" href="/supervisor/home/roster/calender"><i
                             data-feather="calendar"></i><span class="menu-title text-truncate"
