@@ -36,6 +36,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'company'
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -49,7 +53,7 @@ class User extends Authenticatable
     public function admin_role()
     {
         return $this->belongsTo('App\Models\UserRole', 'id', 'user_id')
-            ->where('role', 2);
+            ->whereIn('role', [2, 5]);
     }
 
     public function user_roles()
@@ -63,10 +67,12 @@ class User extends Authenticatable
             ->where('company_code', auth()->user()->user_roles->unique('company_code')->sortByDesc('last_login')->first()->company_code);
     }
 
-    public function company()
+    public function getCompanyAttribute()
     {
-        return $this->belongsTo('App\Models\Company', 'id', 'user_id')
-            ->where('id', auth()->user()->company_roles->first()->company_code);
+        // return $this->belongsTo('App\Models\Company', 'id', 'user_id')
+        //     ->where('id', auth()->user()->company_roles->first()->company_code);
+        $item = Company::where('id', auth()->user()->company_roles->first()->company_code)->first();    
+        return $item;
     }
 
     public function employee()

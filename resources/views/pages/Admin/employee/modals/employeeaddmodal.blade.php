@@ -160,11 +160,17 @@
                                                                         <option value="" disabled selected
                                                                             hidden>Please Choose...
                                                                         </option>
-                                                                        <option value="2" selected>Admin
-                                                                        </option>
+                                                                        @if (!auth()->user()->company_roles->contains('role', 5))
+                                                                            <option value="5" selected>Operator
+                                                                            </option>
+                                                                            <option value="2" selected>Admin
+                                                                            </option>
+                                                                        @endif
                                                                         <option value="3" selected>Employee
                                                                         </option>
-                                                                        <option value="4">Supervisor</option>
+                                                                        @if (!auth()->user()->company_roles->contains('role', 5))
+                                                                            <option value="4">Supervisor</option>
+                                                                        @endif
                                                                     </select>
                                                                 </div>
                                                             </div>

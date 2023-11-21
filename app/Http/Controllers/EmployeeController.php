@@ -93,6 +93,63 @@ class EmployeeController extends Controller
                             </tr>
             ";
         }
+
+        $admins = DB::table('users')->join('user_roles', 'users.id', '=', 'user_roles.user_id')->where('user_roles.company_code', Auth::user()->company_roles->first()->company->id)->whereIn('user_roles.role', [2,5])->get();
+        
+        foreach ($admins as $loop => $row) {
+            if (!$row->image) {
+                $row->image = 'images/app/no-image.png';
+            }
+            $json = json_encode($row, false);
+
+            $role = '';
+            if ($row->role == 2) {
+                $role = "<span class='badge badge-pill badge-light-info mr-1'>Admin</span>";
+            } elseif ($row->role == 5) {
+                $role = "<span class='badge badge-pill badge-light-info mr-1'>Operator</span>";
+            }
+
+
+            if ($row->status == 1) {
+                $status = "<span class='badge badge-pill badge-light-success mr-1'>Active</span>";
+            } else {
+                $status = "<span class='badge badge-pill badge-light-danger mr-1'>Inactive</span>";
+            }
+
+            $html .= "
+            <tr>
+                                <td>" . $loop + 1 . "</td>
+                                <td>
+                                    <div class='avatar bg-light-primary'>
+                                        <div class='avatar-content'>
+                                            <img class='img-fluid' src='" . 'https://api.eazytask.au/' . $row->image . "' alt=''>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                     $row->name  $row->mname $row->lname 
+                                </td>
+                                <td>$row->email
+                                </td>
+                                <td>- </td>
+                                <td>
+                                    $role
+                                </td>
+                                <td>
+                                $status
+                                </td>
+                                <td>
+                                    <input type='hidden' name='id' value='$row->id'>
+                                    <input type='hidden' name='user_id' value='$row->user_id'>
+
+                                    <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
+                                    <a class='btn del btn-gradient-danger text-white' data-id='$row->id'><i data-feather='trash-2'></i></a>
+                                </td>
+
+                            </tr>
+            ";
+        }
+
         return response()->json(['employees' => $html]);
     }
 
@@ -225,6 +282,115 @@ class EmployeeController extends Controller
 
             return response()->json([
                 'message' => 'Admin Added Successfully Added.',
+                'alertType' => 'success'
+            ]);
+        }elseif($request->role == 5) {
+            // WILL CREATE OPERATOR
+            $image = $request->file('file');
+            $filename = null;
+
+            if ($request->password) {
+                $password = $request->password;
+            } else {
+                $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                $password = substr(str_shuffle($chars), 0, 10);
+            }
+
+            $email_data['email'] = $request['email'];
+            $email_data['name'] = $request['fname'];
+            $email_data['mname'] = $request['mname'];
+            $email_data['lname'] = $request['lname'];
+            $email_data['password'] = $password;
+            $email_data['company']= Auth::user()->company->company;
+
+
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                $user = new User;
+                $user->name = $request->fname;
+                $user->mname = $request->mname;
+                $user->lname = $request->lname;
+                $user->email = $request->email;
+                $user->password = Hash::make($password);
+                $user->save();
+                $GLOBALS['data'] = $user;
+
+                try {
+                    $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
+                } catch (\Exception $e) {
+                    // $GLOBALS['data']->delete();
+                    // $notification = array(
+                    //     'message' => 'Sorry! this email is incorrect.',
+                    //     'alert-type' => 'warning'
+                    // );
+                    // return Redirect()->back()->with($notification);
+                }
+            } else {
+                $GLOBALS['data'] = $user;
+            }
+
+            if ($image) {
+                $ext = strtolower($image->getClientOriginalExtension());
+                $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                $folderPath = "images/superadmin/";
+                $img_name = date('sihdmy');
+                $full_name = $img_name . '.' . $ext;
+                $filename = $folderPath . $full_name;
+
+                $image->move($basePath, $filename);
+            }
+            //=========================================================================//
+            //================Store Company Details in Company Table===================//
+            $company = Auth::user()->company;
+
+            if ($company->Save()) {
+                JobType::create([
+                    'name' => 'core',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                ]);
+                JobType::create([
+                    'name' => 'Ad hoc',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                ]);
+
+                RoasterStatus::create([
+                    'name' => 'Not published',
+                    'user_id' => $GLOBALS['data']->id,
+                    'color' => '#ff9f43',
+                    'company_code' => $company->id,
+                ]);
+                RoasterStatus::create([
+                    'name' => 'Published',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                    'color' => '#7367f0',
+                    'text_color' => '#fff',
+                ]);
+                RoasterStatus::create([
+                    'name' => 'Accepted',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                    'color' => '#28c76f',
+                ]);
+                RoasterStatus::create([
+                    'name' => 'Rejected',
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                    'color' => '#ea5455',
+                ]);
+
+                UserRole::create([
+                    'role' => 5,
+                    'user_id' => $GLOBALS['data']->id,
+                    'company_code' => $company->id,
+                    'status' =>  $request->status,
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Operator Added Successfully Added.',
                 'alertType' => 'success'
             ]);
         }else{

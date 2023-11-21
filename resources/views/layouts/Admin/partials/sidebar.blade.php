@@ -17,7 +17,8 @@
     <div class="shadow-bottom"></div>
     <div class="main-menu-content">
         <ul class="navigation navigation-main pb-2" id="main-menu-navigation" data-menu="menu-navigation">
-            @if (auth()->user()->company_roles->contains('role', 2))
+            @if (auth()->user()->company_roles->contains('role', 2) ||
+                    auth()->user()->company_roles->contains('role', 5))
                 <!----------------------------------------------- all admin menus --------------------------------------------------->
                 <li class="nav-item {{ request()->is('admin/home/dashboard') ? 'active' : '' }}"><a
                         class="d-flex align-items-center" href="/admin/home/dashboard"><i data-feather="home"></i><span
@@ -236,7 +237,8 @@
             @endif
 
             @if (auth()->user()->company_roles->contains('role', 4) &&
-                    !auth()->user()->company_roles->contains('role', 2))
+                    !auth()->user()->company_roles->contains('role', 2) &&
+                    !auth()->user()->company_roles->contains('role', 5))
                 <!---------------------------------------- all supervisor menus ------------------------------------>
 
                 <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Supervisor</span><i
