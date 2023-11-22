@@ -40,6 +40,7 @@ class EmployeeController extends Controller
         $employees = Employee::where('company', Auth::user()->company_roles->first()->company->id)->orderBy('fname', 'asc')->get();
 
         $html = '';
+        $numbering = 1;
         foreach ($employees as $loop => $row) {
             if (!$row->image) {
                 $row->image = 'images/app/no-image.png';
@@ -62,7 +63,7 @@ class EmployeeController extends Controller
 
             $html .= "
             <tr>
-                                <td>" . $loop + 1 . "</td>
+                                <td>" . $numbering++ . "</td>
                                 <td>
                                     <div class='avatar bg-light-primary'>
                                         <div class='avatar-content'>
@@ -94,7 +95,7 @@ class EmployeeController extends Controller
             ";
         }
 
-        $admins = DB::table('users')->join('user_roles', 'users.id', '=', 'user_roles.user_id')->where('user_roles.company_code', Auth::user()->company_roles->first()->company->id)->whereIn('user_roles.role', [2,5])->get();
+        $admins = DB::table('users')->join('user_roles', 'users.id', '=', 'user_roles.user_id')->where('user_roles.company_code', Auth::user()->company_roles->first()->company->id)->whereIn('user_roles.role', [2,5,6,7])->get();
         
         foreach ($admins as $loop => $row) {
             if (!$row->image) {
@@ -106,7 +107,11 @@ class EmployeeController extends Controller
             if ($row->role == 2) {
                 $role = "<span class='badge badge-pill badge-light-info mr-1'>Admin</span>";
             } elseif ($row->role == 5) {
-                $role = "<span class='badge badge-pill badge-light-info mr-1'>Operator</span>";
+                $role = "<span class='badge badge-pill badge-light-info mr-1'>Operation</span>";
+            } elseif ($row->role == 6) {
+                $role = "<span class='badge badge-pill badge-light-info mr-1'>Manager</span>";
+            } elseif ($row->role == 7) {
+                $role = "<span class='badge badge-pill badge-light-info mr-1'>Account</span>";
             }
 
 
@@ -118,7 +123,7 @@ class EmployeeController extends Controller
 
             $html .= "
             <tr>
-                                <td>" . $loop + 1 . "</td>
+                                <td>" . $numbering++ . "</td>
                                 <td>
                                     <div class='avatar bg-light-primary'>
                                         <div class='avatar-content'>
@@ -284,8 +289,8 @@ class EmployeeController extends Controller
                 'message' => 'Admin Added Successfully Added.',
                 'alertType' => 'success'
             ]);
-        }elseif($request->role == 5) {
-            // WILL CREATE OPERATOR
+        }elseif($request->role == 5 || $request->role == 6 || $request->role == 7) {
+            // WILL CREATE OPERATION
             $image = $request->file('file');
             $filename = null;
 
@@ -382,17 +387,29 @@ class EmployeeController extends Controller
                 ]);
 
                 UserRole::create([
-                    'role' => 5,
+                    'role' => $request->role,
                     'user_id' => $GLOBALS['data']->id,
                     'company_code' => $company->id,
                     'status' =>  $request->status,
                 ]);
             }
 
-            return response()->json([
-                'message' => 'Operator Added Successfully Added.',
-                'alertType' => 'success'
-            ]);
+            if ($request->role == 5) {
+                return response()->json([
+                    'message' => 'Operation Added Successfully Added.',
+                    'alertType' => 'success'
+                ]);
+            }elseif ($request->role == 6) {
+                return response()->json([
+                    'message' => 'Manager Added Successfully Added.',
+                    'alertType' => 'success'
+                ]);
+            }if ($request->role == 7) {
+                return response()->json([
+                    'message' => 'Account Added Successfully Added.',
+                    'alertType' => 'success'
+                ]);
+            }
         }else{
             $total_employee = Employee::where([
                 ['email', $request->email],

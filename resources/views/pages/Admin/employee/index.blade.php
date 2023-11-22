@@ -178,10 +178,13 @@
                         if (data.employees) {
                             $('#example').DataTable().clear().destroy();
                             $('#empBody').html(data.employees)
-                            $('#example').DataTable();
-                            feather.replace({
-                                width: 14,
-                                height: 14
+                            $('#example').DataTable({
+                                "drawCallback": function(settings) {
+                                    feather.replace({
+                                        width: 14,
+                                        height: 14
+                                    });
+                                }
                             });
                         }
 
@@ -300,6 +303,7 @@
                 $("#state").val('')
                 $("#postal_code").val('')
                 $("#email").val('')
+                $("#password").val('')
                 $("#email").prop('readonly', false)
                 $("#date_of_birth").val('')
                 $("#status").val('').trigger('change')
@@ -309,8 +313,8 @@
                 $("#license_no").val('')
                 $("#license_expire_date").val('')
                 $("#first_aid_license").val('')
-                $("#first_aid_expire_date").val()
-                $("#document").val();
+                $("#first_aid_expire_date").val('')
+                $("#document").val('');
                 $("#role").val('').trigger('change')
                 // $('#pass_div').show()
 

@@ -48,7 +48,7 @@
                                 @foreach ($inductions as $row)
                                     @php
                                         $json = json_encode($row->toArray(), false);
-                                        $emp= $row->employee;
+                                        $emp = $row->employee;
                                     @endphp
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
@@ -58,8 +58,10 @@
                                         <td>{{ $row->induction_date }}</td>
                                         <td>{{ $row->remarks }}</td>
                                         <td>
-                                    <button class="edit-btn btn btn-gradient-primary mb-25" data-row="{{ $json }}"><i data-feather='edit'></i></button>
-                                            <a class="btn btn-gradient-danger text-white del" url="/admin/home/inducted/site/delete/{{ $row->id }}"><i
+                                            <button class="edit-btn btn btn-gradient-primary mb-25"
+                                                data-row="{{ $json }}"><i data-feather='edit'></i></button>
+                                            <a class="btn btn-gradient-danger text-white del"
+                                                url="/admin/home/inducted/site/delete/{{ $row->id }}"><i
                                                     data-feather='trash-2'></i></a>
                                         </td>
                                     </tr>
@@ -73,69 +75,68 @@
     </div>
 @endsection
 @push('scripts')
+    <script>
+        $(document).ready(function() {
 
-<script>
-    $(document).ready(function() {
-        
-        $('.select2').select2({
-            placeholder: 'Select Option',
-            dropdownParent: $('#addInduction'),
-            allowClear: true
-        });
+            $('.select2').select2({
+                placeholder: 'Select Option',
+                dropdownParent: $('#addInduction'),
+                allowClear: true
+            });
 
-        $(document).on("click", ".del",  function() {
-            swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover this!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        window.location  = $(this).attr('url')
-                    }
-                });
+            $(document).on("click", ".del", function() {
+                swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            window.location = $(this).attr('url')
+                        }
+                    });
+            })
+
+            $("#newModalForm").validate()
+            $(document).on("click", ".edit-btn", function() {
+                resetValue()
+                var rowData = $(this).data("row");
+
+                $("#id").val(rowData.id);
+
+                $("#employee_id").val(rowData.employee_id).trigger('change');
+                // $("#client_id").val(rowData.client_id)
+                $("#induction_date").val(moment(rowData.induction_date).format('DD-MM-YYYY'))
+                $("#project_id").val(rowData.project_id).trigger('change');
+                $("#remarks").val(rowData.remarks)
+
+                $('#newModalForm').attr('action', "{{ route('update-induction') }}");
+                $("#savebtn").hide()
+                $("#updatebtn").show()
+
+                $("#addInduction").modal("show")
+            })
+
+            $(document).on("click", "#add", function() {
+                resetValue()
+                $("#addInduction").modal("show")
+            })
+
+            function resetValue() {
+                $("#id").val('');
+                $("#employee_id").val('');
+                // $("#client_id").val('')
+                $("#induction_date").val('')
+                $("#project_id").val('').trigger('change');
+                $("#remarks").val('')
+
+                $('#newModalForm').attr('action', "{{ route('store-induction') }}");
+                $("#savebtn").show()
+                $("#updatebtn").hide()
+            }
+
         })
-
-        $("#newModalForm").validate()
-        $(document).on("click", ".edit-btn", function() {
-            resetValue()
-            var rowData = $(this).data("row");
-
-            $("#id").val(rowData.id);
-
-            $("#employee_id").val(rowData.employee_id).trigger('change');
-            // $("#client_id").val(rowData.client_id)
-            $("#induction_date").val(moment(rowData.induction_date).format('DD-MM-YYYY'))
-            $("#project_id").val(rowData.project_id).trigger('change');
-            $("#remarks").val(rowData.remarks)
-
-            $('#newModalForm').attr('action', "{{ route('update-induction') }}");
-            $("#savebtn").hide()
-            $("#updatebtn").show()
-
-            $("#addInduction").modal("show")
-        })
-
-        $(document).on("click", "#add", function() {
-            resetValue()
-            $("#addInduction").modal("show")
-        })
-
-        function resetValue() {
-            $("#id").val('');
-            $("#employee_id").val('');
-            // $("#client_id").val('')
-            $("#induction_date").val('')
-            $("#project_id").val('').trigger('change');
-            $("#remarks").val('')
-
-            $('#newModalForm').attr('action', "{{ route('store-induction') }}");
-            $("#savebtn").show()
-            $("#updatebtn").hide()
-        }
-
-    })
-</script>
+    </script>
 @endpush

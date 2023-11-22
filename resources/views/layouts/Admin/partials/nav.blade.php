@@ -113,7 +113,11 @@
                             @elseif(auth()->user()->company_roles->contains('role', 4))
                                 Supervisor
                             @elseif(auth()->user()->company_roles->contains('role', 5))
-                                Operator
+                                Operation
+                            @elseif(auth()->user()->company_roles->contains('role', 6))
+                                Manager
+                            @elseif(auth()->user()->company_roles->contains('role', 7))
+                                Account
                             @else
                                 User
                             @endif

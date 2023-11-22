@@ -109,7 +109,8 @@
                                                                     <input type="password" minlength="8"
                                                                         class="form-control" name="password"
                                                                         placeholder="set password"
-                                                                        autocomplete="current-password">
+                                                                        autocomplete="current-password"
+                                                                        id="password">
 
                                                                     @error('password')
                                                                         <span class="invalid-feedback" role="alert">
@@ -160,16 +161,23 @@
                                                                         <option value="" disabled selected
                                                                             hidden>Please Choose...
                                                                         </option>
-                                                                        @if (!auth()->user()->company_roles->contains('role', 5))
-                                                                            <option value="5" selected>Operator
-                                                                            </option>
-                                                                            <option value="2" selected>Admin
-                                                                            </option>
-                                                                        @endif
                                                                         <option value="3" selected>Employee
                                                                         </option>
-                                                                        @if (!auth()->user()->company_roles->contains('role', 5))
-                                                                            <option value="4">Supervisor</option>
+                                                                        @if (
+                                                                            !auth()->user()->company_roles->contains('role', 4) &&
+                                                                                !auth()->user()->company_roles->contains('role', 5) &&
+                                                                                !auth()->user()->company_roles->contains('role', 6) &&
+                                                                                !auth()->user()->company_roles->contains('role', 7))
+                                                                            <option value="4">Supervisor
+                                                                            </option>
+                                                                            <option value="2">Admin
+                                                                            </option>
+                                                                            <option value="5">Operation
+                                                                            </option>
+                                                                            <option value="6">Manager
+                                                                            </option>
+                                                                            <option value="7">Account
+                                                                            </option>
                                                                         @endif
                                                                     </select>
                                                                 </div>

@@ -128,7 +128,7 @@ class LoginController extends Controller
                             Session::put('roaster_status', $roaster_status);
                         }
                         // dd(auth()->user()->company_roles);
-                        if (auth()->user()->company_roles->first()->role== 2 || auth()->user()->company_roles->first()->role== 5) {
+                        if (auth()->user()->company_roles->first()->role== 2 || auth()->user()->company_roles->first()->role== 5 || auth()->user()->company_roles->first()->role== 6 || auth()->user()->company_roles->first()->role== 7) {
                             return redirect('/admin/home/{id}');
                         } elseif (auth()->user()->company_roles->first()->role== 1) {
                             return redirect()->route('super-admin.home');

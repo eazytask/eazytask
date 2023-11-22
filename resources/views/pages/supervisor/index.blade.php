@@ -1,7 +1,8 @@
 @extends('layouts.Admin.master')
 
 @section('admincontent')
-<style type="text/css">
+    <h1>Welcome to Supervisor Dashboard</h1>
+    {{-- <style type="text/css">
     .fc-list-event-time {
         display: none;
     }
@@ -219,7 +220,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($data['employee_report'] as $i => $val)
+                            @foreach ($data['employee_report'] as $i => $val)
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -267,7 +268,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($data['client_report'] as $i => $val)
+                            @foreach ($data['client_report'] as $i => $val)
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -303,7 +304,7 @@
             </div>
             <div class="card-body">
 
-                @foreach($data['monthly_expense'] as $i => $val)
+                @foreach ($data['monthly_expense'] as $i => $val)
                 <div class="transaction-item">
                     <div class="media">
                         <div class="avatar bg-light-{{$val == 0 ?'success':'danger'}} rounded">
@@ -361,224 +362,225 @@
         </div>
     </div>
     <!--/ Company Table Card -->
-</section>
-<!-- Dashboard Ecommerce ends -->
+</section> --}}
+    <!-- Dashboard Ecommerce ends -->
 
 
-<!-- END: Content-->
+    <!-- END: Content-->
 @endsection
 
 @push('scripts')
-<!-- <script src="{{asset('app-assets/js/scripts/pages/app-calendar-event-request.js')}}"></script> -->
-<script src="{{asset('app-assets/js/scripts/pages/supervisor-dashboard-ecommerce.js')}}"></script>
-<script>
-    $(document).ready(function() {
-        var client_id = $('#client_id'),
-            project_id = $('#project_id');
+    <!-- <script src="{{ asset('app-assets/js/scripts/pages/app-calendar-event-request.js') }}"></script> -->
+    <script src="{{ asset('app-assets/js/scripts/pages/supervisor-dashboard-ecommerce.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            var client_id = $('#client_id'),
+                project_id = $('#project_id');
 
 
-        client_id.wrap('<div class="position-relative"></div>').select2({
-                dropdownParent: client_id.parent()
-            })
-            .change(function() {
-                $(this).valid();
+            client_id.wrap('<div class="position-relative"></div>').select2({
+                    dropdownParent: client_id.parent()
+                })
+                .change(function() {
+                    $(this).valid();
+                });
+
+            project_id.wrap('<div class="position-relative"></div>').select2({
+                    dropdownParent: project_id.parent()
+                })
+                .change(function() {
+                    $(this).valid();
+                });
+
+
+            $('#clientFilter').wrap('<div class="position-relative"></div>').select2({
+                placeholder: 'Select Client',
+                dropdownParent: $('#clientFilter').parent()
             });
 
-        project_id.wrap('<div class="position-relative"></div>').select2({
-                dropdownParent: project_id.parent()
-            })
-            .change(function() {
-                $(this).valid();
+            $('#projectFilter').wrap('<div class="position-relative"></div>').select2({
+                placeholder: 'Select Project',
+                dropdownParent: $('#projectFilter').parent()
             });
 
 
-        $('#clientFilter').wrap('<div class="position-relative"></div>').select2({
-            placeholder: 'Select Client',
-            dropdownParent: $('#clientFilter').parent()
+            $("#addEventForm").validate();
         });
 
-        $('#projectFilter').wrap('<div class="position-relative"></div>').select2({
-            placeholder: 'Select Project',
-            dropdownParent: $('#projectFilter').parent()
-        });
-        
+        let task_ids = []
+        let totalTaskId = []
+        let event_id = null
 
-         $("#addEventForm").validate();
-    });
-
-    let task_ids = []
-    let totalTaskId = []
-    let event_id = null
-
-    $(document).on("click", ".taskCheckID", function() {
-        if ($(this).is(':checked')) {
-            task_ids.push($(this).val())
-        } else {
-            let id = $(this).val()
-            task_ids = jQuery.grep(task_ids, function(value) {
-                return value != id
-            })
-        }
-
-        if (task_ids.length === 0) {
-            $(".taskBtn").prop('disabled', true)
-        } else {
-            $(".taskBtn").prop('disabled', false)
-        }
-
-        if (task_ids.length == totalTaskId.length) {
-            $('#taskcheckAllID').prop('checked', true)
-        } else {
-            $('#taskcheckAllID').prop('checked', false)
-        }
-    })
-    taskcheckAllID = function() {
-        if ($("#taskcheckAllID").is(':checked')) {
-            task_ids = totalTaskId
-            $('.taskCheckID').prop('checked', true)
-        } else {
-            task_ids = []
-            $('.taskCheckID').prop('checked', false)
-        }
-
-        if (task_ids.length === 0) {
-            $(".taskBtn").prop('disabled', true)
-        } else {
-            $(".taskBtn").prop('disabled', false)
-        }
-
-    }
-
-    taskDescription = function() {
-        $.ajax({
-            url: '/supervisor/home/task/descriptions',
-            type: 'GET',
-            success: function(data) {
-                showTasks(data.data)
-            },
-        })
-    }
-    taskDescription()
-    //show imployee by status
-    function showTasks(all_tasks) {
-        task_ids = []
-        totalTaskId = []
-
-        let taskRows = ''
-        $.each(all_tasks, function(index, data) {
-            insertThis(data)
-        })
-
-        function insertThis(data) {
-            let status = ''
-            if (data.status == 'complete') {
-                status = 'text-success'
+        $(document).on("click", ".taskCheckID", function() {
+            if ($(this).is(':checked')) {
+                task_ids.push($(this).val())
             } else {
-                status = 'text-secondary'
+                let id = $(this).val()
+                task_ids = jQuery.grep(task_ids, function(value) {
+                    return value != id
+                })
             }
-            totalTaskId.push(data.id)
 
-            taskRows += `
+            if (task_ids.length === 0) {
+                $(".taskBtn").prop('disabled', true)
+            } else {
+                $(".taskBtn").prop('disabled', false)
+            }
+
+            if (task_ids.length == totalTaskId.length) {
+                $('#taskcheckAllID').prop('checked', true)
+            } else {
+                $('#taskcheckAllID').prop('checked', false)
+            }
+        })
+        taskcheckAllID = function() {
+            if ($("#taskcheckAllID").is(':checked')) {
+                task_ids = totalTaskId
+                $('.taskCheckID').prop('checked', true)
+            } else {
+                task_ids = []
+                $('.taskCheckID').prop('checked', false)
+            }
+
+            if (task_ids.length === 0) {
+                $(".taskBtn").prop('disabled', true)
+            } else {
+                $(".taskBtn").prop('disabled', false)
+            }
+
+        }
+
+        taskDescription = function() {
+            $.ajax({
+                url: '/supervisor/home/task/descriptions',
+                type: 'GET',
+                success: function(data) {
+                    showTasks(data.data)
+                },
+            })
+        }
+        taskDescription()
+        //show imployee by status
+        function showTasks(all_tasks) {
+            task_ids = []
+            totalTaskId = []
+
+            let taskRows = ''
+            $.each(all_tasks, function(index, data) {
+                insertThis(data)
+            })
+
+            function insertThis(data) {
+                let status = ''
+                if (data.status == 'complete') {
+                    status = 'text-success'
+                } else {
+                    status = 'text-secondary'
+                }
+                totalTaskId.push(data.id)
+
+                taskRows += `
                 <tr>
                     <td><input type="checkbox" class="taskCheckID" value="` + data.id + `"></td>
                     <td>` + data.description + `</td>
                     <td class="` + status + `">` + data.status + `</td>
-                    <td><button data-copy="true" edit-it="true" class="edit-btn btn-link btn" data-id="` + data.id + `" data-description="` + data.description + `" data-status="` + data.status + `"><i data-feather='edit'></i></button></td>
+                    <td><button data-copy="true" edit-it="true" class="edit-btn btn-link btn" data-id="` + data.id +
+                    `" data-description="` + data.description + `" data-status="` + data.status + `"><i data-feather='edit'></i></button></td>
                     
                 </tr>
                 `
-        }
-        if (totalTaskId == 0) {
-            $("#taskcheckAllID").prop('disabled', true)
-        }else{
-            $("#taskcheckAllID").prop('disabled', false)
-        }
-        $('#taskTbody').html(taskRows);
-        feather.replace();
-    }
-
-    $(document).on("click", "#showAddModal", function() {
-        $("#description").val('')
-        $("#status").val('incomplete')
-        $('#updateBtn').prop('hidden', true);
-        $('#addBtn').prop('hidden', false);
-
-        $("#add").modal("show")
-    })
-
-    $(document).on("click", ".edit-btn", function() {
-        var id = $(this).data("id");
-        var status = $(this).data("status");
-        var description = $(this).data("description");
-
-        $("#description").val(description)
-        $("#status").val(status)
-        $("#taskId").val(id)
-
-        $('#updateBtn').prop('hidden', false);
-        $('#addBtn').prop('hidden', true);
-
-        $("#add").modal("show")
-
-    })
-    // Add new event
-    $('#addBtn').on('click', function() {
-        if ($("#taskDesctioptionForm").valid()) {
-            $.ajax({
-                data: $('#taskDesctioptionForm').serialize(),
-                url: "/supervisor/home/task/descriptions",
-                type: "POST",
-                dataType: 'json',
-                success: function(data) {
-                    taskDescription()
-                    toastr.success('👋 Added Successfully!', 'Success')
-                },
-                error: function(data) {
-                    toastr.error('👋 Not Added', 'Error')
-                }
-            });
-            $('#add').modal('hide')
-            // resetValues()
-        }
-    });
-    $('#updateBtn').on('click', function() {
-        if ($("#taskDesctioptionForm").valid()) {
-            $.ajax({
-                data: $('#taskDesctioptionForm').serialize(),
-                url: "/supervisor/home/task/descriptions/update",
-                type: "POST",
-                dataType: 'json',
-                success: function(data) {
-                    taskDescription()
-                    toastr.success('👋 Updated Successfully!', 'Success')
-                },
-                error: function(data) {
-                    toastr.error('👋 Not Updated', 'Error')
-                }
-            });
-            $('#add').modal('hide')
-            // resetValues()
-        }
-    });
-
-    manageTask = function($manage) {
-        $.ajax({
-            url: '/supervisor/home/task/descriptions/manage',
-            data: {
-                'task_ids': task_ids,
-                'manage': $manage,
-            },
-            type: 'GET',
-            success: function(data) {
-                taskDescription()
-                toastr.success('👋 seleted successfully!', 'Success')
             }
+            if (totalTaskId == 0) {
+                $("#taskcheckAllID").prop('disabled', true)
+            } else {
+                $("#taskcheckAllID").prop('disabled', false)
+            }
+            $('#taskTbody').html(taskRows);
+            feather.replace();
+        }
+
+        $(document).on("click", "#showAddModal", function() {
+            $("#description").val('')
+            $("#status").val('incomplete')
+            $('#updateBtn').prop('hidden', true);
+            $('#addBtn').prop('hidden', false);
+
+            $("#add").modal("show")
         })
 
-        task_ids = []
-        totalTaskId = []
-        $('#taskcheckAllID').prop('checked', false)
-        $(".taskBtn").prop('disabled', true)
-    }
-</script>
+        $(document).on("click", ".edit-btn", function() {
+            var id = $(this).data("id");
+            var status = $(this).data("status");
+            var description = $(this).data("description");
+
+            $("#description").val(description)
+            $("#status").val(status)
+            $("#taskId").val(id)
+
+            $('#updateBtn').prop('hidden', false);
+            $('#addBtn').prop('hidden', true);
+
+            $("#add").modal("show")
+
+        })
+        // Add new event
+        $('#addBtn').on('click', function() {
+            if ($("#taskDesctioptionForm").valid()) {
+                $.ajax({
+                    data: $('#taskDesctioptionForm').serialize(),
+                    url: "/supervisor/home/task/descriptions",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function(data) {
+                        taskDescription()
+                        toastr.success('👋 Added Successfully!', 'Success')
+                    },
+                    error: function(data) {
+                        toastr.error('👋 Not Added', 'Error')
+                    }
+                });
+                $('#add').modal('hide')
+                // resetValues()
+            }
+        });
+        $('#updateBtn').on('click', function() {
+            if ($("#taskDesctioptionForm").valid()) {
+                $.ajax({
+                    data: $('#taskDesctioptionForm').serialize(),
+                    url: "/supervisor/home/task/descriptions/update",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function(data) {
+                        taskDescription()
+                        toastr.success('👋 Updated Successfully!', 'Success')
+                    },
+                    error: function(data) {
+                        toastr.error('👋 Not Updated', 'Error')
+                    }
+                });
+                $('#add').modal('hide')
+                // resetValues()
+            }
+        });
+
+        manageTask = function($manage) {
+            $.ajax({
+                url: '/supervisor/home/task/descriptions/manage',
+                data: {
+                    'task_ids': task_ids,
+                    'manage': $manage,
+                },
+                type: 'GET',
+                success: function(data) {
+                    taskDescription()
+                    toastr.success('👋 seleted successfully!', 'Success')
+                }
+            })
+
+            task_ids = []
+            totalTaskId = []
+            $('#taskcheckAllID').prop('checked', false)
+            $(".taskBtn").prop('disabled', true)
+        }
+    </script>
 @endpush
