@@ -24,7 +24,7 @@
     </div>
 
     <!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
-                                                                                                                                                                                                                                                    <div id="googleMap" style="width:100%;height:400px;"></div> -->
+                                                                                                                                                                                                                                                            <div id="googleMap" style="width:100%;height:400px;"></div> -->
     <!-- Basic Tables start -->
     <!-- Table Hover Animation start -->
     <div class="row" id="table-hover-animation">
@@ -83,10 +83,13 @@
                         if (data.data) {
                             $('#example').DataTable().clear().destroy();
                             $('#projectBody').html(data.data)
-                            $('#example').DataTable();
-                            feather.replace({
-                                width: 14,
-                                height: 14
+                            $('#example').DataTable({
+                                "drawCallback": function(settings) {
+                                    feather.replace({
+                                        width: 14,
+                                        height: 14
+                                    });
+                                }
                             });
                         }
 
@@ -172,6 +175,7 @@
                 $("#project_state").val('')
                 $("#postal_code").val('')
                 $("#Status").val('').trigger('change')
+                $('#search_address').val('')
                 // $("#lat").val('')
                 // $("#lon").val('')
                 $("#buttom_bar").attr('style', 'display:none !important')
