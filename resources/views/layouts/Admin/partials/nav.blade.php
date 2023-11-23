@@ -130,7 +130,8 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-user">
                     <!-- <a class="dropdown-item" href="/admin/company/profile-settings/{{ Auth::user()->id }}"><i class="mr-50" data-feather="user"></i> Profile</a> -->
 
-                    @if (auth()->user()->company_roles->contains('role', 3))
+                    @if (auth()->user()->company_roles->contains('role', 3) ||
+                            auth()->user()->company_roles->contains('role', 7))
                         <a class="dropdown-item" href="/home/time/off"><i class="mr-50" data-feather="clock"></i> Time
                             off</a>
                     @endif
