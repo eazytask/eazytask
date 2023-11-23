@@ -2,10 +2,12 @@
 
 @php
     $roster = null;
-    // function getTimes($date)
-    // {
-    //     return \Carbon\Carbon::parse($date)->format('H:i');
-    // }
+    if (!function_exists('getTime')) {
+        function getTime($date)
+        {
+            return \Carbon\Carbon::parse($date)->format('H:i');
+        }
+    }
 
     if ($roasters->where('sing_in', '!=', null)->count()) {
         $already_sign_in = true;
