@@ -79,7 +79,7 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\Employee', 'id', 'userID')->where([
             ['company', auth()->user()->company_roles->first()->company->id]
-        ])->whereIn('role', [3,4]);
+        ])->whereIn('role', [3,4,7]);
     }
     public function supervisor()
     {
