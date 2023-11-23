@@ -19,7 +19,7 @@ class IsUser
     {
         // dd(auth()->user());
         if(auth()->user() && !auth()->user()->company_roles->first()->company->sub_domain){
-            if (auth()->user()->company_roles->contains('role',3) || auth()->user()->company_roles->contains('role',4) || auth()->user()->company_roles->contains('role',7)) {
+            if (auth()->user()->company_roles->contains('role',3) || auth()->user()->company_roles->contains('role',4) || auth()->user()->company_roles->contains('role',5) || auth()->user()->company_roles->contains('role',6) || auth()->user()->company_roles->contains('role',7)) {
                 return $next($request);
             }else{
                 return redirect('/')->with('error',"You don't have user access.");

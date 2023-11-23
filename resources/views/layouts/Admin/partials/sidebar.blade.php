@@ -539,36 +539,36 @@
                 </li>
             @endif
 
-            @if (auth()->user()->company_roles->contains('role', 3))
-                <!---------------------------------------- all employee menus ------------------------------------>
 
-                <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Employee</span><i
-                        data-feather="more-horizontal"></i>
-                    <!-- <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="menu"></i><span class="menu-title text-truncate" data-i18n="Menu Levels">Employee</span></a>
-                <ul class="menu-content">
+            <!---------------------------------------- all employee menus ------------------------------------>
 
-            </li> -->
+            <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Employee</span><i
+                    data-feather="more-horizontal"></i>
+            </li>
 
-                <li class="nav-item {{ request()->is('user/home') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center" href="/user/home"><i data-feather="home"></i><span
-                            class="menu-title text-truncate" data-i18n="Dashboards">Dashboard</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                </li>
+            <!-- <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="menu"></i><span class="menu-title text-truncate" data-i18n="Menu Levels">Employee</span></a>
+                <ul class="menu-content"> -->
 
-                <!--<li class="nav-item {{ request()->is('home/messages') ? 'active' : '' }}"><a-->
-                <!--        class="d-flex align-items-center" href="/home/messages"><i-->
-                <!--            data-feather="message-square"></i><span class="menu-title text-truncate"-->
-                <!--            data-i18n="Messages">Messages</span><span-->
-                <!--            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>-->
-                <!--</li>-->
-                <!--<li class="nav-item {{ request()->is('home/compliance') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/compliance">-->
-                <!--        <i data-feather="folder-plus"></i>-->
-                <!--        <span class="menu-title text-truncate" data-i18n="Dashboards">-->
-                <!--            Compliance</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>-->
-                <!--    </a>-->
-                <!--</li>-->
+            <li class="nav-item {{ request()->is('user/home') ? 'active' : '' }}"><a
+                    class="d-flex align-items-center" href="/user/home"><i data-feather="home"></i><span
+                        class="menu-title text-truncate" data-i18n="Dashboards">Dashboard</span><span
+                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
+            </li>
 
-                <!-- <li class="nav-item {{ request()->is('user/roster/schedule') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/user/roster/schedule">
+            <!--<li class="nav-item {{ request()->is('home/messages') ? 'active' : '' }}"><a-->
+            <!--        class="d-flex align-items-center" href="/home/messages"><i-->
+            <!--            data-feather="message-square"></i><span class="menu-title text-truncate"-->
+            <!--            data-i18n="Messages">Messages</span><span-->
+            <!--            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>-->
+            <!--</li>-->
+            <!--<li class="nav-item {{ request()->is('home/compliance') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/compliance">-->
+            <!--        <i data-feather="folder-plus"></i>-->
+            <!--        <span class="menu-title text-truncate" data-i18n="Dashboards">-->
+            <!--            Compliance</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>-->
+            <!--    </a>-->
+            <!--</li>-->
+
+            <!-- <li class="nav-item {{ request()->is('user/roster/schedule') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/user/roster/schedule">
                     <i data-feather="briefcase"></i>
                     <span class="menu-title text-truncate" data-i18n="Dashboards">Schedule</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
             </li>
@@ -588,7 +588,7 @@
                     <span class="menu-title text-truncate" data-i18n="Dashboards">My Timesheet</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
             </li>
 
-            <li class="nav-item {{ request()->is('user/home/upcomingevent/*') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/user/home/upcomingevent/{{ Auth::user()->employee->company }}">
+            <li class="nav-item {{ request()->is('user/home/upcomingevent/*') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/user/home/upcomingevent/{{ Auth::user()->employee->company ?? '' }}">
                     <i data-feather='circle'></i>
                     <span class="menu-title text-truncate" data-i18n="Dashboards">Upcomming Event</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
             </li>
@@ -630,7 +630,6 @@
                     </li>
                 </ul>
             </li> -->
-            @endif
 
             <li class="nav-item {{ auth()->user()->user_roles->unique('company_code')->count() - 1? '': 'hidden' }}">
                 <a class="d-flex align-items-center" href="/admin/home/project"><i

@@ -37,7 +37,7 @@ class EmployeeController extends Controller
 
     public function fetch()
     {
-        $employees = Employee::where('company', Auth::user()->company_roles->first()->company->id)->orderBy('fname', 'asc')->get();
+        $employees = Employee::where('company', Auth::user()->company_roles->first()->company->id)->where('role', '!=', 7)->orderBy('fname', 'asc')->get();
 
         $html = '';
         $numbering = 1;

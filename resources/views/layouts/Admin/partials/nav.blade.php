@@ -33,18 +33,19 @@
                 $type['App\Notifications\EventRequestNotification'] = '/admin/home/event/request';
                 $type['App\Notifications\LicenseExpiredNotification'] = '/admin/home/employee/go';
 
-                function bg($status)
-                {
-                    if ($status == 'success') {
-                        return 'bg-light-success';
-                    } elseif ($status == 'danger') {
-                        return 'bg-light-danger';
-                    } elseif ($status == 'warning') {
-                        return 'bg-light-warning';
-                    } else {
-                        return '';
-                    }
-                }
+                // function bg($status)
+                // {
+                //     if ($status == 'success') {
+                //         return 'bg-light-success';
+                //     } elseif ($status == 'danger') {
+                //         return 'bg-light-danger';
+                //     } elseif ($status == 'warning') {
+                //         return 'bg-light-warning';
+                //     } else {
+                //         return '';
+                //     }
+                // }
+
             @endphp
 
             <li class="nav-item dropdown dropdown-notification mr-25"><a class="nav-link" onclick="markAsRead()"

@@ -71,8 +71,8 @@ class HomeController extends Controller
     {
         $project=null;
         $roasters = TimeKeeper::where([
-            ['employee_id',Auth::user()->employee->id],
-            ['company_code',Auth::user()->employee->company],
+            ['employee_id',Auth::user()->employee->id ?? false],
+            ['company_code',Auth::user()->employee->company ?? false],
             ['sing_out',null],
         ])->where(function ($q) {
             $q->where('roaster_type','Schedueled');
@@ -101,14 +101,14 @@ class HomeController extends Controller
                 ['company_code', Auth::user()->company_roles->first()->company->id],
                 ['Status', '1'],
             ])->orderBy('pName', 'asc')->get();
-            $job_types = JobType::where('company_code', Auth::user()->employee->company)->get();
+            $job_types = JobType::where('company_code', Auth::user()->employee->company ?? false)->get();
 
-            $roaster_status = RoasterStatus::where('company_code', Auth::user()->employee->company)->get();
+            $roaster_status = RoasterStatus::where('company_code', Auth::user()->employee->company ?? false)->get();
 
         // upcoming shifts
         $upcoming_roasters = TimeKeeper::where([
-            ['employee_id',Auth::user()->employee->id],
-            ['company_code',Auth::user()->employee->company],
+            ['employee_id',Auth::user()->employee->id ?? false],
+            ['company_code',Auth::user()->employee->company ?? false],
             ['roaster_status_id',Session::get('roaster_status')['Accepted']],
             ['shift_end','>=',Carbon::now()],
             ['sing_in',null]
@@ -116,8 +116,8 @@ class HomeController extends Controller
 
         // past shifts
         $past_roasters = TimeKeeper::where([
-            ['employee_id',Auth::user()->employee->id],
-            ['company_code',Auth::user()->employee->company],
+            ['employee_id',Auth::user()->employee->id ?? false],
+            ['company_code',Auth::user()->employee->company ?? false],
             // ['shift_end','<=',Carbon::now()]
         ])
         ->where(function ($q) {
@@ -134,8 +134,8 @@ class HomeController extends Controller
 
         // unconfirm shifts
         $unconfirm_roasters = TimeKeeper::where([
-            ['employee_id',Auth::user()->employee->id],
-            ['company_code',Auth::user()->employee->company],
+            ['employee_id',Auth::user()->employee->id ?? false],
+            ['company_code',Auth::user()->employee->company ?? false],
             ['roaster_status_id',Session::get('roaster_status')['Published']],
             ['shift_end','>=',Carbon::now()],
         ])
@@ -143,7 +143,7 @@ class HomeController extends Controller
 
         //upcoming events
         $upcomingevents = Upcomingevent::where([
-            ['company_code', Auth::user()->employee->company],
+            ['company_code', Auth::user()->employee->company ?? false],
             ['event_date', '>', Carbon::now()]
         ])
             ->orderBy('event_date','asc')->limit(3)->get();
@@ -152,8 +152,8 @@ class HomeController extends Controller
         $fromRoaster = Carbon::now()->subWeek()->startOfWeek()->subDays();
         $toRoaster = Carbon::now();
         $timesheets = TimeKeeper::where([
-            ['employee_id', Auth::user()->employee->id],
-            ['company_code', Auth::user()->employee->company],
+            ['employee_id', Auth::user()->employee->id ?? false],
+            ['company_code', Auth::user()->employee->company ?? false],
             ['payment_status', 0],
             ['roaster_type', 'Unschedueled']
         ])
@@ -165,15 +165,15 @@ class HomeController extends Controller
 
         //payments
         $payments = paymentmaster::where([
-                ['employee_id',Auth::user()->employee->id],
+                ['employee_id',Auth::user()->employee->id ?? false],
             ])
             ->orderBy('Payment_Date', 'desc')
             ->limit(3)->get();
             
         //time off
         $unavailabilities = Myavailability::where([
-            ['employee_id', Auth::user()->employee->id],
-            ['company_code', Auth::user()->employee->company],
+            ['employee_id', Auth::user()->employee->id ?? false],
+            ['company_code', Auth::user()->employee->company ?? false],
             ['end_date', '>=', Carbon::now()->subMonth(6)],
             ['is_leave', 0]
         ])
@@ -181,8 +181,8 @@ class HomeController extends Controller
             ->get();
         
         $leaves = Myavailability::where([
-            ['employee_id', Auth::user()->employee->id],
-            ['company_code', Auth::user()->employee->company],
+            ['employee_id', Auth::user()->employee->id ?? false],
+            ['company_code', Auth::user()->employee->company ?? false],
             ['end_date', '>=', Carbon::now()->subMonth(6)],
             ['is_leave', 1]
         ])
