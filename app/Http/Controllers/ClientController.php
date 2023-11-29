@@ -87,7 +87,7 @@ class ClientController extends Controller
     $image = $request->file;
     $filename = null;
     if ($image) {
-      $basePath = "/home/eklaw543/api.eazytask.au/public/";
+      $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
       $folderPath = "images/clients/";
       $image_parts = explode(";base64,", $image);
       $image_type_aux = explode("image/", $image_parts[0]);
@@ -130,7 +130,7 @@ class ClientController extends Controller
       // $filename = $folderPath . $full_name;
 
 
-      $basePath = "/home/eklaw543/api.eazytask.au/public/";
+      $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
       $folderPath = "images/clients/";
       $image_parts = explode(";base64,", $img);
       $image_type_aux = explode("image/", $image_parts[0]);
@@ -163,7 +163,7 @@ class ClientController extends Controller
     try {
       $client = Client::find($id);
 
-      $basePath = "/home/eklaw543/api.eazytask.au/public/";
+      $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
 
       try {
         unlink($basePath . $client->cimage);

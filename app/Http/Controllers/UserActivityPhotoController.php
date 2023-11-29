@@ -11,7 +11,7 @@ class UserActivityPhotoController extends Controller
     public function store($userImage,$timekeeper_id,$sign='sign_in'){
         try{
             $folderPath="images/users/activity/";
-            $basePath = "/home/eklaw543/api.eazytask.au/public/";
+            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
     
             $image_parts = explode(";base64,", $userImage); 
             $image_type_aux = explode("image/", $image_parts[0]); 
@@ -40,7 +40,7 @@ class UserActivityPhotoController extends Controller
     
     public function storeLocalImage($userImage,$timekeeper_id,$sign='sign_in'){
         $ext=strtolower($userImage->getClientOriginalExtension());
-        $basePath = "/home/eklaw543/api.eazytask.au/public/";
+        $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
         $folderPath="images/users/activity/";
         $img_name=date('sihdmy');
         $full_name= $img_name.'.'.$ext;

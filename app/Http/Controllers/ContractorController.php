@@ -87,7 +87,7 @@ class ContractorController extends Controller
     $image = $request->file;
     $filename = null;
     if ($image) {
-      $basePath = "/home/eklaw543/api.eazytask.au/public/";
+      $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
       $folderPath = "images/contractors/";
       $image_parts = explode(";base64,", $image);
       $image_type_aux = explode("image/", $image_parts[0]);
@@ -123,7 +123,7 @@ class ContractorController extends Controller
     $img = $request->file;
     $filename = null;
     if ($img) {
-      $basePath = "/home/eklaw543/api.eazytask.au/public/";
+      $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
       $folderPath = "images/contractors/";
       $image_parts = explode(";base64,", $img);
       $image_type_aux = explode("image/", $image_parts[0]);
@@ -156,7 +156,7 @@ class ContractorController extends Controller
     try {
       $contractor = Contractor::find($id);
 
-      $basePath = "/home/eklaw543/api.eazytask.au/public/";
+      $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
 
       try {
         unlink($basePath . $contractor->cimage);

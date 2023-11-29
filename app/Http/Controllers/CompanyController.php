@@ -94,7 +94,7 @@ class CompanyController extends Controller
 
         if ($image) {
             $ext = strtolower($image->getClientOriginalExtension());
-            $basePath = "/home/eklaw543/api.eazytask.au/public/";
+            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
             $folderPath = "images/superadmin/";
             $img_name = date('sihdmy');
             $full_name = $img_name . '.' . $ext;
@@ -200,7 +200,7 @@ class CompanyController extends Controller
         }
         if ($image) {
             $ext = strtolower($image->getClientOriginalExtension());
-            $basePath = "/home/eklaw543/api.eazytask.au/public/";
+            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
             $folderPath = "images/superadmin/";
             $img_name = date('sihdmy');
             $full_name = $img_name . '.' . $ext;
@@ -325,7 +325,7 @@ class CompanyController extends Controller
             $ext = strtolower($img->getClientOriginalExtension());
             $full_name = $img_name . '.' . $ext;
             $folderPath = "images/superadmin/";
-            $basePath = "/home/eklaw543/api.eazytask.au/public/";
+            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
             $filename = $folderPath . $full_name;
 
             try{
@@ -440,7 +440,7 @@ class CompanyController extends Controller
             $ext = strtolower($img->getClientOriginalExtension());
             $full_name = $img_name . '.' . $ext;
             $folderPath = "images/admins/";
-            $basePath = "/home/eklaw543/api.eazytask.au/public/";
+            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
             $filename = $folderPath . $full_name;
 
             try{

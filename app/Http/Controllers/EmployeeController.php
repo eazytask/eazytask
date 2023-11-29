@@ -248,7 +248,7 @@ class EmployeeController extends Controller
         }
         // $GLOBALS['data']->notify(new UserCredential($email_data));
         if ($image) {
-            $basePath = "/home/eklaw543/api.eazytask.au/public/";
+            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
             $folderPath = "images/employees/";
             $image_parts = explode(";base64,", $image);
             $image_type_aux = explode("image/", $image_parts[0]);
@@ -363,7 +363,7 @@ class EmployeeController extends Controller
                     $filename = null;
             
                     if ($image) {
-                        $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                        $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                         $folderPath = "images/compliance/";
                         $image_parts = explode(";base64,", $image);
                         $image_type_aux = explode("image/", $image_parts[0]);
@@ -444,7 +444,7 @@ class EmployeeController extends Controller
 
             if ($image) {
                 $ext = strtolower($image->getClientOriginalExtension());
-                $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                 $folderPath = "images/superadmin/";
                 $img_name = date('sihdmy');
                 $full_name = $img_name . '.' . $ext;
@@ -553,7 +553,7 @@ class EmployeeController extends Controller
 
             if ($image) {
                 $ext = strtolower($image->getClientOriginalExtension());
-                $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                 $folderPath = "images/superadmin/";
                 $img_name = date('sihdmy');
                 $full_name = $img_name . '.' . $ext;
@@ -688,7 +688,7 @@ class EmployeeController extends Controller
             }
             // $GLOBALS['data']->notify(new UserCredential($email_data));
             if ($image) {
-                $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                 $folderPath = "images/employees/";
                 $image_parts = explode(";base64,", $image);
                 $image_type_aux = explode("image/", $image_parts[0]);
@@ -803,7 +803,7 @@ class EmployeeController extends Controller
                         $filename = null;
                 
                         if ($image) {
-                            $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                             $folderPath = "images/compliance/";
                             $image_parts = explode(";base64,", $image);
                             $image_type_aux = explode("image/", $image_parts[0]);
@@ -888,7 +888,7 @@ class EmployeeController extends Controller
             $img = $request->file;
             $filename = null;
             if ($img) {
-                $basePath = "/home/eklaw543/api.eazytask.au/public/";
+                $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                 $folderPath = "images/employees/";
                 $image_parts = explode(";base64,", $img);
                 $image_type_aux = explode("image/", $image_parts[0]);
@@ -1014,7 +1014,7 @@ class EmployeeController extends Controller
     {
         try {
             $employee = Employee::find($id);
-            // $basePath = "/home/eklaw543/api.eazytask.au/public/";
+            // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
             // try{
             //     unlink($basePath.$employee->image);
             // }catch(\Throwable $e){}
