@@ -287,7 +287,7 @@ class EmployeeController extends Controller
         $employee->first_aid_expire_date = set_date($request->first_aid_expire_date);
         
         $employee->company = Auth::user()->company_roles->first()->company->id;
-        $employee->role = $request->role;
+        $employee->role = 3;
         $employee->image = $filename;
         if ($filename) {
             $employee->image = $filename;
@@ -343,7 +343,7 @@ class EmployeeController extends Controller
             $user_role = new UserRole;
             $user_role->company_code = Auth::user()->company_roles->first()->company->id;
             $user_role->user_id = $employee->userID;
-            $user_role->role = $request->role;
+            $user_role->role = 3;
             if ($request->status == 1) {
                 $user_role->status = 1;
             } else {
@@ -503,7 +503,7 @@ class EmployeeController extends Controller
             }
 
             return response()->json([
-                'message' => 'Admin Added Successfully Added.',
+                'message' => 'Admin Successfully Added.',
                 'alertType' => 'success'
             ]);
         }elseif($request->role == 5 || $request->role == 6) {
@@ -1001,7 +1001,7 @@ class EmployeeController extends Controller
                 if ($request->has_compliance == 'on' || $request->has_compliance == 1) {
                     UserCompliance::where([
                         ['user_id', $employee->userID]])->delete();
-                        
+
                     foreach ($request->Compliance as $compliance) {
                         $exist_comp = UserCompliance::where([
                             ['user_id', $employee->userID],
