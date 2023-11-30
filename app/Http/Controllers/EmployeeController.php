@@ -974,12 +974,56 @@ class EmployeeController extends Controller
                 $user_role->role = $request->role;
                 $user_role->save();
 
-                if ($request->has_compliance) {
+                // if ($request->has_compliance) {
+                //     foreach ($request->Compliance as $compliance) {
+                //         $exist_comp = UserCompliance::where([
+                //             ['user_id', $employee->userID],
+                //             ['compliance_id', $compliance['compliance']]
+                //         ])->first();
+                //         if (!$exist_comp) {
+                //             $user_compliance = new UserCompliance;
+                //             $user_compliance->user_id = $employee->userID;
+                //             $user_compliance->email = $request->email;
+                //             $user_compliance->compliance_id = $compliance['compliance'];
+                //             $user_compliance->certificate_no = $compliance['certificate_no'];
+                //             $user_compliance->comment = $compliance['comment'];
+                //             $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
+                //             $user_compliance->save();
+                //         } else {
+                //             $exist_comp->certificate_no = $compliance['certificate_no'];
+                //             $exist_comp->comment = $compliance['comment'];
+                //             $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
+                //             $exist_comp->save();
+                //         }
+                //     }
+                // }
+
+                if ($request->has_compliance == 'on' || $request->has_compliance == 1) {
+                    UserCompliance::where([
+                        ['user_id', $employee->userID]])->delete();
+                        
                     foreach ($request->Compliance as $compliance) {
                         $exist_comp = UserCompliance::where([
                             ['user_id', $employee->userID],
                             ['compliance_id', $compliance['compliance']]
                         ])->first();
+    
+                        $image = $compliance['document'];
+                        $filename = null;
+                
+                        if ($image) {
+                            // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+                            $basePath = "/Applications/MAMP/htdocs/eazytask/public/";
+                            $folderPath = "images/compliance/";
+                            $image_parts = explode(";base64,", $image);
+                            $image_type_aux = explode("image/", $image_parts[0]);
+                            $image_type = $image_type_aux[1];
+                            $image_base64 = base64_decode($image_parts[1]);
+                            $img_name = date('sihdmy') .'.'. $image_type;
+                            $filename = $folderPath . $img_name;
+                            Image::make($image_base64)->save($basePath.$filename);
+                        }
+    
                         if (!$exist_comp) {
                             $user_compliance = new UserCompliance;
                             $user_compliance->user_id = $employee->userID;
@@ -988,16 +1032,19 @@ class EmployeeController extends Controller
                             $user_compliance->certificate_no = $compliance['certificate_no'];
                             $user_compliance->comment = $compliance['comment'];
                             $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
+                            $user_compliance->document = $filename;
+                            
                             $user_compliance->save();
                         } else {
                             $exist_comp->certificate_no = $compliance['certificate_no'];
                             $exist_comp->comment = $compliance['comment'];
                             $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
+                            $user_compliance->document = $filename;
+                            
                             $exist_comp->save();
                         }
                     }
-                
-            }
+                }
 
             return response()->json([
                 'message' => 'Employee Updated Successfully.',

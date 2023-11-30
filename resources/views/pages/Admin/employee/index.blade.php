@@ -280,6 +280,9 @@
                 setCompliance()
                 $("#buttom_bar").attr('style', 'display:flex !important')
                 $("#addEmployee").modal("show")
+                $("#button_add_submit").css({
+                    display: "none !important"
+                });
             })
 
             $(document).on("click", "#add", function() {
@@ -327,6 +330,9 @@
                 // $("#updatebtn").hide()
                 $('#checkCompliance').prop('checked', false)
                 $('#compliance').addClass('disablediv')
+                $("#button_add_submit").css({
+                    display: "flex !important"
+                });
             }
 
         })

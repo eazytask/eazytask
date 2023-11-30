@@ -424,7 +424,7 @@
 
                                                                                 <div class="mb-50 ml-auto mr-1">
                                                                                     <div class="form-group">
-                                                                                        <button style="display: none;"
+                                                                                        <button
                                                                                             class="btn btn-outline-danger text-nowrap px-1"
                                                                                             data-repeater-delete
                                                                                             type="button">
@@ -440,7 +440,7 @@
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="col-12">
-                                                                            <button style="display: none;"
+                                                                            <button
                                                                                 class="btn btn-icon btn-gradient-primary mb-2"
                                                                                 type="button" data-repeater-create>
                                                                                 <i data-feather="plus"
@@ -461,7 +461,7 @@
                                                             <span
                                                                 class="align-middle d-sm-inline-block d-none">Previous</span>
                                                         </button>
-                                                        <button type="button"
+                                                        <button type="button" id="button_add_submit"
                                                             class="btn btn-success btn-submit">Submit</button>
                                                     </div>
                                                 </div>
