@@ -43,7 +43,7 @@ class MessagesController extends Controller
         }
         
         $messages = array_values($messages->toArray()); // 'reindex' array
-dd($messages);
+
         return view('pages.Admin.messages.index', compact('messages', 'projects'));
     }
 
