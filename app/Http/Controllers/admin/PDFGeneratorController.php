@@ -418,6 +418,8 @@ class PDFGeneratorController extends Controller
                 ->get();
 
             $all_roaster[$i]['projects'] = [];
+            $hours = 0;
+            $amount = 0;
 
             foreach ($projects as $n => $project) {
                 $hours = 0;
