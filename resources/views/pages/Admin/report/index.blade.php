@@ -312,18 +312,18 @@
                         toastr.success(data.notification)
                     }
 
-                    clearInterval(reload)
-                    reload = setInterval(() => {
-                        searchNow('current')
-                    }, 5000);
+                    // clearInterval(reload)
+                    // reload = setInterval(() => {
+                    //     searchNow('current')
+                    // }, 5000);
                 },
                 error: function(err) {
                     console.log(err)
 
-                    clearInterval(reload)
-                    reload = setInterval(() => {
-                        searchNow('current')
-                    }, 5000);
+                    // clearInterval(reload)
+                    // reload = setInterval(() => {
+                    //     searchNow('current')
+                    // }, 5000);
                 }
             });
         }
