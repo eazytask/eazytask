@@ -170,6 +170,7 @@ class ReportController extends Controller
         ])->orderBy('pName', 'asc')->get();
 
         $job_types = JobType::where('company_code', Auth::user()->company_roles->first()->company->id)->get();
+        
         $roaster_status = RoasterStatus::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('name', 'asc')->get();
 
         return view('pages.Admin.report.index', compact('projects', 'job_types', 'roaster_status'));
@@ -598,7 +599,7 @@ class ReportController extends Controller
         $timekeeper = TimeKeeper::find($id);
 
         if ($timekeeper) {
-            if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Not published'] || $timekeeper->roaster_status_id == Session::get('roaster_status')['Rejected']) {
+            if ($timekeeper->roaster_status_id == roaster_status('Not Published') || $timekeeper->roaster_status_id == roaster_status('Rejected')) {
                 if (Carbon::parse($timekeeper->shift_start) >= Carbon::now()) {
                     $timekeeper->roaster_status_id = Session::get('roaster_status')['Published'];
                     $timekeeper->save();

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\UserCompliance;
+use App\Models\RoasterStatus;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -94,4 +95,13 @@ function sendFirebasePushNotification($notiSubject,$notiBody,$role,$tokens,$type
         curl_close($ch);
         // FCM response
         // dd($result);
+}
+
+function roaster_status($name)
+{
+    $roaster_status = RoasterStatus::where([
+        ['company_code', Auth::user()->company_roles->first()->company->id],
+        ['name',$name]
+    ])->first();
+    return $roaster_status->id;
 }

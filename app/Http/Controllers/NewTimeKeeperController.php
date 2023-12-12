@@ -235,28 +235,29 @@ class NewTimeKeeperController extends Controller
             $timekeeper->amount = $request->amount;
             $timekeeper->job_type_id = $request->job_type_id;
             // $timekeeper->roaster_id = Auth::id();
-            if ($request->roaster_status_id) {
-                $timekeeper->roaster_status_id = $request->roaster_status_id;
-            } else {
-                $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
-            }
+            // if ($request->roaster_status_id) {
+            //     $timekeeper->roaster_status_id = $request->roaster_status_id;
+            // } else {
+            //     $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
+            // }
+            $timekeeper->roaster_status_id = roaster_status('Published');
             $timekeeper->remarks = $request->remarks;
             $timekeeper->created_at = Carbon::now();
             $timekeeper->save();
             
             if ($request->roaster_type == 'Schedueled') {
                 $pro = $timekeeper->project;
-                if($timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']){
+                if($timekeeper->roaster_status_id == roaster_status("Accepted")){
                     $noty = 'one of your shift ' . $pro->pName . ' week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y') . ' has been updated.';
                     push_notify('Shift Update:', $noty.' Please check eazytask for changes.',$timekeeper->employee->employee_role, $timekeeper->employee->firebase,'upcoming-shift');
                     $timekeeper->employee->user->notify(new UpdateShiftNotification($noty,$timekeeper));
-                }elseif($timekeeper->roaster_status_id == Session::get('roaster_status')['Published']){
+                }elseif($timekeeper->roaster_status_id == roaster_status("Published")){
                     $noty = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y');
                     push_notify('Shift Alert :',$noty.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
                     $timekeeper->employee->user->notify(new NewShiftNotification($noty,$timekeeper));
                 }
             }
-
+            
             $notification = array(
                 'message' => $msg,
                 'alert-type' => 'success'
