@@ -53,7 +53,7 @@ class User extends Authenticatable
     public function admin_role()
     {
         return $this->belongsTo('App\Models\UserRole', 'id', 'user_id')
-            ->whereIn('role', [2, 5]);
+            ->whereIn('role', [2, 4, 5, 6, 7]);
     }
 
     public function user_roles()

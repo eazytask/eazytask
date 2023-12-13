@@ -136,7 +136,7 @@ class HomeController extends Controller
         $unconfirm_roasters = TimeKeeper::where([
             ['employee_id',Auth::user()->employee->id ?? false],
             ['company_code',Auth::user()->employee->company ?? false],
-            ['roaster_status_id',roaster_status('Published')],
+            ['roaster_status_id',Session::get('roaster_status')['Published']],
             ['shift_end','>=',Carbon::now()],
         ])
         ->orderBy('shift_start','asc')->limit(3)->get();

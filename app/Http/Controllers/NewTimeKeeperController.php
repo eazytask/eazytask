@@ -234,13 +234,15 @@ class NewTimeKeeperController extends Controller
             $timekeeper->ratePerHour = $request->ratePerHour;
             $timekeeper->amount = $request->amount;
             $timekeeper->job_type_id = $request->job_type_id;
-            // $timekeeper->roaster_id = Auth::id();
-            // if ($request->roaster_status_id) {
-            //     $timekeeper->roaster_status_id = $request->roaster_status_id;
-            // } else {
-            //     $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
-            // }
-            $timekeeper->roaster_status_id = roaster_status('Published');
+            if (!empty($timekeeper->roaster_id)) {
+                $timekeeper->roaster_id = Auth::id();
+            }
+            if (!empty($request->roaster_status_id)) {
+                $timekeeper->roaster_status_id = $request->roaster_status_id;
+            } else {
+                $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
+            }
+            // $timekeeper->roaster_status_id = roaster_status('Published');
             $timekeeper->remarks = $request->remarks;
             $timekeeper->created_at = Carbon::now();
             $timekeeper->save();

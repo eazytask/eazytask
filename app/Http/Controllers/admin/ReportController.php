@@ -599,7 +599,7 @@ class ReportController extends Controller
         $timekeeper = TimeKeeper::find($id);
 
         if ($timekeeper) {
-            if ($timekeeper->roaster_status_id == roaster_status('Not Published') || $timekeeper->roaster_status_id == roaster_status('Rejected')) {
+            if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Not published'] || $timekeeper->roaster_status_id == Session::get('roaster_status')['Rejected']) {
                 if (Carbon::parse($timekeeper->shift_start) >= Carbon::now()) {
                     $timekeeper->roaster_status_id = Session::get('roaster_status')['Published'];
                     $timekeeper->save();
