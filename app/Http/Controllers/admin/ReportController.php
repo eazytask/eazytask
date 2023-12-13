@@ -33,9 +33,9 @@ class ReportController extends Controller
                 ['status', 1],
                 ['role', 3]
             ])
-                // ->where(function ($q) {
-                //     avoid_expired_license($q);
-                // })
+                ->where(function ($q) {
+                    avoid_expired_license($q);
+                })
                 ->orderBy('fname', 'asc')->get();
         } elseif ($request->filter == 'inducted') {
             if ($request->project_id) {
