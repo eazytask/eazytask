@@ -113,8 +113,9 @@ class ScheduleStatusController extends Controller
                     })->whereBetween('roaster_date', [$start_date, $end_date])
                     ->get();
 
-                foreach ($timekeepers as $timekeeper) {
+                foreach ($timekeepers as $keyKeeper => $timekeeper) {
                     if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Published'] && $timekeeper->shift_end < Carbon::now()) {
+                        unset($timekeepers[$keyKeeper]);
                         continue;
                     }
                     $roaster_day = Carbon::parse($timekeeper->roaster_date)->format('D');
@@ -190,47 +191,50 @@ class ScheduleStatusController extends Controller
                         $sun_ .= $val;
                     }
                 }
-                if (!$mon_) {
-                    $mon_ = "<div style='width:125px'></div>";
+                if(count($timekeepers) > 0) 
+                {
+                    if (!$mon_) {
+                        $mon_ = "<div style='width:125px'></div>";
+                    }
+                    if (!$tue_) {
+                        $tue_ = "<div style='width:125px'></div>";
+                    }
+                    if (!$wed_) {
+                        $wed_ = "<div style='width:125px'></div>";
+                    }
+                    if (!$thu_) {
+                        $thu_ = "<div style='width:125px'></div>";
+                    }
+                    if (!$fri_) {
+                        $fri_ = "<div style='width:125px'></div>";
+                    }
+                    if (!$sat_) {
+                        $sat_ = "<div style='width:125px'></div>";
+                    }
+                    if (!$sun_) {
+                        $sun_ = "<div style='width:125px'></div>";
+                    }
+    
+                    if (!$employee->image) {
+                        $employee->image = 'images/app/no-image.png';
+                    }
+    
+                    $bg = $key % 2 == 0 ? 'tdbg' : 'tdbglight';
+                    $output .= '<tr class="">' .
+                        '<td class="text-center font-weight-bold ' . $bg . '">
+                            <div class="avatar-content">
+                                <img class="rounded-circle mb-25" src="' . 'https://api.eazytask.au/' . $employee->image . '" alt="" width="35px" height="35px">
+                            </div>
+                            ' . $employee->fname . ' ' . $employee->mname . ' ' . $employee->lname . '<p class="font-weight-bold text-primary">Hours: ' . $timekeepers->sum('duration') . '</p></td>' .
+                        '<td class="' . $bg . ' ' . $this->C(1) . '">' . $mon_ . '</td>' .
+                        '<td class="' . $bg . ' ' . $this->C(2) . '">' . $tue_ . '</td>' .
+                        '<td class="' . $bg . ' ' . $this->C(3) . '">' . $wed_ . '</td>' .
+                        '<td class="' . $bg . ' ' . $this->C(4) . '">' . $thu_ . '</td>' .
+                        '<td class="' . $bg . ' ' . $this->C(5) . '">' . $fri_ . '</td>' .
+                        '<td class="' . $bg . ' ' . $this->C(6) . '">' . $sat_ . '</td>' .
+                        '<td class="' . $bg . ' ' . $this->C(0) . '">' . $sun_ . '</td>' .
+                        '</tr>';
                 }
-                if (!$tue_) {
-                    $tue_ = "<div style='width:125px'></div>";
-                }
-                if (!$wed_) {
-                    $wed_ = "<div style='width:125px'></div>";
-                }
-                if (!$thu_) {
-                    $thu_ = "<div style='width:125px'></div>";
-                }
-                if (!$fri_) {
-                    $fri_ = "<div style='width:125px'></div>";
-                }
-                if (!$sat_) {
-                    $sat_ = "<div style='width:125px'></div>";
-                }
-                if (!$sun_) {
-                    $sun_ = "<div style='width:125px'></div>";
-                }
-
-                if (!$employee->image) {
-                    $employee->image = 'images/app/no-image.png';
-                }
-
-                $bg = $key % 2 == 0 ? 'tdbg' : 'tdbglight';
-                $output .= '<tr class="">' .
-                    '<td class="text-center font-weight-bold ' . $bg . '">
-                        <div class="avatar-content">
-                            <img class="rounded-circle mb-25" src="' . 'https://api.eazytask.au/' . $employee->image . '" alt="" width="35px" height="35px">
-                        </div>
-                        ' . $employee->fname . ' ' . $employee->mname . ' ' . $employee->lname . '<p class="font-weight-bold text-primary">Hours: ' . $timekeepers->sum('duration') . '</p></td>' .
-                    '<td class="' . $bg . ' ' . $this->C(1) . '">' . $mon_ . '</td>' .
-                    '<td class="' . $bg . ' ' . $this->C(2) . '">' . $tue_ . '</td>' .
-                    '<td class="' . $bg . ' ' . $this->C(3) . '">' . $wed_ . '</td>' .
-                    '<td class="' . $bg . ' ' . $this->C(4) . '">' . $thu_ . '</td>' .
-                    '<td class="' . $bg . ' ' . $this->C(5) . '">' . $fri_ . '</td>' .
-                    '<td class="' . $bg . ' ' . $this->C(6) . '">' . $sat_ . '</td>' .
-                    '<td class="' . $bg . ' ' . $this->C(0) . '">' . $sun_ . '</td>' .
-                    '</tr>';
             }
 
             return Response()->json([
