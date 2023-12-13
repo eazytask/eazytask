@@ -80,6 +80,7 @@ class ScheduleStatusController extends Controller
             ->where(function ($q) {
                 // $q->where('roaster_type', 'Schedueled');
                 // $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
+                $q->whereIn('roaster_status_id', [Session::get('roaster_status')['Published'], Session::get('roaster_status')['Accepted']]);
                 $q->orWhere(function ($q) {
                     // $q->where('roaster_type', 'Unschedueled');
                 });
@@ -105,7 +106,7 @@ class ScheduleStatusController extends Controller
                 ])
                     ->where(function ($q) {
                         // $q->where('roaster_type', 'Schedueled');
-                        // $q->where('roaster_status_id', Session::get('roaster_status')['Accepted']);
+                        $q->whereIn('roaster_status_id', [Session::get('roaster_status')['Published'], Session::get('roaster_status')['Accepted']]);
                         $q->orWhere(function ($q) {
                             // $q->where('roaster_type', 'Unschedueled');
                         });
@@ -113,20 +114,54 @@ class ScheduleStatusController extends Controller
                     ->get();
 
                 foreach ($timekeepers as $timekeeper) {
+                    if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Published'] && $timekeeper->shift_end < Carbon::now()) {
+                        continue;
+                    }
                     $roaster_day = Carbon::parse($timekeeper->roaster_date)->format('D');
                     $json = json_encode($timekeeper->toArray(), false);
 
                     $status = "";
+                    $symbol = "";
                     $colors = "style='width: 125px; color:#000 !important'";
-                    if ($timekeeper->roaster_type  == 'Unschedueled') {
-                        $status = "bg-gradient-info";
-                    } elseif ($timekeeper->shift_start < Carbon::now() && $timekeeper->sing_in == null) {
+                    
+                    if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Published']) {
+                        $status = "bg-gradient-warning";
+                        $symbol = "<i data-feather='loader'></i>";
+                    }elseif ($timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']) {
+                        $status = "bg-gradient-success";
+                        $symbol = "";
+                    }
+
+                    if ($timekeeper->sing_in == null && $timekeeper->shift_start <= Carbon::now() && $timekeeper->shift_end >= Carbon::now()) {
                         $status = "bg-gradient-danger";
-                    } elseif ($timekeeper->sing_in != null && $timekeeper->sing_out == null && $timekeeper->shift_end < Carbon::now()) {
-                        $status = "bg-gradient-danger";
-                    } else {
+                    }
+                    if ($timekeeper->sing_in != null && $timekeeper->sing_out != null && $timekeeper->shift_start <= Carbon::now() && $timekeeper->shift_end >= Carbon::now()) {
                         $status = "bg-gradient-success";
                     }
+                    if ($timekeeper->sing_in != null && $timekeeper->sing_out == null && $timekeeper->shift_start <= Carbon::now() && $timekeeper->shift_end >= Carbon::now()) {
+                        $status = "bg-gradient-info";
+                    }
+                    if ($timekeeper->sing_in != null && $timekeeper->sing_out != null && $timekeeper->shift_end < Carbon::now()) {
+                        $status = "bg-gradient-primary";
+                        if($timekeeper->is_approved == 0) {
+                            $symbol = "<i data-feather='clock'></i>";
+                        }else{
+                            $symbol = "";
+                        }
+                    }
+                    if ($timekeeper->sing_in != null && $timekeeper->sing_out == null && $timekeeper->shift_start <= Carbon::now() && $timekeeper->shift_end < Carbon::now()) {
+                        $status = "bg-gradient-danger";
+                    }
+
+                    // if ($timekeeper->roaster_type  == 'Unschedueled') {
+                    //     $status = "bg-gradient-info";
+                    // } elseif ($timekeeper->shift_start < Carbon::now() && $timekeeper->sing_in == null) {
+                    //     $status = "bg-gradient-danger";
+                    // } elseif ($timekeeper->sing_in != null && $timekeeper->sing_out == null && $timekeeper->shift_end < Carbon::now()) {
+                    //     $status = "bg-gradient-danger";
+                    // } else {
+                    //     $status = "bg-gradient-success";
+                    // }
 
                     if (!$request->project) {
                         $project_name = "<span class='font-small-2 font-weight-bolder'>" . $timekeeper->project->pName . "</span><br>";
@@ -137,7 +172,7 @@ class ScheduleStatusController extends Controller
                     $has_app = $timekeeper->payment_status || $timekeeper->is_approved ? true : false;
                     $val = "<div $colors  class='text-uppercase shadow p-50 roster mb-50 mt-50 editBtn font-weight-bolder " . $status . "' data-copy='false' data-row='$json'>
                     <i data-feather='" . ($timekeeper->payment_status ? 'dollar-sign' : 'check-circle') . "' class='float-right' " . ($has_app ? '' : 'hidden') . "></i>
-                    <div>$project_name" . "<span class='font-small-2 font-weight-bold'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2'>" . $timekeeper->job_type->name . "</span></div></div>";
+                    <div>$project_name" . "<span class='font-small-2 font-weight-bold'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2'>" . $timekeeper->job_type->name . "<br>" . $symbol . "</span></div></div>";
 
                     if ($roaster_day == 'Mon') {
                         $mon_ .= $val;

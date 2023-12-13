@@ -169,7 +169,10 @@ class ReportController extends Controller
             ['Status', '1'],
         ])->orderBy('pName', 'asc')->get();
 
-        $job_types = JobType::where('company_code', Auth::user()->company_roles->first()->company->id)->get();
+        $job_types = JobType::where('company_code', Auth::user()->company_roles->first()->company->id)
+        ->orderBy('id', 'ASC')
+        ->groupBy('name')
+        ->get();
         
         $roaster_status = RoasterStatus::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('name', 'asc')->get();
 
@@ -268,6 +271,9 @@ class ReportController extends Controller
                     ->get();
 
                 foreach ($timekeepers as $timekeeper) {
+                    if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Rejected'] && $timekeeper->shift_end < Carbon::yesterday()) {
+                        continue;
+                    }
                     $roaster_day = Carbon::parse($timekeeper->roaster_date)->format('D');
                     $json = json_encode($timekeeper->toArray(), false);
 

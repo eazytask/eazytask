@@ -416,7 +416,10 @@ class NewTimeKeeperController extends Controller
             ['company_code', Auth::user()->company_roles->first()->company->id],
             ['Status', '1'],
         ])->orderBy('pName', 'asc')->get();
-        $job_types = JobType::where('company_code', Auth::user()->company_roles->first()->company->id)->get();
+        $job_types = JobType::where('company_code', Auth::user()->company_roles->first()->company->id)
+        ->orderBy('id', 'ASC')
+        ->groupBy('name')
+        ->get();
         $roaster_status = RoasterStatus::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('name', 'asc')->get();
 
         $timekeepers = TimeKeeper::where([

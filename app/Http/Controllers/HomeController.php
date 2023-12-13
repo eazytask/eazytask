@@ -94,16 +94,16 @@ class HomeController extends Controller
             });
         })
         ->orderBy('shift_start','asc')->limit(1)->get();
-            //for unsheduled user
-            $projects = Project::whereHas('client', function ($query) {
-                $query->where('status', 1);
-            })->where([
-                ['company_code', Auth::user()->company_roles->first()->company->id],
-                ['Status', '1'],
-            ])->orderBy('pName', 'asc')->get();
-            $job_types = JobType::where('company_code', Auth::user()->employee->company ?? false)->get();
+        //for unsheduled user
+        $projects = Project::whereHas('client', function ($query) {
+            $query->where('status', 1);
+        })->where([
+            ['company_code', Auth::user()->company_roles->first()->company->id],
+            ['Status', '1'],
+        ])->orderBy('pName', 'asc')->get();
+        $job_types = JobType::where('company_code', Auth::user()->employee->company ?? false)->get();
 
-            $roaster_status = RoasterStatus::where('company_code', Auth::user()->employee->company ?? false)->get();
+        $roaster_status = RoasterStatus::where('company_code', Auth::user()->employee->company ?? false)->get();
 
         // upcoming shifts
         $upcoming_roasters = TimeKeeper::where([

@@ -242,7 +242,7 @@
                                                             <div class="row" style="width:100%; margin: 4px">
 
                                                                 <div class="col-4">
-                                                                    <p>{{ Session::get('sort_by') == 'Date' ? \Carbon\Carbon::parse($timekeeper->roaster_date)->format('d-m-Y') : $timekeeper->name }}
+                                                                    <p>{{ Session::get('sort_by') == 'Date' ? \Carbon\Carbon::parse($timekeeper->roaster_date)->format('d-m-Y') : $timekeeper->fname . ' ' . $timekeeper->mname . ' ' . $timekeeper->lname }}
                                                                     </p>
                                                                 </div>
 
