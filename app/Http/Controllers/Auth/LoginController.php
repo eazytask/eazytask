@@ -120,11 +120,16 @@ class LoginController extends Controller
                         if(auth()->user()->company_roles->first()->role != 1){
                             $roaster_statuses = RoasterStatus::where([
                                 ['company_code', Auth::user()->company_roles->first()->company->id],
-                            ])->get();
+                            ])
+                            ->orderBy('id', 'ASC')
+                            ->groupBy('name')
+                            ->get();
+                            
                             $roaster_status = [];
                             foreach ($roaster_statuses as $status) {
                                 $roaster_status[$status->name] = $status->id;
                             }
+                            
                             Session::put('roaster_status', $roaster_status);
                         } 
                         // dd(auth()->user()->company_roles);
