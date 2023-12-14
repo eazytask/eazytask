@@ -110,6 +110,7 @@ class PaymentController extends Controller
             ->where(function ($q) {
                 avoid_rejected_key($q);
             })
+            ->orderBy("e.fname", 'ASC')
             ->get();
         // return $timekeepers;
         $employees = Employee::where([

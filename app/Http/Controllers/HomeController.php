@@ -328,14 +328,16 @@ class HomeController extends Controller
 
         $data['employee_report'] = TimeKeeper::where(function ($q) {
             avoid_rejected_key($q);
-        })->select(DB::raw('round(sum(amount)) as amount, round(sum(duration)) as hours , employee_id'))
+        })->select(DB::raw('round(sum(amount)) as amount, round(sum(duration)) as hours , employee_id', 'fname'))
+            ->join('employees', 'employees.id', '=', 'time_keepers.employee_id')
             ->groupBy('employee_id')
             ->orderByRaw('amount desc')
             ->whereBetween('roaster_date', [$start_week, $end_week])
             ->where([
-                ['user_id', Auth::id()]
+                ['time_keepers.user_id', Auth::id()]
             ])
             ->limit(5)
+            ->orderBy('fname', 'asc')
             ->get();
 
         $data['client_report'] = TimeKeeper::where(function ($q) {
