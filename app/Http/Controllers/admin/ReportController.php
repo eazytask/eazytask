@@ -15,6 +15,7 @@ use App\Notifications\NewShiftNotification;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Client;
 
 class ReportController extends Controller
 {
@@ -159,9 +160,19 @@ class ReportController extends Controller
             'employees' => $employees
         ]);
     }
+    
+    public function getProjects($client_id)
+    {
+        $projects = Project::where('clientName', $client_id)->get();
+        return response()->json($projects);
+    }
+
     public function index()
     {
         Session::put('current_week', 0);
+
+        $clients = Client::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('cName', 'asc')->get();
+        
         $projects = Project::whereHas('client', function ($query) {
             $query->where('status', 1);
         })->where([
@@ -176,7 +187,7 @@ class ReportController extends Controller
         
         $roaster_status = RoasterStatus::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('name', 'asc')->get();
 
-        return view('pages.Admin.report.index', compact('projects', 'job_types', 'roaster_status'));
+        return view('pages.Admin.report.index', compact('projects', 'job_types', 'roaster_status', 'clients'));
     }
 
     public function search(Request $request)

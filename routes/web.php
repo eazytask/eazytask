@@ -409,6 +409,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::get('admin/home/report/drag/keeper', [ReportController::class, 'drag_keeper']);
     Route::get('admin/home/report/delete/{id}', [ReportController::class, 'delete'])->middleware('is_admin');
     Route::get('admin/home/report/publish/{id}', [ReportController::class, 'publish_shift'])->middleware('is_admin');
+    Route::get('/get-projects/{client_id}', [ReportController::class, 'getProjects'])->middleware('is_admin');
 
     #admin roster sign in status
     Route::get('admin/home/schedule/status', [ScheduleStatusController::class, 'index'])->middleware('is_admin');

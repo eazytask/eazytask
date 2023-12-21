@@ -65,6 +65,18 @@
                             {{-- id="copyWeek"><i data-feather='copy' class="mr-50"></i>Copy All</button> --}}
 
                             <button class="btn p-0 pt-50 pb-50 mr-50 mt-25">
+                                <select id="client" class="form-control"
+                                    style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
+                                    name="client_id">
+                                    <option value="">Select Client</option>
+                                    @foreach ($clients as $client)
+                                        <option value="{{ $client->id }}">{{ $client->cname }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </button>
+
+                            <button class="btn p-0 pt-50 pb-50 mr-50 mt-25">
                                 <select id="project" class="form-control"
                                     style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
                                     name="project_id">
@@ -139,6 +151,32 @@
     </div>
 
     <script type="text/javascript">
+        $(document).ready(function() {
+            // Add change event listener to client dropdown
+            $('#client').change(function() {
+                var client_id = $(this).val();
+
+                // Make AJAX request to get related projects
+                $.ajax({
+                    url: "{{ url('/get-projects') }}/" + client_id,
+                    type: 'GET',
+                    success: function(data) {
+                        // Clear existing options in the project dropdown
+                        $('#project').empty();
+
+                        // Add a default option
+                        $('#project').append('<option value="">Select Venue</option>');
+
+                        // Add fetched projects to the project dropdown
+                        $.each(data, function(key, value) {
+                            $('#project').append('<option value="' + value.id + '">' +
+                                value.pName + '</option>');
+                        });
+                    }
+                });
+            });
+        });
+
         $('#download').click(function() {
             const element = document.getElementById('htmlContent').innerHTML;
             var opt = {
