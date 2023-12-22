@@ -163,7 +163,7 @@ class ReportController extends Controller
     
     public function getProjects($client_id)
     {
-        $projects = Project::where('clientName', $client_id)->where('status', 1)->get();
+        $projects = Project::where('clientName', $client_id)->get();
         return response()->json($projects);
     }
 
@@ -234,7 +234,7 @@ class ReportController extends Controller
         $filter_project = ['employee_id', '>', 0];
         if (!empty($request->client) && empty($request->project)) {
             $client_id = $request->client;
-            $project_ids = Project::where('clientName', $client_id)->where('status', 1)->get()->pluck('id');
+            $project_ids = Project::where('clientName', $client_id)->get()->pluck('id');
         }else{
             $filter_project = $request->project ? ['project_id', $request->project] : ['employee_id', '>', 0];
         }
