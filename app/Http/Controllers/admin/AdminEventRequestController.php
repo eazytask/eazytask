@@ -27,7 +27,11 @@ class AdminEventRequestController extends Controller
       ['Status', '1'],
     ])->orderBy('pName', 'asc')->get();
 
-    $job_types = JobType::where('company_code', Auth::user()->company_roles->first()->company->id)->get();
+    $job_types = JobType::where('company_code', Auth::user()->company_roles->first()->company->id)
+    ->orderBy('id', 'ASC')
+    ->groupBy('name')
+    ->get();
+    
     return view('pages.Admin.event_request.index', compact('projects','job_types'));
   }
 
