@@ -163,7 +163,7 @@ class ReportController extends Controller
     
     public function getProjects($client_id)
     {
-        $projects = Project::where('clientName', $client_id)->get();
+        $projects = Project::where('clientName', $client_id)->where('status', 1)->get();
         return response()->json($projects);
     }
 
@@ -229,7 +229,15 @@ class ReportController extends Controller
             $week = Carbon::now();
         }
 
-        $filter_project = $request->project ? ['project_id', $request->project] : ['employee_id', '>', 0];
+        $client_id = null;
+        $project_ids = [];
+        $filter_project = ['employee_id', '>', 0];
+        if (!empty($request->client) && empty($request->project)) {
+            $client_id = $request->client;
+            $project_ids = Project::where('clientName', $client_id)->where('status', 1)->get()->pluck('id');
+        }else{
+            $filter_project = $request->project ? ['project_id', $request->project] : ['employee_id', '>', 0];
+        }
 
         $start_date = Carbon::parse($week)->startOfWeek();
         $end_date = Carbon::parse($week)->endOfWeek();
@@ -249,9 +257,16 @@ class ReportController extends Controller
             ->where([
                 ['e.company', Auth::user()->company_roles->first()->company->id],
                 ['e.role', 3],
-                $filter_project,
                 ['roaster_type', 'Schedueled']
             ])
+            ->when($client_id != null && $request->project == null, function($query) use ($project_ids) {
+                $query->whereIn('project_id', $project_ids);
+            })
+            ->when($request->project != null, function($query) use ($filter_project) {
+                $query->where([
+                    $filter_project
+                ]);
+            })
             ->groupBy("e.id")
             ->whereBetween('roaster_date', [$start_date, $end_date])
             ->get();

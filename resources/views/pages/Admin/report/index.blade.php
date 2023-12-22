@@ -253,7 +253,6 @@
         })
 
         $('#project').on('change', function() {
-            // alert($(this).val())
             if ($(this).val()) {
                 $('#download').prop('disabled', false)
                 $('#copyWeek').prop('disabled', false)
@@ -261,6 +260,19 @@
                 $('#download').prop('disabled', true)
                 $('#copyWeek').prop('disabled', true)
             }
+
+            searchNow('current')
+        })
+
+        $('#client').on('change', function() {
+            // if ($(this).val()) {
+            //     $('#download').prop('disabled', false)
+            //     $('#copyWeek').prop('disabled', false)
+            // } else {
+            //     $('#download').prop('disabled', true)
+            //     $('#copyWeek').prop('disabled', true)
+            // }
+            $('#project').empty();
 
             searchNow('current')
         })
@@ -275,6 +287,7 @@
                 data: {
                     'go_to': goTo,
                     'project': $('#project').val(),
+                    'client': $('#client').val(),
                     'search_date': search_date,
                 },
                 success: function(data) {
