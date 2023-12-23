@@ -12,6 +12,16 @@
         .font-small-2 {
             font-size: 0.7rem !important;
         }
+
+        .button-unstyled {
+            background: none;
+            color: inherit;
+            border: none;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+            outline: inherit;
+        }
     </style>
 
     <div class="col-lg-12 col-md-12 p-0">
@@ -64,10 +74,10 @@
                             {{-- <button type="button" disabled class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" --}}
                             {{-- id="copyWeek"><i data-feather='copy' class="mr-50"></i>Copy All</button> --}}
 
-                            <button class="btn p-0 pt-50 pb-50 mr-50 mt-25">
-                                <select id="client" class="form-control"
+                            <button class="p-0 pt-50 pb-50 mr-50 mt-25 button-unstyled">
+                                <select id="client" class="form-control select2"
                                     style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
-                                    name="client_id">
+                                    name="client_id" onchange="handleClientChange(this)">
                                     <option value="">Select Client</option>
                                     @foreach ($clients as $client)
                                         <option value="{{ $client->id }}">{{ $client->cname }}
@@ -76,10 +86,10 @@
                                 </select>
                             </button>
 
-                            <button class="btn p-0 pt-50 pb-50 mr-50 mt-25">
-                                <select id="project" class="form-control"
+                            <button class="p-0 pt-50 pb-50 mr-50 mt-25 button-unstyled">
+                                <select id="project" class="form-control select2"
                                     style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
-                                    name="project_id">
+                                    name="project_id" onchange="handleProjectChange(this)">
                                     <option value="">Select Venue</option>
                                     @foreach ($projects as $project)
                                         <option value="{{ $project->id }}">{{ $project->pName }}
@@ -252,8 +262,8 @@
             searchNow('publish')
         })
 
-        $('#project').on('change', function() {
-            if ($(this).val()) {
+        function handleProjectChange(selectElement) {
+            if ($(selectElement).val()) {
                 $('#download').prop('disabled', false)
                 $('#copyWeek').prop('disabled', false)
             } else {
@@ -262,20 +272,12 @@
             }
 
             searchNow('current')
-        })
+        }
 
-        $('#client').on('change', function() {
-            // if ($(this).val()) {
-            //     $('#download').prop('disabled', false)
-            //     $('#copyWeek').prop('disabled', false)
-            // } else {
-            //     $('#download').prop('disabled', true)
-            //     $('#copyWeek').prop('disabled', true)
-            // }
+        function handleClientChange(selectElement) {
             $('#project').empty();
-
             searchNow('current')
-        })
+        }
 
         let reload;
 

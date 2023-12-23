@@ -163,7 +163,7 @@ class ReportController extends Controller
     
     public function getProjects($client_id)
     {
-        $projects = Project::where('clientName', $client_id)->get();
+        $projects = Project::where('clientName', $client_id)->orderBy('pName', 'asc')->get();
         return response()->json($projects);
     }
 

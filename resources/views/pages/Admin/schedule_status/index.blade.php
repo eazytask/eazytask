@@ -12,6 +12,16 @@
         .font-small-2 {
             font-size: 0.7rem !important;
         }
+
+        .button-unstyled {
+            background: none;
+            color: inherit;
+            border: none;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+            outline: inherit;
+        }
     </style>
 
     <div class="col-lg-12 col-md-12 p-0">
@@ -58,10 +68,10 @@
                             <button type="button" class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" id="next"><i
                                     data-feather='arrow-right'></i></button>
 
-                            <button class="btn p-0 pt-50 pb-50 mr-50 mt-25">
-                                <select id="project" class="form-control"
+                            <button class="p-0 pt-50 pb-50 mr-50 mt-25 button-unstyled">
+                                <select id="project" class="form-control select2"
                                     style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
-                                    name="project_id">
+                                    name="project_id" onchange="handleProjectChange(this)">
                                     <option value="">Select Venue</option>
                                     @foreach ($projects as $project)
                                         <option value="{{ $project->id }}">{{ $project->pName }}
@@ -129,6 +139,18 @@
     </div>
 
     <script type="text/javascript">
+        function handleProjectChange(selectElement) {
+            if ($(selectElement).val()) {
+                $('#download').prop('disabled', false)
+                $('#copyWeek').prop('disabled', false)
+            } else {
+                $('#download').prop('disabled', true)
+                $('#copyWeek').prop('disabled', true)
+            }
+
+            searchNow('current')
+        }
+
         $('#prev').on('click', function() {
             searchNow('previous')
         })
@@ -136,15 +158,15 @@
             searchNow('next')
         })
 
-        $('#project').on('change', function() {
-            // alert($(this).val())
-            if ($(this).val()) {
-                $('#download').prop('disabled', false)
-            } else {
-                $('#download').prop('disabled', true)
-            }
-            searchNow('current')
-        })
+        // $('#project').on('change', function() {
+        //     // alert($(this).val())
+        //     if ($(this).val()) {
+        //         $('#download').prop('disabled', false)
+        //     } else {
+        //         $('#download').prop('disabled', true)
+        //     }
+        //     searchNow('current')
+        // })
 
         function searchNow(goTo = '', search_date = null) {
             $.ajax({
