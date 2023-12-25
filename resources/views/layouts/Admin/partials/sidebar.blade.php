@@ -60,6 +60,13 @@
 
 
                 </li>
+
+                <li class="nav-item {{ request()->is('admin/home/event-report') ? 'active' : '' }}"><a
+                        class="d-flex align-items-center" href="/admin/home/event-report"><i
+                            data-feather='book-open'></i><span class="menu-title text-truncate"
+                            data-i18n="Dashboards">Event Report</span><span
+                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
+                </li>
                 <li class="nav-item {{ request()->is('admin/home/event/request') ? 'active' : '' }}"><a
                         class="d-flex align-items-center" href="/admin/home/event/request"><i
                             data-feather='calendar'></i><span class="menu-title text-truncate"

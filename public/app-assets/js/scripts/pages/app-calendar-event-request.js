@@ -265,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#shift_end').val($.time(info.event.extendedProps.shift_end));
     $('#rate').val(info.event.extendedProps.rate);
     $('#remarks').val(info.event.extendedProps.remarks);
+    $('#no_employee_required').val(info.event.extendedProps.no_employee_required);
     $('#job_type_name').val(info.event.extendedProps.job_type_name).trigger('change');
 
     //event click modal
@@ -580,6 +581,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#shift_end').val('');
     $('#rate').val('');
     $('#remarks').val('');
+    $('#no_employee_required').val('');
     $('#job_type_name').val('').trigger('change');
     //form filed reset
   }

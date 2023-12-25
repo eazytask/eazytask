@@ -54,6 +54,7 @@ use App\Http\Controllers\user\UserRosterCalendar;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\admin\MessagesController;
+use App\Http\Controllers\admin\EventReportController;
 
 //dcw add controller
 use App\Http\Controllers\admin\PDFEmailController;
@@ -411,6 +412,14 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::get('admin/home/report/publish/{id}', [ReportController::class, 'publish_shift'])->middleware('is_admin');
     Route::get('/get-projects/{client_id}', [ReportController::class, 'getProjects'])->middleware('is_admin');
 
+    #admin event report
+    Route::get('admin/home/event-report', [EventReportController::class, 'index'])->middleware('is_admin');
+    Route::get('admin/home/event-report/search', [EventReportController::class, 'search'])->middleware('is_admin');
+    Route::get('admin/home/event-report/drag/keeper', [EventReportController::class, 'drag_keeper']);
+    Route::get('admin/home/event-report/delete/{id}', [EventReportController::class, 'delete'])->middleware('is_admin');
+    Route::get('admin/home/event-report/publish/{id}', [EventReportController::class, 'publish_shift'])->middleware('is_admin');
+    Route::get('open-event/{id}', [EventReportController::class, 'openEvent'])->middleware('is_admin');
+ 
     #admin roster sign in status
     Route::get('admin/home/schedule/status', [ScheduleStatusController::class, 'index'])->middleware('is_admin');
     Route::get('admin/home/schedule/status/search', [ScheduleStatusController::class, 'search'])->middleware('is_admin');
@@ -437,6 +446,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::get('admin/home/event/request', [AdminEventRequestController::class, 'index'])->middleware('is_admin');
     Route::get('admin/home/event/search', [AdminEventRequestController::class, 'dataget'])->middleware('is_admin');
     Route::get('admin/home/event/publish', [AdminEventRequestController::class, 'publish'])->middleware('is_admin');
+    Route::get('admin/home/event/complete', [AdminEventRequestController::class, 'complete'])->middleware('is_admin');
 
 
     //Route::get('admin/home', [HomeController::class, 'adminHome'])->name('admin.home')->middleware('is_admin');

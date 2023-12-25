@@ -71,6 +71,7 @@ class UpcomingeventController extends Controller
         $event->shift_start = $shift_start;
         $event->shift_end = $shift_end;
         $event->rate = $request->rate;
+        $event->no_employee_required = $request->no_employee_required;
         $event->remarks = $request->remarks;
         $event->save();
 
@@ -99,6 +100,7 @@ class UpcomingeventController extends Controller
         $event->shift_end = $shift_end;
         $event->rate = $request->rate;
         $event->remarks = $request->remarks;
+        $event->no_employee_required = $request->no_employee_required;
         $event->updated_at = Carbon::now();
         $event->save();
 

@@ -31,7 +31,7 @@ class AdminEventRequestController extends Controller
     ->orderBy('id', 'ASC')
     ->groupBy('name')
     ->get();
-    
+
     return view('pages.Admin.event_request.index', compact('projects','job_types'));
   }
 
@@ -165,6 +165,15 @@ class AdminEventRequestController extends Controller
       $timekeeper->employee->user->notify(new NewShiftNotification($msg,$timekeeper));
       push_notify('Shift Alert:',$msg.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
     }
+    return Response()->json(['status' => 'sccess']);
+  }
+
+  public function complete(Request $request)
+  {
+    $event = Upcomingevent::find($request->event_id);
+    $event->status_text = 'complete';
+    $event->save();
+
     return Response()->json(['status' => 'sccess']);
   }
 }
