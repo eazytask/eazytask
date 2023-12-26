@@ -55,8 +55,8 @@
                             <input type="text" id="search_date" name="search_date"
                                 class="form-control format-picker form-control-sm float-left text-center bg-light-info"
                                 placeholder="dd-mm-yyyy" style="width:135px">
-                            {{-- <button class="btn btn-gradient-primary float-right mt-50 pt-50 pb-50"
-                                id="addTimekeeperModal"><i data-feather='plus'></i></button> --}}
+                            <button class="btn btn-gradient-primary float-right mt-50 pt-50 pb-50" id="addEvent"><i
+                                    data-feather='plus'></i></button>
                         </div>
                         <div class="col-12 text-center">
 
@@ -167,8 +167,19 @@
     <script type="text/javascript">
         let eventTitle = $('#title');
         let editEventBtn = $('#editEventBtn');
+        var addEventBtn = $('#addEventBtn');
         let info = null;
         let ids = []
+
+        //add event modal
+        $('#addEvent').on('click', function() {
+            resetValues()
+            $('.event-modal-title').html('Add Event')
+            $('#editEventBtn').prop('hidden', true)
+            $('#addEventBtn').prop('hidden', false)
+
+            $('#addEventModal').modal('show')
+        });
 
         $(document).on("click", ".checkID", function() {
             if ($(this).is(':checked')) {
@@ -271,6 +282,35 @@
             totalId = []
             $('#checkAllID').prop('checked', false)
             $("#addToRoaster").prop('disabled', true)
+        });
+
+        // Add new event
+        $(addEventBtn).on('click', function() {
+            if ($("#addEventForm").valid()) {
+                $.ajax({
+                    data: $('#addEventForm').serialize(),
+                    url: "/admin/home/upcomingevent/store",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function(data) {
+
+                        if (data.status) {
+                            toastr.success(data.msg)
+                            searchNow('current')
+                        } else {
+                            toastr.info(data.msg)
+                        }
+                    },
+                    error: function(data) {
+                        toastr.error('Add Event Failed', 'Error!', {
+                            closeButton: true,
+                            tapToDismiss: false,
+                        })
+                    }
+                });
+                $('#addEventModal').modal('hide')
+                resetValues()
+            }
         });
 
         $(editEventBtn).on('click', function() {
