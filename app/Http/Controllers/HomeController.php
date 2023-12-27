@@ -346,9 +346,9 @@ class HomeController extends Controller
             ->groupBy('client_id')
             ->orderByRaw('amount desc')
             ->whereBetween('roaster_date', [$start_week, $end_week])
-            ->where([
-                ['user_id', Auth::id()]
-            ])
+            // ->where([
+            //     ['user_id', Auth::id()]
+            // ])
             ->get();
 
 
