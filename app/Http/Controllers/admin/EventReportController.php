@@ -338,7 +338,7 @@ class EventReportController extends Controller
                         
                  </div></div>
                  <br>
-                 <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . $event->status_text == 'complete' || $event->event_date < Carbon::now() ? 'Complete' : 'Incomplete' . "</b></span>";
+                 <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . ($event->status_text == 'complete' || $event->event_date < Carbon::now() ? 'Complete' : 'Incomplete') . "</b></span>";
                  
                     $val_r = "<div class='text-uppercase p-50 roster $colors><span class='font-small-2 font-weight-bolder'>" . Carbon::parse($event->shift_start)->format('H:i') . "-" . Carbon::parse($event->shift_end)->format('H:i') . "</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $event->job_type->name . "</span></div><br>";
 
