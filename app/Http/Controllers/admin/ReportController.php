@@ -305,9 +305,9 @@ class ReportController extends Controller
 
                     $colors = "style='width: 125px'";
                     if ($timekeeper->roaster_type == 'Unschedueled') {
-                        $colors = "style='width:125px;color:#fff !important; background:#82868b !important'";
+                        $colors = "style='width:125px;color:#fff !important; background:#82868b !important; display: inline-block;'";
                     } else {
-                        $colors = "style='width:125px;color:" . $timekeeper->roaster_status->text_color . " !important; background:" . $timekeeper->roaster_status->color . " !important'";
+                        $colors = "style='width:125px;color:" . $timekeeper->roaster_status->text_color . " !important; background:" . $timekeeper->roaster_status->color . " !important; display: inline-block;'";
                     }
 
                     $unique_id = 'drag' . $timekeeper->id;
@@ -348,7 +348,8 @@ class ReportController extends Controller
                         "<span class='font-small-2'>" . $timekeeper->job_type->name . "</span>
                         
                  </div></div>
-                 <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 100%;'><b>" . $timekeeper->roaster_status->name . "</b></span>";
+                 <br>
+                 <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . $timekeeper->roaster_status->name . "</b></span>";
                  
                     $val_r = "<div class='text-uppercase p-50 roster $colors><span class='font-small-2 font-weight-bolder'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $timekeeper->job_type->name . "</span></div><br>";
 

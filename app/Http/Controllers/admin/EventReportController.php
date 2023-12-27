@@ -309,10 +309,10 @@ class EventReportController extends Controller
                     $json = json_encode($event->toArray(), false);
 
                     $colors = "style='width: 125px'";
-                    if ($event->status_text == 'incomplete') {
-                        $colors = "style='width:125px;color:black !important; background:yellow !important'";
+                    if ($event->status_text == 'complete' || $event->event_date < Carbon::now()) {
+                        $colors = "style='width:125px;color:white !important; background:#38761d !important; display: inline-block;'";
                     } else {
-                        $colors = "style='width:125px;color:white !important; background:green !important'";
+                        $colors = "style='width:125px;color:white !important; background:#7367f0 !important; display: inline-block;'";
                     }
 
                     $unique_id = 'drag' . $event->id;
@@ -322,23 +322,23 @@ class EventReportController extends Controller
                         $project_name = '';
                     }
 
-                    $has_app = $event->status_text == 'complete' ? true : false;
+                    $has_app = $event->status_text == 'complete' || $event->event_date < Carbon::now() ? true : false;
                     //mb-50 dan border-radius
                     $val = "<div ".($has_app ? '' : "onclick='openEvent(".$event->id.");' ")."id='$unique_id' $colors draggable='" . ($has_app ? 'false' : 'true') . "' ondragstart='drag(event,$event->id)' class='font-weight-bolder text-uppercase shadow p-50 roster mt-50'>
                     <div class='dropdown-items-wrapper'>
                     
-                    <i data-feather='" . ($event->status_text == 'complete' ? 'check-circle' : 'dollar-sign') . "' class='float-right' " . ($has_app ? '' : 'hidden') . "></i>
+                    <i data-feather='" . ($event->status_text == 'complete' || $event->event_date < Carbon::now() ? 'check-circle' : 'dollar-sign') . "' class='float-right' " . ($has_app ? '' : 'hidden') . "></i>
                     
                 </div>
-                <div>$project_name" . "<span class='font-small-2 font-weight-bold'>" . Carbon::parse($event->shift_start)->format('H:i') . "-" . Carbon::parse($event->shift_end)->format('H:i') . " (".$duration.") </span><br>" .
+                <div>$project_name" . "<span class='font-small-2 font-weight-bold'>(".$event->project->cName.")<br>" . Carbon::parse($event->shift_start)->format('H:i') . "-" . Carbon::parse($event->shift_end)->format('H:i') . " (".$duration.") <br>Rate $".$event->rate."</span><br>" .
                 // <span class='font-small-2' style='background-color: ".$event->roaster_status->color."; color: ".$event->roaster_status->text_color."; padding: 5px; display: inline-block; width: 100%;'>" . $event->roaster_status->name  
                 // "<span class='font-small-2'>" . $event->job_type->name . "</span>
                 
-                "
-                <span class='font-small-1'>" . $event->no_employee_required . " required </span>
+                "<span class='font-small-1'>" . $event->no_employee_required . " required </span>
                         
                  </div></div>
-                 <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 100%;'><b>" . $event->status_text . "</b></span>";
+                 <br>
+                 <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . $event->status_text . "</b></span>";
                  
                     $val_r = "<div class='text-uppercase p-50 roster $colors><span class='font-small-2 font-weight-bolder'>" . Carbon::parse($event->shift_start)->format('H:i') . "-" . Carbon::parse($event->shift_end)->format('H:i') . "</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $event->job_type->name . "</span></div><br>";
 
@@ -397,12 +397,14 @@ class EventReportController extends Controller
                 $w = Carbon::parse($week)->startOfWeek();
                 $bg = $key % 2 == 0 ? 'tdbg' : 'tdbglight';
                 // <img class="rounded-circle mb-25" src="' . 'https://api.eazytask.au/' . $event->image . '" alt="" width="35px" height="35px">
+
+
+                // '<td class="text-center font-weight-bold ' . $bg . '">
+                // <div class="avatar-content">
+                    
+                // </div>
+                // '.$event->project->pName.' ('.$event->project->cName.')</td>' .
                 $output .= '<tr class="">' .
-                    '<td class="text-center font-weight-bold ' . $bg . '">
-                        <div class="avatar-content">
-                            
-                        </div>
-                        '.$event->project->pName.' ('.$event->project->cName.')</td>' .
                     '<td class="' . $bg . ' ' . $this->C(1) . '" ondrop="drop(event,' . $event->id . ',`' . $w->format('d-m-Y') . '`)" ondragover="allowDrop(event)">' . $mon_ . '</td>' .
                     '<td class="' . $bg . ' ' . $this->C(2) . '" ondrop="drop(event,' . $event->id . ',`' . $w->addDay()->format('d-m-Y') . '`)" ondragover="allowDrop(event)">' . $tue_ . '</td>' .
                     '<td class="' . $bg . ' ' . $this->C(3) . '" ondrop="drop(event,' . $event->id . ',`' . $w->addDay()->format('d-m-Y') . '`)" ondragover="allowDrop(event)">' . $wed_ . '</td>' .
@@ -414,12 +416,13 @@ class EventReportController extends Controller
 
                 // <img class="img-fluid rounded-circle mb-25" src="' . 'https://api.eazytask.au/' . $event->image . '" alt="" width="35px" height="35px">
 
+
+                // '<td class="text-center font-weight-bold ' . $bg . '">
+                //     <div class="avatar-content">
+                        
+                //     </div>
+                // '.$event->project->pName.' ('.$event->project->cName.')</td>' .
                 $report .= '<tr class="">' .
-                    '<td class="text-center font-weight-bold ' . $bg . '">
-                        <div class="avatar-content">
-                            
-                        </div>
-                    '.$event->project->pName.' ('.$event->project->cName.')</td>' .
                     '<td class="' . $bg . '">' . $mon_r . '</td>' .
                     '<td class="' . $bg . '">' . $tue_r . '</td>' .
                     '<td class="' . $bg . '">' . $wed_r . '</td>' .

@@ -6,7 +6,7 @@
         }
 
         #myTable {
-            width: 1000px !important;
+            /* width: 1000px !important; */
         }
 
         .font-small-2 {
@@ -124,7 +124,7 @@
                                 <table id="myTable" class="myTable table table-bordered table-striped ">
                                     <thead>
                                         <tr>
-                                            <th>Site</th>
+                                            {{-- <th>Site</th> --}}
                                             <th>Monday</th>
                                             <th>Tuesday</th>
                                             <th>Wednesday</th>
@@ -136,7 +136,7 @@
                                     </thead>
                                     <tbody id="tBody">
                                         <tr>
-                                            <td></td>
+                                            {{-- <td></td> --}}
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -509,6 +509,51 @@
                     }
                 });
             });
+
+            $('#myTable').DataTable({
+                dom: 'Bfrtip',
+                paging: false,
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ],
+                autoWidth: false, //step 1
+                columnDefs: [
+                    // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
+                    {
+                        width: '125px',
+                        targets: 1
+                    }, //step 2, column 2 out of 4
+                    {
+                        width: '125px',
+                        targets: 2
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 3
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 4
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 5
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 6
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 7
+                    }, //step 2, column 3 out of 4
+                ]
+                // "bDestroy": true
+            });
+
         });
 
         $('#download').click(function() {
@@ -624,7 +669,7 @@
                     } else {
                         $("#search_date").val('')
                     }
-                    $('#myTable').DataTable().clear().destroy();
+                    // $('#myTable').DataTable().clear().destroy();
                     $('#tBody').html(data.data);
                     $('#print_tBody').html(data.report);
                     $('#print_client').html('Client: ' + data.client);
@@ -633,49 +678,7 @@
                     $('#print_amount').html('Total Amount: $' + data.amount);
                     $('#print_current_week').text('Date: ' + data.week_date)
                     // $("#myTable").DataTable();
-                    $('#myTable').DataTable({
-                        dom: 'Bfrtip',
-                        paging: false,
-                        buttons: [
-                            'copyHtml5',
-                            'excelHtml5',
-                            'csvHtml5',
-                            'pdfHtml5'
-                        ],
-                        autoWidth: false, //step 1
-                        columnDefs: [
-                            // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
-                            {
-                                width: '125px',
-                                targets: 1
-                            }, //step 2, column 2 out of 4
-                            {
-                                width: '125px',
-                                targets: 2
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 3
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 4
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 5
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 6
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 7
-                            }, //step 2, column 3 out of 4
-                        ]
-                        // "bDestroy": true
-                    });
+
                     feather.replace({
                         width: 14,
                         height: 14
@@ -1120,7 +1123,7 @@
                                 <table class="table-bordered text-center" id="printTable" style='width:100%'>
                                     <thead>
                                         <tr>
-                                            <th style='width:10%'>Employee Name</th>
+                                            {{-- <th style='width:10%'>Employee Name</th> --}}
                                             <th style='width:12%'>Monday</th>
                                             <th style='width:12%'>Tuesday</th>
                                             <th style='width:12%'>Wednesday</th>
@@ -1132,7 +1135,7 @@
                                     </thead>
                                     <tbody id="print_tBody">
                                         <tr>
-                                            <td></td>
+                                            {{-- <td></td> --}}
                                             <td></td>
                                             <td></td>
                                             <td></td>

@@ -123,7 +123,7 @@ class ScheduleStatusController extends Controller
 
                     $status = "";
                     $symbol = "";
-                    $colors = "style='width: 125px; color:#000 !important'";
+                    $colors = "style='width: 125px; color:#000 !important; display: inline-block;'";
                     
                     if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Published']) {
                         $status = "bg-gradient-warning";

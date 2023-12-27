@@ -6,7 +6,7 @@
         }
 
         #myTable {
-            width: 1000px !important;
+            /* width: 1000px !important; */
         }
 
         .font-small-2 {
