@@ -467,7 +467,7 @@ class EventReportController extends Controller
         }
 
         $no_report = '<tr class="">' .
-            '<td class="text-center" colspan="8">No data found!</td>' .
+            '<td class="text-center" colspan="7">No data found!</td>' .
             '</tr>';
         return Response()->json([
             'logo' => '',
@@ -476,7 +476,7 @@ class EventReportController extends Controller
             'project' => $project,
             'hours' => 0,
             'amount' => 0,
-            'data' => '',
+            'data' => $no_report,
             'week_date' => $start_date->format('d M, Y') . ' -  ' . $end_date->format('d M, Y'),
             'notification' => '',
             'search_date' => $search_date
