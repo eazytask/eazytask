@@ -184,7 +184,11 @@
                                         width: 14,
                                         height: 14
                                     });
-                                }
+                                },
+                                dom: 'Bfrtip',
+                                buttons: [
+                                    'copy', 'csv', 'excel', 'pdf', 'print'
+                                ]
                             });
                         }
 
