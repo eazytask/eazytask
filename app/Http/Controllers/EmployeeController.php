@@ -90,8 +90,7 @@ class EmployeeController extends Controller
                                     (".Carbon::parse($row->license_expire_date)->format('d-m-Y').")
                                 </td>
                                 <td>
-                                    $row->first_aid_license
-                                    (".Carbon::parse($row->first_aid_expire_date)->format('d-m-Y').")
+                                    ".Carbon::parse($row->first_aid_expire_date)->format('d-m-Y')."
                                 </td>
                                 <td>
                                     <input type='hidden' name='id' value='$row->id'>
