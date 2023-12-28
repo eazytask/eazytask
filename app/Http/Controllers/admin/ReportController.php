@@ -234,7 +234,15 @@ class ReportController extends Controller
         $filter_project = ['employee_id', '>', 0];
         if (!empty($request->client) && empty($request->project)) {
             $client_id = $request->client;
-            $project_ids = Project::where('clientName', $client_id)->get()->pluck('id');
+            // $project_ids = Project::where('clientName', $client_id)->get()->pluck('id');
+            $project_ids = Project::whereHas('client', function ($query) {
+                $query->where('status', 1);
+            })->where([
+                ['company_code', Auth::user()->company_roles->first()->company->id],
+                ['Status', '1'],
+            ])
+            ->where('clientName', $client_id)->get()->pluck('id');
+            // dd($project_ids);
         }else{
             $filter_project = $request->project ? ['project_id', $request->project] : ['employee_id', '>', 0];
         }
@@ -291,9 +299,17 @@ class ReportController extends Controller
                 $timekeepers = TimeKeeper::where([
                     ['employee_id', $employee->id],
                     ['company_code', Auth::user()->company_roles->first()->company->id],
-                    ['roaster_type', 'Schedueled'],
-                    $filter_project
-                ])->whereBetween('roaster_date', [$start_date, $end_date])
+                    ['roaster_type', 'Schedueled']
+                ])
+                ->when($client_id != null && $request->project == null, function($query) use ($project_ids) {
+                    $query->whereIn('project_id', $project_ids);
+                })
+                ->when($request->project != null, function($query) use ($filter_project) {
+                    $query->where([
+                        $filter_project
+                    ]);
+                })
+                ->whereBetween('roaster_date', [$start_date, $end_date])
                     ->get();
 
                 foreach ($timekeepers as $timekeeper) {
