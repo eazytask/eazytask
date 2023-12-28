@@ -86,10 +86,12 @@ class EmployeeController extends Controller
                                 </td>
                                 <td>$row->contact_number </td>
                                 <td>
-                                    $role
+                                    $row->license_no
+                                    ($row->license_expire_date)
                                 </td>
                                 <td>
-                                $status
+                                    $row->first_aid_license
+                                    ($row->first_aid_expire_date)
                                 </td>
                                 <td>
                                     <input type='hidden' name='id' value='$row->id'>

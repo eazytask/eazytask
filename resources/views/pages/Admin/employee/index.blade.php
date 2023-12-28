@@ -47,8 +47,8 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Number</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
+                                    <th>License No</th>
+                                    <th>First Aid</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -186,10 +186,49 @@
                                     });
                                 },
                                 dom: 'Bfrtip',
-                                buttons: [
-                                    'copy', 'csv', 'excel', 'pdf', 'print'
+                                buttons: [{
+                                        extend: 'copy',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5,
+                                                6
+                                            ] // Include columns 0 through 6
+                                        }
+                                    },
+                                    {
+                                        extend: 'csv',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5,
+                                                6
+                                            ] // Include columns 0 through 6
+                                        }
+                                    },
+                                    {
+                                        extend: 'excel',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5,
+                                                6
+                                            ] // Include columns 0 through 6
+                                        }
+                                    },
+                                    {
+                                        extend: 'pdf',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5,
+                                                6
+                                            ] // Include columns 0 through 6
+                                        }
+                                    },
+                                    {
+                                        extend: 'print',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5,
+                                                6
+                                            ] // Include columns 0 through 6
+                                        }
+                                    }
                                 ]
                             });
+
                         }
 
                         $("#addEmployee").modal("hide")
