@@ -38,6 +38,18 @@
                 @include('pages.Admin.employee.modals.employeeaddmodal')
 
                 <div class="container">
+                    <center>
+                        <div class="col-lg-3 col-4 pl-25 pr-25 mt-1">
+                            <select class="form-control select2" name="status_id"
+                                id="status_id"onchange="handleStatusChange(this)">
+                                <option disabled>Select Status</option>
+                                <option value="0">All</option>
+                                <option value="1">Active</option>
+                                <option value="2">Inactive</option>
+                            </select>
+                        </div>
+                    </center>
+
                     <div class="table-responsive">
                         <table id="example" class="table table-hover-animation table-bordered">
                             <thead>
@@ -68,6 +80,77 @@
 
 @push('scripts')
     <script>
+        function handleStatusChange() {
+            var status = $('#status_id').val();
+            $.ajax({
+                url: '/admin/home/fetch/employee?status=' + status,
+                type: 'get',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.employees) {
+                        $('#example').DataTable().clear().destroy();
+                        $('#empBody').html(data.employees)
+                        $('#example').DataTable({
+                            "drawCallback": function(settings) {
+                                feather.replace({
+                                    width: 14,
+                                    height: 14
+                                });
+                            },
+                            dom: 'Bfrtip',
+                            buttons: [{
+                                    extend: 'copy',
+                                    exportOptions: {
+                                        columns: [0, 2, 3, 4, 5,
+                                            6
+                                        ] // Include columns 0 through 6
+                                    }
+                                },
+                                {
+                                    extend: 'csv',
+                                    exportOptions: {
+                                        columns: [0, 2, 3, 4, 5,
+                                            6
+                                        ] // Include columns 0 through 6
+                                    }
+                                },
+                                {
+                                    extend: 'excel',
+                                    exportOptions: {
+                                        columns: [0, 2, 3, 4, 5,
+                                            6
+                                        ] // Include columns 0 through 6
+                                    }
+                                },
+                                {
+                                    extend: 'pdf',
+                                    exportOptions: {
+                                        columns: [0, 2, 3, 4, 5,
+                                            6
+                                        ] // Include columns 0 through 6
+                                    }
+                                },
+                                {
+                                    extend: 'print',
+                                    exportOptions: {
+                                        columns: [0, 2, 3, 4, 5,
+                                            6
+                                        ] // Include columns 0 through 6
+                                    }
+                                }
+                            ]
+                        });
+
+                    }
+
+                    $("#addEmployee").modal("hide")
+                },
+                error: function(err) {
+                    console.log(err)
+                }
+            });
+        }
+
         // Function to check if document image upload is required
         function checkDocumentUploadRequired() {
             var dataIsRequired = $('#_compliance option:selected').data('isrequired');

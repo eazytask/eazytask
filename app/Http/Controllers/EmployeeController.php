@@ -35,9 +35,13 @@ class EmployeeController extends Controller
         return view('pages.Admin.employee.index', compact('compliance'));
     }
 
-    public function fetch()
+    public function fetch(Request $request)
     {
-        $employees = Employee::where('company', Auth::user()->company_roles->first()->company->id)->orderBy('fname', 'asc')->get();
+        $employees = Employee::where('company', Auth::user()->company_roles->first()->company->id)->orderBy('fname', 'asc')
+        ->when($request->status != "" && $request->status != 0 && $request->status != null, function($q) use ($request) {
+            $q->where('status', $request->status);
+        })
+        ->get();
 
         $html = '';
         $numbering = 1;
