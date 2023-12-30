@@ -24,17 +24,43 @@
     </div>
 
     <!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
-                                                                                                                                                                                                                                                            <div id="googleMap" style="width:100%;height:400px;"></div> -->
+                                                                                                                                                                                                                                                                                                                    <div id="googleMap" style="width:100%;height:400px;"></div> -->
     <!-- Basic Tables start -->
     <!-- Table Hover Animation start -->
     <div class="row" id="table-hover-animation">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary" id="add"><i data-feather='plus'></i></button>
                 </div>
-                @include('pages.Admin.project.modals.projectAddModal')
 
+                <div class="card-body">
+                    <div class="container row row-xs">
+                        <div class="col mt-md-0">
+                            <button class="btn btn-default float-left" id="download" title="Download Report"><img
+                                    src="{{ url('backend/img/download_icon.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
+                            <button class="btn btn-default" id="add" title="Add Venue"><img
+                                    src="{{ url('backend/img/office_building.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
+                            @include('pages.Admin.project.modals.projectAddModal')
+                        </div>
+
+                        <div class="col-lg-2">
+                            <select class="form-control select2" name="status_id" id="status_id">
+                                <option>Select Status</option>
+                                <option value="0">All</option>
+                                <option value="1">Active</option>
+                                <option value="2">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-1 col-lg-1">
+                            <button type="button" onclick="handleStatusChange(this)"
+                                class="btn btn btn-outline-primary btn-block" id="btn_search"><i
+                                    data-feather='search'></i></button>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="container">
                     <div class="table-responsive">
@@ -43,10 +69,10 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Venue Name</th>
-                                    <th>Contact Name</th>
-                                    <th>Contact Number</th>
-                                    <th>Status</th>
-                                    <th>Client</th>
+                                    <th>Contact Person</th>
+                                    <th>Contact No</th>
+                                    <th>Client Name</th>
+                                    <th>Address</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -66,6 +92,82 @@
 
 @push('scripts')
     <script>
+        function handleStatusChange() {
+            var status = $('#status_id').val();
+            $.ajax({
+                url: '/admin/home/fetch/project?status=' + status,
+                type: 'get',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.data) {
+                        if (data.data.length > 100) {
+                            $('#example').DataTable().clear().destroy();
+                        }
+                        $('#projectBody').html(data.data)
+                        if (data.data.length > 100) {
+                            $('#example').DataTable({
+                                "drawCallback": function(settings) {
+                                    feather.replace({
+                                        width: 14,
+                                        height: 14
+                                    });
+                                },
+                                dom: 'Blfrtip', // Include 'l' for length menu
+                                lengthMenu: [30, 50,
+                                    100, 200
+                                ], // Set the options for the number of records to display
+                                buttons: [{
+                                        extend: 'copy',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'csv',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'excel',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'pdf',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'print',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    }
+                                ]
+                            });
+                        }
+
+                    }
+
+                    $("#addClient").modal("hide")
+                },
+                error: function(err) {
+                    console.log(err)
+                }
+            });
+        }
+
+        $(document).on("click", "#download", function() {
+            $(".dt-buttons .buttons-copy").toggle()
+            $(".dt-buttons .buttons-csv").toggle()
+            $(".dt-buttons .buttons-excel").toggle()
+            $(".dt-buttons .buttons-pdf").toggle()
+            $(".dt-buttons .buttons-print").toggle()
+        })
+
         $(document).ready(function() {
 
             $('#clientName').wrap('<div class="position-relative"></div>').select2({
@@ -89,7 +191,42 @@
                                         width: 14,
                                         height: 14
                                     });
-                                }
+                                },
+                                dom: 'Blfrtip', // Include 'l' for length menu
+                                lengthMenu: [30, 50,
+                                    100, 200
+                                ], // Set the options for the number of records to display
+                                buttons: [{
+                                        extend: 'copy',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'csv',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'excel',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'pdf',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'print',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    }
+                                ]
                             });
                         }
 
@@ -444,4 +581,37 @@
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUiC49n0UCoKfiz4TrHQwK-BCsLzc_LY4&callback=myMap&libraries=places">
     </script>
+
+    <style>
+        .dt-buttons .buttons-copy {
+            display: none;
+        }
+
+        .dt-buttons .buttons-csv {
+            display: none;
+        }
+
+        .dt-buttons .buttons-excel {
+            display: none;
+        }
+
+        .dt-buttons .buttons-pdf {
+            display: none;
+        }
+
+        .dt-buttons .buttons-print {
+            display: none;
+        }
+
+        /* Custom styles for DataTables search and length menu alignment */
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
+        }
+
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
+        }
+    </style>
 @endpush

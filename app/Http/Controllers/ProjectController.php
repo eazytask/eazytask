@@ -21,9 +21,13 @@ class ProjectController extends Controller
 
         return view('pages.Admin.project.index', compact('clients'));
     }
-    public function fetch()
+
+    public function fetch(Request $request)
     {
-        $projects = Project::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('pName', 'asc')->get();
+        $projects = Project::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('pName', 'asc')
+        ->when($request->status != "" && $request->status != 0 && $request->status != null, function($q) use ($request) {
+            $q->where('Status', $request->status);
+        })->get();
 
         $html = '';
         foreach ($projects as $loop => $project) {
@@ -44,9 +48,8 @@ class ProjectController extends Controller
             <td>$project->pName</td>
             <td>$project->cName</td>
             <td>$project->cNumber</td>
-            <td>$status</td>
-            <td>
-            $cn</td>
+            <td>$cn</td>
+            <td>$project->project_address $project->suburb $project->project_state $project->postal_code</td>
             <td>
         <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
                 <a class='btn btn-gradient-danger text-white del'  data-id='$project->id'><i

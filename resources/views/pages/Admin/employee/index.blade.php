@@ -7,6 +7,37 @@
         .img-fluid {
             height: 100% !important;
         }
+
+        .dt-buttons .buttons-copy {
+            display: none;
+        }
+
+        .dt-buttons .buttons-csv {
+            display: none;
+        }
+
+        .dt-buttons .buttons-excel {
+            display: none;
+        }
+
+        .dt-buttons .buttons-pdf {
+            display: none;
+        }
+
+        .dt-buttons .buttons-print {
+            display: none;
+        }
+
+        /* Custom styles for DataTables search and length menu alignment */
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
+        }
+
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
+        }
     </style>
     <div class="content-header row">
         <div class="content-header-left col-md-9 col-12 mb-2">
@@ -33,22 +64,40 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary" id="add"><i data-feather='plus'></i></button>
                 </div>
-                @include('pages.Admin.employee.modals.employeeaddmodal')
+                {{-- <center> --}}
 
-                <div class="container">
-                    <center>
-                        <div class="col-lg-3 col-4 pl-25 pr-25 mt-1">
-                            <select class="form-control select2" name="status_id"
-                                id="status_id"onchange="handleStatusChange(this)">
-                                <option disabled>Select Status</option>
+                <div class="card-body">
+                    <div class="container row row-xs">
+                        <div class="col mt-md-0">
+                            <button class="btn btn-default float-left" id="download" title="Download Report"><img
+                                    src="{{ url('backend/img/download_icon.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
+                            <button class="btn btn-default float-left" id="add" title="Add Employee"><img
+                                    src="{{ url('backend/img/user_add.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
+                            @include('pages.Admin.employee.modals.employeeaddmodal')
+                        </div>
+
+                        <div class="col-lg-2">
+                            <select class="form-control select2" name="status_id" id="status_id">
+                                <option>Select Status</option>
                                 <option value="0">All</option>
                                 <option value="1">Active</option>
                                 <option value="2">Inactive</option>
                             </select>
                         </div>
-                    </center>
+
+                        <div class="col-md-1 col-lg-1">
+                            <button type="button" onclick="handleStatusChange(this)"
+                                class="btn btn btn-outline-primary btn-block" id="btn_search"><i
+                                    data-feather='search'></i></button>
+                        </div>
+                    </div>
+                </div>
+                {{-- </center> --}}
+
+                <div class="container">
 
                     <div class="table-responsive">
                         <table id="example" class="table table-hover-animation table-bordered">
@@ -88,59 +137,56 @@
                 dataType: 'json',
                 success: function(data) {
                     if (data.employees) {
-                        $('#example').DataTable().clear().destroy();
+                        if (data.employees.length > 100) {
+                            $('#example').DataTable().clear().destroy();
+                        }
                         $('#empBody').html(data.employees)
-                        $('#example').DataTable({
-                            "drawCallback": function(settings) {
-                                feather.replace({
-                                    width: 14,
-                                    height: 14
-                                });
-                            },
-                            dom: 'Bfrtip',
-                            buttons: [{
-                                    extend: 'copy',
-                                    exportOptions: {
-                                        columns: [0, 2, 3, 4, 5,
-                                            6
-                                        ] // Include columns 0 through 6
-                                    }
-                                },
-                                {
-                                    extend: 'csv',
-                                    exportOptions: {
-                                        columns: [0, 2, 3, 4, 5,
-                                            6
-                                        ] // Include columns 0 through 6
-                                    }
-                                },
-                                {
-                                    extend: 'excel',
-                                    exportOptions: {
-                                        columns: [0, 2, 3, 4, 5,
-                                            6
-                                        ] // Include columns 0 through 6
-                                    }
-                                },
-                                {
-                                    extend: 'pdf',
-                                    exportOptions: {
-                                        columns: [0, 2, 3, 4, 5,
-                                            6
-                                        ] // Include columns 0 through 6
-                                    }
-                                },
-                                {
-                                    extend: 'print',
-                                    exportOptions: {
-                                        columns: [0, 2, 3, 4, 5,
-                                            6
-                                        ] // Include columns 0 through 6
-                                    }
-                                }
-                            ]
-                        });
 
+                        if (data.employees.length > 100) {
+                            $('#example').DataTable({
+                                "drawCallback": function(settings) {
+                                    feather.replace({
+                                        width: 14,
+                                        height: 14
+                                    });
+                                },
+                                dom: 'Blfrtip', // Include 'l' for length menu
+                                lengthMenu: [30, 50,
+                                    100, 200
+                                ], // Set the options for the number of records to display
+                                buttons: [{
+                                        extend: 'copy',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5, 6]
+                                        }
+                                    },
+                                    {
+                                        extend: 'csv',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5, 6]
+                                        }
+                                    },
+                                    {
+                                        extend: 'excel',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5, 6]
+                                        }
+                                    },
+                                    {
+                                        extend: 'pdf',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5, 6]
+                                        }
+                                    },
+                                    {
+                                        extend: 'print',
+                                        exportOptions: {
+                                            columns: [0, 2, 3, 4, 5, 6]
+                                        }
+                                    }
+                                ]
+                            });
+                        }
                     }
 
                     $("#addEmployee").modal("hide")
@@ -171,6 +217,7 @@
 
     <script>
         $(document).ready(function() {
+
             encodeImageFileAsURL = function(element) {
                 var file = element.files[0];
                 var reader = new FileReader();
@@ -261,6 +308,7 @@
                         if (data.employees) {
                             $('#example').DataTable().clear().destroy();
                             $('#empBody').html(data.employees)
+
                             $('#example').DataTable({
                                 "drawCallback": function(settings) {
                                     feather.replace({
@@ -268,45 +316,38 @@
                                         height: 14
                                     });
                                 },
-                                dom: 'Bfrtip',
+                                dom: 'Blfrtip', // Include 'l' for length menu
+                                lengthMenu: [30, 50,
+                                    100, 200
+                                ], // Set the options for the number of records to display
                                 buttons: [{
                                         extend: 'copy',
                                         exportOptions: {
-                                            columns: [0, 2, 3, 4, 5,
-                                                6
-                                            ] // Include columns 0 through 6
+                                            columns: [0, 2, 3, 4, 5, 6]
                                         }
                                     },
                                     {
                                         extend: 'csv',
                                         exportOptions: {
-                                            columns: [0, 2, 3, 4, 5,
-                                                6
-                                            ] // Include columns 0 through 6
+                                            columns: [0, 2, 3, 4, 5, 6]
                                         }
                                     },
                                     {
                                         extend: 'excel',
                                         exportOptions: {
-                                            columns: [0, 2, 3, 4, 5,
-                                                6
-                                            ] // Include columns 0 through 6
+                                            columns: [0, 2, 3, 4, 5, 6]
                                         }
                                     },
                                     {
                                         extend: 'pdf',
                                         exportOptions: {
-                                            columns: [0, 2, 3, 4, 5,
-                                                6
-                                            ] // Include columns 0 through 6
+                                            columns: [0, 2, 3, 4, 5, 6]
                                         }
                                     },
                                     {
                                         extend: 'print',
                                         exportOptions: {
-                                            columns: [0, 2, 3, 4, 5,
-                                                6
-                                            ] // Include columns 0 through 6
+                                            columns: [0, 2, 3, 4, 5, 6]
                                         }
                                     }
                                 ]
@@ -414,6 +455,14 @@
             $(document).on("click", "#add", function() {
                 resetValue()
                 $("#addEmployee").modal("show")
+            })
+
+            $(document).on("click", "#download", function() {
+                $(".dt-buttons .buttons-copy").toggle()
+                $(".dt-buttons .buttons-csv").toggle()
+                $(".dt-buttons .buttons-excel").toggle()
+                $(".dt-buttons .buttons-pdf").toggle()
+                $(".dt-buttons .buttons-print").toggle()
             })
 
             function resetValue() {

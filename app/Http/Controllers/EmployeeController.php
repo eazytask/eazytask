@@ -44,68 +44,75 @@ class EmployeeController extends Controller
         ->get();
 
         $html = '';
-        $numbering = 1;
-        foreach ($employees as $loop => $row) {
-            if (!$row->image) {
-                $row->image = 'images/app/no-image.png';
-            }
-            $json = json_encode($row->toArray(), false);
-
-            $role = '';
-            if ($row->role == 2) {
-                $role = "<span class='badge badge-pill badge-light-info mr-1'>Admin</span>";
-            }elseif ($row->role == 3) {
-                $role = "<span class='badge badge-pill badge-light-primary mr-1'>Employee</span>";
-            } elseif ($row->role == 4) {
-                $role = "<span class='badge badge-pill badge-light-info mr-1'>Supervisor</span>";
-            } elseif ($row->role == 5) {
-                $role = "<span class='badge badge-pill badge-light-info mr-1'>Operation</span>";
-            } elseif ($row->role == 6) {
-                $role = "<span class='badge badge-pill badge-light-info mr-1'>Manager</span>";
-            } elseif ($row->role == 7) {
-                $role = "<span class='badge badge-pill badge-light-info mr-1'>Account</span>";
-            }
-
-
-            if ($row->status == 1) {
-                $status = "<span class='badge badge-pill badge-light-success mr-1'>Active</span>";
-            } else {
-                $status = "<span class='badge badge-pill badge-light-danger mr-1'>Inactive</span>";
-            }
-
-            $html .= "
-            <tr>
-                                <td>" . $numbering++ . "</td>
-                                <td>
-                                    <div class='avatar bg-light-primary'>
-                                        <div class='avatar-content'>
-                                            <img class='img-fluid' src='" . 'https://api.eazytask.au/' . $row->image . "' alt=''>
+        if (count($employees) == 0) {
+            $html .= '<tr class="">' .
+            '<td class="text-center" colspan="8">No data found!</td>' .
+            '</tr>';
+        }else{
+            $numbering = 1;
+            foreach ($employees as $loop => $row) {
+                if (!$row->image) {
+                    $row->image = 'images/app/no-image.png';
+                }
+                $json = json_encode($row->toArray(), false);
+    
+                $role = '';
+                if ($row->role == 2) {
+                    $role = "<span class='badge badge-pill badge-light-info mr-1'>Admin</span>";
+                }elseif ($row->role == 3) {
+                    $role = "<span class='badge badge-pill badge-light-primary mr-1'>Employee</span>";
+                } elseif ($row->role == 4) {
+                    $role = "<span class='badge badge-pill badge-light-info mr-1'>Supervisor</span>";
+                } elseif ($row->role == 5) {
+                    $role = "<span class='badge badge-pill badge-light-info mr-1'>Operation</span>";
+                } elseif ($row->role == 6) {
+                    $role = "<span class='badge badge-pill badge-light-info mr-1'>Manager</span>";
+                } elseif ($row->role == 7) {
+                    $role = "<span class='badge badge-pill badge-light-info mr-1'>Account</span>";
+                }
+    
+    
+                if ($row->status == 1) {
+                    $status = "<span class='badge badge-pill badge-light-success mr-1'>Active</span>";
+                } else {
+                    $status = "<span class='badge badge-pill badge-light-danger mr-1'>Inactive</span>";
+                }
+    
+                $html .= "
+                <tr>
+                                    <td>" . $numbering++ . "</td>
+                                    <td>
+                                        <div class='avatar bg-light-primary'>
+                                            <div class='avatar-content'>
+                                                <img class='img-fluid' src='" . 'https://api.eazytask.au/' . $row->image . "' alt=''>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>
-                                     $row->fname  $row->mname $row->lname 
-                                </td>
-                                <td>$row->email
-                                </td>
-                                <td>$row->contact_number </td>
-                                <td>
-                                    $row->license_no
-                                    (".Carbon::parse($row->license_expire_date)->format('d-m-Y').")
-                                </td>
-                                <td>
-                                    ".Carbon::parse($row->first_aid_expire_date)->format('d-m-Y')."
-                                </td>
-                                <td>
-                                    <input type='hidden' name='id' value='$row->id'>
-                                    <input type='hidden' name='user_id' value='$row->user_id'>
+                                    </td>
+                                    <td>
+                                         $row->fname  $row->mname $row->lname 
+                                    </td>
+                                    <td>$row->email
+                                    </td>
+                                    <td>$row->contact_number </td>
+                                    <td>
+                                        $row->license_no
+                                        (".Carbon::parse($row->license_expire_date)->format('d-m-Y').")
+                                    </td>
+                                    <td>
+                                        ".Carbon::parse($row->first_aid_expire_date)->format('d-m-Y')."
+                                    </td>
+                                    <td>
+                                        <input type='hidden' name='id' value='$row->id'>
+                                        <input type='hidden' name='user_id' value='$row->user_id'>
+    
+                                        <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
+                                        <a class='btn del btn-gradient-danger text-white' data-id='$row->id'><i data-feather='trash-2'></i></a>
+                                    </td>
+    
+                                </tr>
+                ";
+            }
 
-                                    <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
-                                    <a class='btn del btn-gradient-danger text-white' data-id='$row->id'><i data-feather='trash-2'></i></a>
-                                </td>
-
-                            </tr>
-            ";
         }
 
         // $admins = DB::table('users')->join('user_roles', 'users.id', '=', 'user_roles.user_id')->where('user_roles.company_code', Auth::user()->company_roles->first()->company->id)->whereIn('user_roles.role', [2,5,6,7])->get();

@@ -28,10 +28,37 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-primary" id="add"><i data-feather='plus'></i></button>
                 </div>
-                @include('pages.Admin.client.modals.clientaddmodal')
 
+
+                <div class="card-body">
+                    <div class="container row row-xs">
+                        <div class="col mt-md-0">
+                            <button class="btn btn-default float-left" id="download" title="Download Report"><img
+                                    src="{{ url('backend/img/download_icon.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
+                            <button class="btn btn-default" id="add" title="Add Client"><img
+                                    src="{{ url('backend/img/user_add.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
+                            @include('pages.Admin.client.modals.clientaddmodal')
+                        </div>
+
+                        <div class="col-lg-2">
+                            <select class="form-control select2" name="status_id" id="status_id">
+                                <option>Select Status</option>
+                                <option value="0">All</option>
+                                <option value="1">Active</option>
+                                <option value="2">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-1 col-lg-1">
+                            <button type="button" onclick="handleStatusChange(this)"
+                                class="btn btn btn-outline-primary btn-block" id="btn_search"><i
+                                    data-feather='search'></i></button>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="container">
                     <div class="table-responsive">
@@ -39,15 +66,16 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Image</th>
+                                    {{-- <th>Image</th> --}}
                                     <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Number</th>
                                     <th>Contact Person</th>
-                                    <th>Address</th>
+                                    <th>Contact No</th>
+                                    <th>Email</th>
+                                    <th>No of Sites</th>
+                                    {{-- <th>Address</th>
                                     <th>State</th>
                                     <th>Post</th>
-                                    <th>Status</th>
+                                    <th>Status</th> --}}
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -67,6 +95,82 @@
 
 @push('scripts')
     <script>
+        function handleStatusChange() {
+            var status = $('#status_id').val();
+            $.ajax({
+                url: '/admin/home/fetch/client?status=' + status,
+                type: 'get',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.data) {
+                        if (data.data.length > 100) {
+                            $('#example').DataTable().clear().destroy();
+                        }
+                        $('#clientBody').html(data.data)
+                        if (data.data.length > 100) {
+                            $('#example').DataTable({
+                                "drawCallback": function(settings) {
+                                    feather.replace({
+                                        width: 14,
+                                        height: 14
+                                    });
+                                },
+                                dom: 'Blfrtip', // Include 'l' for length menu
+                                lengthMenu: [30, 50,
+                                    100, 200
+                                ], // Set the options for the number of records to display
+                                buttons: [{
+                                        extend: 'copy',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'csv',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'excel',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'pdf',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'print',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    }
+                                ]
+                            });
+                        }
+
+                    }
+
+                    $("#addClient").modal("hide")
+                },
+                error: function(err) {
+                    console.log(err)
+                }
+            });
+        }
+
+        $(document).on("click", "#download", function() {
+            $(".dt-buttons .buttons-copy").toggle()
+            $(".dt-buttons .buttons-csv").toggle()
+            $(".dt-buttons .buttons-excel").toggle()
+            $(".dt-buttons .buttons-pdf").toggle()
+            $(".dt-buttons .buttons-print").toggle()
+        })
+
         $(document).ready(function() {
             encodeImageFileAsURL = function(element) {
                 var file = element.files[0];
@@ -93,7 +197,42 @@
                                         width: 14,
                                         height: 14
                                     });
-                                }
+                                },
+                                dom: 'Blfrtip', // Include 'l' for length menu
+                                lengthMenu: [30, 50,
+                                    100, 200
+                                ], // Set the options for the number of records to display
+                                buttons: [{
+                                        extend: 'copy',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'csv',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'excel',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'pdf',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    },
+                                    {
+                                        extend: 'print',
+                                        exportOptions: {
+                                            columns: [0, 1, 2, 3, 4, 5]
+                                        }
+                                    }
+                                ]
                             });
                         }
 
@@ -192,4 +331,37 @@
 
         })
     </script>
+
+    <style>
+        .dt-buttons .buttons-copy {
+            display: none;
+        }
+
+        .dt-buttons .buttons-csv {
+            display: none;
+        }
+
+        .dt-buttons .buttons-excel {
+            display: none;
+        }
+
+        .dt-buttons .buttons-pdf {
+            display: none;
+        }
+
+        .dt-buttons .buttons-print {
+            display: none;
+        }
+
+        /* Custom styles for DataTables search and length menu alignment */
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
+        }
+
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
+        }
+    </style>
 @endpush

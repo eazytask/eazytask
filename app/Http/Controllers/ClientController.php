@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Project;
 use Auth;
 use Illuminate\Support\Facades\Storage;
 use Image;
@@ -20,49 +21,58 @@ class ClientController extends Controller
     return view('pages.Admin.client.index');
   }
 
-  public function fetch()
+  public function fetch(Request $request)
   {
-    $clients = Client::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('cName', 'asc')->get();
+    $clients = Client::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('cName', 'asc')
+    ->when($request->status != "" && $request->status != 0 && $request->status != null, function($q) use ($request) {
+      $q->where('status', $request->status);
+    })->get();
 
     $html = '';
-    foreach ($clients as $loop => $row) {
-      if (!$row->cimage) {
-        $row->cimage = 'images/app/no-image.png';
+    if (count($clients) == 0) {
+      $html .= '<tr class="">' .
+      '<td class="text-center" colspan="7">No data found!</td>' .
+      '</tr>';
+    }else{
+      foreach ($clients as $loop => $row) {
+        if (!$row->cimage) {
+          $row->cimage = 'images/app/no-image.png';
+        }
+        $json = json_encode($row->toArray(), false);
+  
+        if ($row->status == 1) {
+          $status = "<span class='badge badge-pill badge-light-success mr-1'>Active</span>";
+        } else {
+          $status = "<span class='badge badge-pill badge-light-danger mr-1'>Inactive</span>";
+        }
+  
+        $no_of_sites = Project::where('clientName', $row->id)->count();
+  
+        // <td>
+        // <div class='avatar bg-light-primary'>
+        //     <div class='avatar-content'>
+        //         <img src='" . 'https://api.eazytask.au/' . $row->cimage . "' alt='' height='32px' width='32px'>
+        //     </div>
+        // </div>
+        // <td>$row->caddress</td>
+        // <td>$row->cstate</td>
+        // <td>$row->cpostal_code</td>
+  
+        $html .= "
+              <tr>
+                  <td>" . $loop + 1 . "</td>
+                  <td>$row->cname</td>
+                  <td>$row->cperson</td>
+                  <td>$row->cnumber</td>
+                  <td>$row->cemail</td>
+                  <td>$no_of_sites</td>
+                  <td>
+                        <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
+                        <a class='btn btn-gradient-danger text-white del' url='/admin/home/client/delete/$row->id' data-id='$row->id'><i data-feather='trash-2'></i></a>
+                  </td>
+              </tr>
+              ";
       }
-      $json = json_encode($row->toArray(), false);
-
-      if ($row->status == 1) {
-        $status = "<span class='badge badge-pill badge-light-success mr-1'>Active</span>";
-      } else {
-        $status = "<span class='badge badge-pill badge-light-danger mr-1'>Inactive</span>";
-      }
-
-      $html .= "
-            <tr>
-                            <td>" . $loop + 1 . "</td>
-                            <td>
-                                <div class='avatar bg-light-primary'>
-                                    <div class='avatar-content'>
-                                        <img src='" . 'https://api.eazytask.au/' . $row->cimage . "' alt='' height='32px' width='32px'>
-                                    </div>
-                                </div>
-                            <td>$row->cname</td>
-                            <td>$row->cemail</td>
-                            <td>$row->cnumber</td>
-                              <td>$row->cperson</td>
-                            <td>$row->caddress</td>
-                            <td>$row->cstate</td>
-                            <td>$row->cpostal_code</td>
-
-
-                              <td>$status</td>
-
-                              <td>
-                                    <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
-                                    <a class='btn btn-gradient-danger text-white del' url='/admin/home/client/delete/$row->id' data-id='$row->id'><i data-feather='trash-2'></i></a>
-                              </td>
-                          </tr>
-            ";
     }
     return response()->json(['data' => $html]);
 
