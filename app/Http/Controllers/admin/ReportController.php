@@ -245,10 +245,13 @@ class ReportController extends Controller
             // dd($project_ids);
         }else{
             $filter_project = $request->project ? ['project_id', $request->project] : ['employee_id', '>', 0];
+            $project_ids = [$request->project];
         }
 
         $start_date = Carbon::parse($week)->startOfWeek();
         $end_date = Carbon::parse($week)->endOfWeek();
+
+        $projects = Project::whereIn('id', $project_ids)->get();
 
         $output = "";
         $report = "";
@@ -280,6 +283,8 @@ class ReportController extends Controller
             ->get();
 
         if ($employees->count() > 0) {
+            $hours = round($employees->sum('total_hours'), 2);
+            $amount = round($employees->sum('total_amount'), 2);
             foreach ($employees as $key => $employee) {
                 $mon_ = '';
                 $tue_ = '';
@@ -367,58 +372,42 @@ class ReportController extends Controller
                  <br>
                  <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . $timekeeper->roaster_status->name . "</b></span>";
                  
-                    $val_r = "<div class='text-uppercase p-50 roster $colors><span class='font-small-2 font-weight-bolder'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $timekeeper->job_type->name . "</span></div><br>";
-
                     if ($roaster_day == 'Mon') {
                         $mon_ .= $val;
-                        $mon_r .= $val_r;
                     } elseif ($roaster_day == 'Tue') {
                         $tue_ .= $val;
-                        $tue_r .= $val_r;
                     } elseif ($roaster_day == 'Wed') {
                         $wed_ .= $val;
-                        $wed_r .= $val_r;
                     } elseif ($roaster_day == 'Thu') {
                         $thu_ .= $val;
-                        $thu_r .= $val_r;
                     } elseif ($roaster_day == 'Fri') {
                         $fri_ .= $val;
-                        $fri_r .= $val_r;
                     } elseif ($roaster_day == 'Sat') {
                         $sat_ .= $val;
-                        $sat_r .= $val_r;
                     } elseif ($roaster_day == 'Sun') {
                         $sun_ .= $val;
-                        $sun_r .= $val_r;
                     }
                 }
                 if (!$mon_) {
                     $mon_ = "<div style='width:125px'></div>";
-                    $mon_r = "<div style=''></div>";
                 }
                 if (!$tue_) {
                     $tue_ = "<div style='width:125px'></div>";
-                    $tue_r = "<div style=''></div>";
                 }
                 if (!$wed_) {
                     $wed_ = "<div style='width:125px'></div>";
-                    $wed_r = "<div style=''></div>";
                 }
                 if (!$thu_) {
                     $thu_ = "<div style='width:125px'></div>";
-                    $thu_r = "<div style=''></div>";
                 }
                 if (!$fri_) {
                     $fri_ = "<div style='width:125px'></div>";
-                    $fri_r = "<div style=''></div>";
                 }
                 if (!$sat_) {
                     $sat_ = "<div style='width:125px'></div>";
-                    $sat_r = "<div style=''></div>";
                 }
                 if (!$sun_) {
                     $sun_ = "<div style='width:125px'></div>";
-                    $sun_r = "<div style=''></div>";
                 }
 
                 if (!$employee->image) {
@@ -441,22 +430,8 @@ class ReportController extends Controller
                     '<td class="' . $bg . ' ' . $this->C(6) . '" ondrop="drop(event,' . $employee->id . ',`' . $w->addDay()->format('d-m-Y') . '`)" ondragover="allowDrop(event)">' . $sat_ . '</td>' .
                     '<td class="' . $bg . ' ' . $this->C(0) . '" ondrop="drop(event,' . $employee->id . ',`' . $w->addDay()->format('d-m-Y') . '`)" ondragover="allowDrop(event)">' . $sun_ . '</td>' .
                     '</tr>';
-
-                $report .= '<tr class="">' .
-                    '<td class="text-center font-weight-bold ' . $bg . '">
-                        <div class="avatar-content">
-                            <img class="img-fluid rounded-circle mb-25" src="' . 'https://api.eazytask.au/' . $employee->image . '" alt="" width="35px" height="35px">
-                        </div>
-                    ' . $employee->fname . ' ' . $employee->mname . ' ' . $employee->lname . '<p class="font-weight-bold text-primary">Hours: ' . $timekeepers->sum('duration') . '</p></td>' .
-                    '<td class="' . $bg . '">' . $mon_r . '</td>' .
-                    '<td class="' . $bg . '">' . $tue_r . '</td>' .
-                    '<td class="' . $bg . '">' . $wed_r . '</td>' .
-                    '<td class="' . $bg . '">' . $thu_r . '</td>' .
-                    '<td class="' . $bg . '">' . $fri_r . '</td>' .
-                    '<td class="' . $bg . '">' . $sat_r . '</td>' .
-                    '<td class="' . $bg . '">' . $sun_r . '</td>' .
-                    '</tr>';
             }
+
 
             // $project  = $employees ? $timekeeper->project->pName: '';
 
@@ -466,19 +441,179 @@ class ReportController extends Controller
                 $image = 'images/app/logo.png';
             }
 
-            return Response()->json([
-                'logo' => 'https://api.eazytask.au/' . $image,
-                'report' => $report,
-                'client' => $timekeeper->project->cName,
-                'project' => $timekeeper->project->pName,
-                'hours' => round($employees->sum('total_hours'), 2),
-                'amount' => round($employees->sum('total_amount'), 2),
-                'data' => $output,
-                'week_date' => $start_date->format('d M, Y') . ' -  ' . $end_date->format('d M, Y'),
-                'notification' => $notification,
-                'search_date' => $search_date
-            ]);
         }
+
+        // NOW FOR REPORT
+        $final_report = [];
+        $final_hours = [];
+        $final_amount = [];
+        foreach ($projects as $key => $project_item) {
+            $report = "";
+            $employees = DB::table('time_keepers')
+                ->select(DB::raw(
+                    'e.* ,
+                    e.fname as name,
+                    sum(time_keepers.duration) as total_hours,
+                    sum(time_keepers.amount) as total_amount ,
+                    count(time_keepers.id) as record'
+    
+                ))
+                ->where('project_id', $project_item->id)
+                ->leftJoin('employees as e', 'e.id', 'time_keepers.employee_id')
+                ->where([
+                    ['e.company', Auth::user()->company_roles->first()->company->id],
+                    ['e.role', 3],
+                    ['roaster_type', 'Schedueled']
+                ])
+                ->when($client_id != null && $request->project == null, function($query) use ($project_ids) {
+                    $query->whereIn('project_id', $project_ids);
+                })
+                ->when($request->project != null, function($query) use ($filter_project) {
+                    $query->where([
+                        $filter_project
+                    ]);
+                })
+                ->groupBy("e.id")
+                ->whereBetween('roaster_date', [$start_date, $end_date])
+                ->get();
+    
+            if ($employees->count() > 0) {
+                foreach ($employees as $key => $employee) {
+                    $mon_r = '';
+                    $tue_r = '';
+                    $wed_r = '';
+                    $thu_r = '';
+                    $fri_r = '';
+                    $sat_r = '';
+                    $sun_r = '';
+                    $timekeepers = TimeKeeper::where([
+                        ['employee_id', $employee->id],
+                        ['company_code', Auth::user()->company_roles->first()->company->id],
+                        ['roaster_type', 'Schedueled']
+                    ])
+                    ->where('project_id', $project_item->id)
+                    ->when($client_id != null && $request->project == null, function($query) use ($project_ids) {
+                        $query->whereIn('project_id', $project_ids);
+                    })
+                    ->when($request->project != null, function($query) use ($filter_project) {
+                        $query->where([
+                            $filter_project
+                        ]);
+                    })
+                    ->whereBetween('roaster_date', [$start_date, $end_date])
+                        ->get();
+    
+                    foreach ($timekeepers as $timekeeper) {
+                        if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Rejected'] && $timekeeper->shift_end < Carbon::yesterday()) {
+                            continue;
+                        }
+                        $roaster_day = Carbon::parse($timekeeper->roaster_date)->format('D');
+                        $json = json_encode($timekeeper->toArray(), false);
+    
+                        $colors = "style='width: 125px'";
+                        if ($timekeeper->roaster_type == 'Unschedueled') {
+                            $colors = "style='width:125px;color:#fff !important; background:#82868b !important; display: inline-block;'";
+                        } else {
+                            $colors = "style='width:125px;color:" . $timekeeper->roaster_status->text_color . " !important; background:" . $timekeeper->roaster_status->color . " !important; display: inline-block;'";
+                        }
+    
+                        $unique_id = 'drag' . $timekeeper->id;
+                        if (!$request->project) {
+                            $project_name = "<span class='font-small-2 font-weight-bolder'>" . $timekeeper->project->pName . "</span><br>";
+                        } else {
+                            $project_name = '';
+                        }
+    
+                        $has_app = $timekeeper->payment_status || $timekeeper->is_approved ? true : false;
+                        
+                    
+                        //THIS IS FOR REPORT DOWNLOAD
+                        $val_r = "<div class='text-uppercase mt-50 p-50 roster' $colors>$project_name<span class='font-small-2 font-weight-bolder'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $timekeeper->job_type->name . "</span></div>
+                        <br>
+                        <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . $timekeeper->roaster_status->name . "</b></span>";
+    
+                        if ($roaster_day == 'Mon') {
+                            $mon_r .= $val_r;
+                        } elseif ($roaster_day == 'Tue') {
+                            $tue_r .= $val_r;
+                        } elseif ($roaster_day == 'Wed') {
+                            $wed_r .= $val_r;
+                        } elseif ($roaster_day == 'Thu') {
+                            $thu_r .= $val_r;
+                        } elseif ($roaster_day == 'Fri') {
+                            $fri_r .= $val_r;
+                        } elseif ($roaster_day == 'Sat') {
+                            $sat_r .= $val_r;
+                        } elseif ($roaster_day == 'Sun') {
+                            $sun_r .= $val_r;
+                        }
+                    }
+                    if (!$mon_r) {
+                        $mon_r = "<div style=''></div>";
+                    }
+                    if (!$tue_r) {
+                        $tue_r = "<div style=''></div>";
+                    }
+                    if (!$wed_r) {
+                        $wed_r = "<div style=''></div>";
+                    }
+                    if (!$thu_r) {
+                        $thu_r = "<div style=''></div>";
+                    }
+                    if (!$fri_r) {
+                        $fri_r = "<div style=''></div>";
+                    }
+                    if (!$sat_r) {
+                        $sat_r = "<div style=''></div>";
+                    }
+                    if (!$sun_r) {
+                        $sun_r = "<div style=''></div>";
+                    }
+    
+                    if (!$employee->image) {
+                        $employee->image = 'images/app/no-image.png';
+                    }
+    
+                    $w = Carbon::parse($week)->startOfWeek();
+                    $bg = $key % 2 == 0 ? 'tdbg' : 'tdbglight';
+                    
+                    $report .= '<tr class="">' .
+                        '<td class="text-center font-weight-bold ' . $bg . '">
+                            <div class="avatar-content">
+                                <img class="img-fluid rounded-circle mb-25" src="' . 'https://api.eazytask.au/' . $employee->image . '" alt="" width="35px" height="35px">
+                            </div>
+                        ' . $employee->fname . ' ' . $employee->mname . ' ' . $employee->lname . '<p class="font-weight-bold text-primary">Hours: ' . $timekeepers->sum('duration') . '</p></td>' .
+                        '<td class="' . $bg . '">' . $mon_r . '</td>' .
+                        '<td class="' . $bg . '">' . $tue_r . '</td>' .
+                        '<td class="' . $bg . '">' . $wed_r . '</td>' .
+                        '<td class="' . $bg . '">' . $thu_r . '</td>' .
+                        '<td class="' . $bg . '">' . $fri_r . '</td>' .
+                        '<td class="' . $bg . '">' . $sat_r . '</td>' .
+                        '<td class="' . $bg . '">' . $sun_r . '</td>' .
+                        '</tr>';
+                }
+            }
+            $final_report[$project_item->id] = $report;
+            $final_hours[$project_item->id] = round($employees->sum('total_hours'), 2);
+            $final_amount[$project_item->id] = round($employees->sum('total_amount'), 2);
+        }
+        
+        $logos = $image ?? 'images/app/logo.png';
+
+        return Response()->json([
+            'logo' => 'https://api.eazytask.au/' . $logos,
+            'report' => $final_report,
+            'client' => $timekeeper->client->cname ?? '',
+            'project' => $projects,
+            'hours' => $hours ?? 0,
+            'amount' => $amount ?? 0,
+            'final_hours' => $final_hours,
+            'final_amount' => $final_amount,
+            'data' => $output,
+            'week_date' => $start_date->format('d M, Y') . ' -  ' . $end_date->format('d M, Y'),
+            'notification' => $notification,
+            'search_date' => $search_date
+        ]);
         // }
         if ($request->project) {
             $project  = Project::find($request->project);

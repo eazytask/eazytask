@@ -276,6 +276,14 @@
 
         function handleClientChange(selectElement) {
             $('#project').empty();
+            if ($(selectElement).val()) {
+                $('#download').prop('disabled', false)
+                $('#copyWeek').prop('disabled', false)
+            } else {
+                $('#download').prop('disabled', true)
+                $('#copyWeek').prop('disabled', true)
+            }
+
             searchNow('current')
         }
 
@@ -302,11 +310,49 @@
                     }
                     $('#myTable').DataTable().clear().destroy();
                     $('#tBody').html(data.data);
-                    $('#print_tBody').html(data.report);
-                    $('#print_client').html('Client: ' + data.client);
-                    $('#print_project').html('Venue: ' + data.project);
-                    $('#print_hours').html('Total Hours: ' + data.hours);
-                    $('#print_amount').html('Total Amount: $' + data.amount);
+                    $('#wrapper_print').empty();
+
+                    data.project.forEach(function(element) {
+                        if (data.report[element.id] == "")
+                            return;
+
+                        $('#wrapper_print').append(`
+                        <div class="card-header bg-primary m-1 p-1">
+                            <h6 id="print_client" class="text-uppercase text-light">Client Name: ${data.client}</h6>
+                            <h6 id="print_project" class="text-uppercase text-light">Venue Name: ${element.pName}</h6>
+                            <h6 id="print_hours" class="text-light">Total Hours: ${data.final_hours[element.id]}</h6>
+                            <h6 id="print_amount" class="text-light">Total Amount: ${data.final_amount[element.id]}$</h6>
+                        </div>
+                        <div class="container">
+                            <div class="">
+                                <table class="table-bordered text-center" id="printTable" style='width:100%'>
+                                    <thead>
+                                        <tr>
+                                            <th style='width:10%'>Employee Name</th>
+                                            <th style='width:12%'>Monday</th>
+                                            <th style='width:12%'>Tuesday</th>
+                                            <th style='width:12%'>Wednesday</th>
+                                            <th style='width:12%'>Thursday</th>
+                                            <th style='width:12%'>Friday</th>
+                                            <th style='width:12%'>Saturday</th>
+                                            <th style='width:12%'>Sunday</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="print_tBody">
+                                        ${data.report[element.id]}
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                        `)
+                    });
+
+                    // $('#print_tBody').html(data.report);
+                    // $('#print_client').html('Client: ' + data.client);
+                    // $('#print_project').html('Venue: ' + data.project);
+                    // $('#print_hours').html('Total Hours: ' + data.hours);
+                    // $('#print_amount').html('Total Amount: $' + data.amount);
                     $('#print_current_week').text('Date: ' + data.week_date)
                     // $("#myTable").DataTable();
                     $('#myTable').DataTable({
@@ -785,42 +831,8 @@
                                 <h6 id="print_current_week" class="mr-1"></h6>
                             </div>
                         </div>
-                        <div class="card-header bg-primary m-1 p-1">
-                            <h6 id="print_client" class="text-uppercase text-light"></h6>
-                            <h6 id="print_project" class="text-uppercase text-light"></h6>
-                            <h6 id="print_hours" class="text-light"></h6>
-                            <h6 id="print_amount" class="text-light"></h6>
-                        </div>
-                        <div class="container">
-                            <div class="">
-                                <table class="table-bordered text-center" id="printTable" style='width:100%'>
-                                    <thead>
-                                        <tr>
-                                            <th style='width:10%'>Employee Name</th>
-                                            <th style='width:12%'>Monday</th>
-                                            <th style='width:12%'>Tuesday</th>
-                                            <th style='width:12%'>Wednesday</th>
-                                            <th style='width:12%'>Thursday</th>
-                                            <th style='width:12%'>Friday</th>
-                                            <th style='width:12%'>Saturday</th>
-                                            <th style='width:12%'>Sunday</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="print_tBody">
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
+                        <div id="wrapper_print">
 
-                                </table>
-                            </div>
                         </div>
 
                     </div>
