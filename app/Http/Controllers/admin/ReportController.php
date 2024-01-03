@@ -160,7 +160,7 @@ class ReportController extends Controller
             'employees' => $employees
         ]);
     }
-    
+
     public function getProjects($client_id)
     {
         $projects = Project::where('clientName', $client_id)->orderBy('pName', 'asc')->get();

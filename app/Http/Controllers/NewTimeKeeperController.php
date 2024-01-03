@@ -205,71 +205,73 @@ class NewTimeKeeperController extends Controller
         $msg = "shift successfully added.";
         $continue = true;
 
-        $timekeeper = new TimeKeeper();
+        foreach($request->employee_ids as $employee_id) {
+            $timekeeper = new TimeKeeper();
 
-        if ($request->roaster_type) {
-            if ($request->roaster_type == 'Schedueled') {
-                $timekeeper->roaster_type = 'Schedueled';
-            } elseif ($request->roaster_type == 'Unschedueled' && Carbon::parse($request->roaster_date) > Carbon::now()) {
-                $msg = "advance date not support for unschedule!";
-                $continue = false;
+            if ($request->roaster_type) {
+                if ($request->roaster_type == 'Schedueled') {
+                    $timekeeper->roaster_type = 'Schedueled';
+                } elseif ($request->roaster_type == 'Unschedueled' && Carbon::parse($request->roaster_date) > Carbon::now()) {
+                    $msg = "advance date not support for unschedule!";
+                    $continue = false;
+                } else {
+                    $timekeeper->roaster_type = 'Unschedueled';
+                }
             } else {
                 $timekeeper->roaster_type = 'Unschedueled';
             }
-        } else {
-            $timekeeper->roaster_type = 'Unschedueled';
-        }
-        if ($continue) {
-            $timekeeper->user_id = Auth::id();
-            $timekeeper->employee_id = $request->employee_id;
-            $timekeeper->client_id = $project->clientName;
-            $timekeeper->project_id = $request->project_id;
-            $timekeeper->employee_id = $request->employee_id;
-            $timekeeper->company_id = Auth::id();
-            $timekeeper->roaster_date = Carbon::parse($request->roaster_date);
-            $timekeeper->shift_start = $shift_start;
-            $timekeeper->shift_end = $shift_end;
-            $timekeeper->company_code = Auth::user()->company_roles->first()->company->id;
-            $timekeeper->duration = $request->duration;
-            $timekeeper->ratePerHour = $request->ratePerHour;
-            $timekeeper->amount = $request->amount;
-            $timekeeper->job_type_id = $request->job_type_id;
-            if (!empty($timekeeper->roaster_id)) {
-                $timekeeper->roaster_id = Auth::id();
-            }
-            if (!empty($request->roaster_status_id)) {
-                $timekeeper->roaster_status_id = $request->roaster_status_id;
-            } else {
-                $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
-            }
-            // $timekeeper->roaster_status_id = Session::get('roaster_status')['Published'];
-            $timekeeper->remarks = $request->remarks;
-            $timekeeper->created_at = Carbon::now();
-            $timekeeper->save();
-            
-            if ($request->roaster_type == 'Schedueled') {
-                $pro = $timekeeper->project;
-                if($timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']){
-                    $noty = 'one of your shift ' . $pro->pName . ' week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y') . ' has been updated.';
-                    push_notify('Shift Update:', $noty.' Please check eazytask for changes.',$timekeeper->employee->employee_role, $timekeeper->employee->firebase,'upcoming-shift');
-                    $timekeeper->employee->user->notify(new UpdateShiftNotification($noty,$timekeeper));
-                }elseif($timekeeper->roaster_status_id == Session::get('roaster_status')['Published']){
-                    $noty = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y');
-                    push_notify('Shift Alert :',$noty.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
-                    $timekeeper->employee->user->notify(new NewShiftNotification($noty,$timekeeper));
+            if ($continue) {
+                $timekeeper->user_id = Auth::id();
+                $timekeeper->employee_id = $employee_id;
+                $timekeeper->client_id = $project->clientName;
+                $timekeeper->project_id = $request->project_id;
+                $timekeeper->employee_id = $employee_id;
+                $timekeeper->company_id = Auth::id();
+                $timekeeper->roaster_date = Carbon::parse($request->roaster_date);
+                $timekeeper->shift_start = $shift_start;
+                $timekeeper->shift_end = $shift_end;
+                $timekeeper->company_code = Auth::user()->company_roles->first()->company->id;
+                $timekeeper->duration = $request->duration;
+                $timekeeper->ratePerHour = $request->ratePerHour;
+                $timekeeper->amount = $request->amount;
+                $timekeeper->job_type_id = $request->job_type_id;
+                if (!empty($timekeeper->roaster_id)) {
+                    $timekeeper->roaster_id = Auth::id();
                 }
+                if (!empty($request->roaster_status_id)) {
+                    $timekeeper->roaster_status_id = $request->roaster_status_id;
+                } else {
+                    $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
+                }
+                // $timekeeper->roaster_status_id = Session::get('roaster_status')['Published'];
+                $timekeeper->remarks = $request->remarks;
+                $timekeeper->created_at = Carbon::now();
+                $timekeeper->save();
+                
+                if ($request->roaster_type == 'Schedueled') {
+                    $pro = $timekeeper->project;
+                    if($timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']){
+                        $noty = 'one of your shift ' . $pro->pName . ' week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y') . ' has been updated.';
+                        push_notify('Shift Update:', $noty.' Please check eazytask for changes.',$timekeeper->employee->employee_role, $timekeeper->employee->firebase,'upcoming-shift');
+                        $timekeeper->employee->user->notify(new UpdateShiftNotification($noty,$timekeeper));
+                    }elseif($timekeeper->roaster_status_id == Session::get('roaster_status')['Published']){
+                        $noty = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y');
+                        push_notify('Shift Alert :',$noty.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
+                        $timekeeper->employee->user->notify(new NewShiftNotification($noty,$timekeeper));
+                    }
+                }
+                
+                $notification = array(
+                    'message' => $msg,
+                    'alert-type' => 'success'
+                );
+            } else {
+                $notification = array(
+                    'message' => $msg,
+                    'alert-type' => 'info'
+                );
             }
-            
-            $notification = array(
-                'message' => $msg,
-                'alert-type' => 'success'
-            );
-        } else {
-            $notification = array(
-                'message' => $msg,
-                'alert-type' => 'info'
-            );
-        }
+        }  
 
         if ($request->schedule_roaster) {
             return response()->json(['notification' => $msg]);
@@ -306,7 +308,7 @@ class NewTimeKeeperController extends Controller
             $shift_start = Carbon::parse($request->roaster_date . $request->shift_start);
             $shift_end = Carbon::parse($shift_start)->addMinute($request->duration * 60);
 
-            $timekeeper->employee_id = $request->employee_id;
+            // $timekeeper->employee_id = $request->employee_id;
             $timekeeper->client_id = $project->clientName;
             $timekeeper->project_id = $request->project_id;
             $timekeeper->roaster_date = Carbon::parse($request->roaster_date);

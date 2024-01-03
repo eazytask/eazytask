@@ -160,163 +160,287 @@
 
     </div>
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // Add change event listener to client dropdown
-            $('#client').change(function() {
-                var client_id = $(this).val();
+    <!-- <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'csrftoken': '{{ csrf_token() }}'
+            }
+        });
+    </script> -->
+    @push('scripts')
+        <script type="text/javascript"></script>
+        <script>
+            $(document).ready(function() {
+                let ids = []
+                let info = null
 
-                // Make AJAX request to get related projects
-                $.ajax({
-                    url: "{{ url('/get-projects') }}/" + client_id,
-                    type: 'GET',
-                    success: function(data) {
-                        // Clear existing options in the project dropdown
-                        $('#project').empty();
+                $(document).on("click", "#checkAllID", function() {
+                    let remainingCheckboxes = 9999999;
 
-                        // Add a default option
-                        $('#project').append('<option value="">Select Venue</option>');
+                    if ($("#checkAllID").is(':checked')) {
+                        let checkboxesToCheck = $('.checkID:not(:checked)').slice(0, remainingCheckboxes);
+                        checkboxesToCheck.prop('checked', true);
+                        ids = ids.concat(checkboxesToCheck.map(function() {
+                            return $(this).val();
+                        }).get());
+                    } else {
+                        ids = [];
+                        $('.checkID').prop('checked', false);
+                    }
 
-                        // Add fetched projects to the project dropdown
-                        $.each(data, function(key, value) {
-                            $('#project').append('<option value="' + value.id + '">' +
-                                value.pName + '</option>');
+                    updateButtonState();
+                });
+
+                //show imployee by status
+                function showImployees(status, info) {
+                    // eventToUpdate = info;
+
+                    ids = []
+                    totalId = []
+                    $('#checkAllID').prop('checked', false)
+                    // event_id = info.extendedProps.id
+                    let employees = info.employees
+
+                    let rows = ''
+                    $.each(employees, function(index, employee) {
+                        if (status == 'available') {
+                            insertThis(employee)
+                        } else if (status == 'inducted') {
+                            insertThis(employee)
+                        } else if (status == 'all') {
+                            insertThis(employee)
+                        }
+
+                    })
+
+                    function insertThis(employee) {
+                        let status = ''
+                        let employeeId = null
+                        let checkbox_status = ''
+                        if (employee.status == 'Added') {
+                            status = 'badge badge-pill badge-light-success mr-1'
+                            checkbox_status = 'disabled'
+                        } else {
+                            totalId.push(employee.id)
+                            employeeId = employee.id
+                        }
+
+                        rows += `
+                        <tr>
+                            <td><input type="checkbox" name="employee_ids[]" class="checkID" value="` + employeeId +
+                            `" ` + checkbox_status + `></td>
+                            <td>` + employee.fname + `</td>
+                            <td>` + employee.contact_number + `</td>
+                            <td>` + employee.email + `</td>
+                            <td class="` + status + `">` + 'Waiting' + `</td>
+                        </tr>
+            `
+                    }
+                    if (totalId == 0) {
+                        $("#checkAllID").prop('disabled', true)
+                    } else {
+                        $("#checkAllID").prop('disabled', false)
+                    }
+                    $('#eventClickTable').DataTable().clear().destroy();
+                    $('#eventClickTbody').html(rows);
+                    $('#eventClickTable').DataTable();
+                }
+
+                $(document).on("click", ".checkID", function() {
+                    if ($(this).is(':checked')) {
+                        // if (ids.length < info.extendedProps.no_employee_required) {
+                        ids.push($(this).val());
+                        // } else {
+                        // If more than 5 checkboxes are checked, uncheck the current checkbox
+                        // $(this).prop('checked', false);
+                        // }
+                    } else {
+                        let id = $(this).val();
+                        ids = jQuery.grep(ids, function(value) {
+                            return value != id;
                         });
                     }
+
+                    updateButtonState();
+                    updateCheckAll();
                 });
-            });
-        });
 
-        $('#download').click(function() {
-            const element = document.getElementById('htmlContent').innerHTML;
-            var opt = {
-                filename: 'Schedule-Roster.pdf',
-                html2canvas: {
-                    scale: 2
-                },
-                jsPDF: {
-                    unit: 'in',
-                    format: 'tabloid',
-                    orientation: 'portrait'
-                }
-            };
-
-            html2pdf().set(opt).from(element).save();
-        });
-
-        function allowDrop(ev) {
-            ev.preventDefault();
-        }
-
-        function noAllowDrop(ev) {
-            ev.stopPropagation();
-        }
-
-        function drag(ev, timekeeper_id) {
-            ev.dataTransfer.setData("text", ev.target.id);
-            ev.dataTransfer.setData("timekeeper_id", timekeeper_id);
-        }
-
-        function drop(ev, emp_id, date) {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("text");
-            var timekeeper_id = ev.dataTransfer.getData("timekeeper_id");
-            // console.log(timekeeper_id)
-            // console.log(emp_id)
-            // console.log(date)
-            ev.currentTarget.appendChild(document.getElementById(data));
-
-            $.ajax({
-                url: '/admin/home/report/drag/keeper',
-                type: 'get',
-                dataType: 'json',
-                data: {
-                    'timekeeper_id': timekeeper_id,
-                    'employee_id': emp_id,
-                    'date_': date,
-                },
-                success: function(data) {
-                    if (data.notification) {
-                        toastr.success(data.notification)
-                    }
-                    searchNow('current')
-                },
-                error: function(err) {
-                    console.log(err)
-                    toastr.warning('something went wrong!')
-                }
-            });
-        }
-
-
-        $('#prev').on('click', function() {
-            searchNow('previous')
-        })
-        $('#next').on('click', function() {
-            searchNow('next')
-        })
-        $('#copyWeek').on('click', function() {
-            searchNow('copy')
-        })
-        $('#publishAll').on('click', function() {
-            searchNow('publish')
-        })
-
-        function handleProjectChange(selectElement) {
-            if ($(selectElement).val()) {
-                $('#download').prop('disabled', false)
-                $('#copyWeek').prop('disabled', false)
-            } else {
-                $('#download').prop('disabled', true)
-                $('#copyWeek').prop('disabled', true)
-            }
-
-            searchNow('current')
-        }
-
-        function handleClientChange(selectElement) {
-            $('#project').empty();
-            if ($(selectElement).val()) {
-                $('#download').prop('disabled', false)
-                $('#copyWeek').prop('disabled', false)
-            } else {
-                $('#download').prop('disabled', true)
-                $('#copyWeek').prop('disabled', true)
-            }
-
-            searchNow('current')
-        }
-
-        let reload;
-
-        function searchNow(goTo = '', search_date = null) {
-            $.ajax({
-                url: '/admin/home/report/search',
-                type: 'get',
-                dataType: 'json',
-                data: {
-                    'go_to': goTo,
-                    'project': $('#project').val(),
-                    'client': $('#client').val(),
-                    'search_date': search_date,
-                },
-                success: function(data) {
-                    console.log(data);
-                    // $("#myTable").DataTable();
-                    if (data.search_date) {
-                        $("#search_date").val(moment(data.search_date).format('DD-MM-YYYY'))
+                function updateButtonState() {
+                    if (ids.length === 0) {
+                        $("#addTimekeeperSubmit").prop('disabled', true);
                     } else {
-                        $("#search_date").val('')
+                        $("#addTimekeeperSubmit").prop('disabled', false);
                     }
-                    $('#myTable').DataTable().clear().destroy();
-                    $('#tBody').html(data.data);
-                    $('#wrapper_print').empty();
+                }
 
-                    data.project.forEach(function(element) {
-                        if (data.report[element.id] == "")
-                            return;
+                function updateCheckAll() {
+                    if (ids.length == totalId.length) {
+                        $('#checkAllID').prop('checked', true);
+                    } else {
+                        $('#checkAllID').prop('checked', false);
+                    }
+                }
 
-                        $('#wrapper_print').append(`
+                $('#filterStatus').on('change', function() {
+                    showImployees($('#filterStatus').val(), info)
+                });
+
+                // Add change event listener to client dropdown
+                $('#client').change(function() {
+                    var client_id = $(this).val();
+
+                    // Make AJAX request to get related projects
+                    $.ajax({
+                        url: "{{ url('/get-projects') }}/" + client_id,
+                        type: 'GET',
+                        success: function(data) {
+                            // Clear existing options in the project dropdown
+                            $('#project').empty();
+
+                            // Add a default option
+                            $('#project').append(
+                                '<option value="">Select Venue</option>');
+
+                            // Add fetched projects to the project dropdown
+                            $.each(data, function(key, value) {
+                                $('#project').append('<option value="' + value
+                                    .id +
+                                    '">' +
+                                    value.pName + '</option>');
+                            });
+                        }
+                    });
+                });
+                $('#download').click(function() {
+                    const element = document.getElementById('htmlContent').innerHTML;
+                    var opt = {
+                        filename: 'Schedule-Roster.pdf',
+                        html2canvas: {
+                            scale: 2
+                        },
+                        jsPDF: {
+                            unit: 'in',
+                            format: 'tabloid',
+                            orientation: 'portrait'
+                        }
+                    };
+
+                    html2pdf().set(opt).from(element).save();
+                });
+
+                function allowDrop(ev) {
+                    ev.preventDefault();
+                }
+
+                function noAllowDrop(ev) {
+                    ev.stopPropagation();
+                }
+
+                function drag(ev, timekeeper_id) {
+                    ev.dataTransfer.setData("text", ev.target.id);
+                    ev.dataTransfer.setData("timekeeper_id", timekeeper_id);
+                }
+
+                function drop(ev, emp_id, date) {
+                    ev.preventDefault();
+                    var data = ev.dataTransfer.getData("text");
+                    var timekeeper_id = ev.dataTransfer.getData("timekeeper_id");
+                    // console.log(timekeeper_id)
+                    // console.log(emp_id)
+                    // console.log(date)
+                    ev.currentTarget.appendChild(document.getElementById(data));
+
+                    $.ajax({
+                        url: '/admin/home/report/drag/keeper',
+                        type: 'get',
+                        dataType: 'json',
+                        data: {
+                            'timekeeper_id': timekeeper_id,
+                            'employee_id': emp_id,
+                            'date_': date,
+                        },
+                        success: function(data) {
+                            if (data.notification) {
+                                toastr.success(data.notification)
+                            }
+                            searchNow('current')
+                        },
+                        error: function(err) {
+                            console.log(err)
+                            toastr.warning('something went wrong!')
+                        }
+                    });
+                }
+
+
+                $('#prev').on('click', function() {
+                    searchNow('previous')
+                })
+                $('#next').on('click', function() {
+                    searchNow('next')
+                })
+                $('#copyWeek').on('click', function() {
+                    searchNow('copy')
+                })
+                $('#publishAll').on('click', function() {
+                    searchNow('publish')
+                })
+
+                function handleProjectChange(selectElement) {
+                    if ($(selectElement).val()) {
+                        $('#download').prop('disabled', false)
+                        $('#copyWeek').prop('disabled', false)
+                    } else {
+                        $('#download').prop('disabled', true)
+                        $('#copyWeek').prop('disabled', true)
+                    }
+
+                    searchNow('current')
+                }
+
+                function handleClientChange(selectElement) {
+                    $('#project').empty();
+                    if ($(selectElement).val()) {
+                        $('#download').prop('disabled', false)
+                        $('#copyWeek').prop('disabled', false)
+                    } else {
+                        $('#download').prop('disabled', true)
+                        $('#copyWeek').prop('disabled', true)
+                    }
+
+                    searchNow('current')
+                }
+
+                let reload;
+
+                function searchNow(goTo = '', search_date = null) {
+                    $.ajax({
+                        url: '/admin/home/report/search',
+                        type: 'get',
+                        dataType: 'json',
+                        data: {
+                            'go_to': goTo,
+                            'project': $('#project').val(),
+                            'client': $('#client').val(),
+                            'search_date': search_date,
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            // $("#myTable").DataTable();
+                            if (data.search_date) {
+                                $("#search_date").val(moment(data.search_date).format('DD-MM-YYYY'))
+                            } else {
+                                $("#search_date").val('')
+                            }
+                            $('#myTable').DataTable().clear().destroy();
+                            $('#tBody').html(data.data);
+                            $('#wrapper_print').empty();
+
+                            data.project.forEach(function(element) {
+                                if (data.report[element.id] == "")
+                                    return;
+
+                                $('#wrapper_print').append(`
                         <div class="card-header bg-primary m-1 p-1">
                             <h6 id="print_client" class="text-uppercase text-light">Client Name: ${data.client}</h6>
                             <h6 id="print_project" class="text-uppercase text-light">Venue Name: ${element.pName}</h6>
@@ -346,187 +470,179 @@
                             </div>
                         </div>
                         `)
+                            });
+
+                            // $('#print_tBody').html(data.report);
+                            // $('#print_client').html('Client: ' + data.client);
+                            // $('#print_project').html('Venue: ' + data.project);
+                            // $('#print_hours').html('Total Hours: ' + data.hours);
+                            // $('#print_amount').html('Total Amount: $' + data.amount);
+                            $('#print_current_week').text('Date: ' + data.week_date)
+                            // $("#myTable").DataTable();
+                            $('#myTable').DataTable({
+                                dom: 'Bfrtip',
+                                paging: false,
+                                buttons: [
+                                    'copyHtml5',
+                                    'excelHtml5',
+                                    'csvHtml5',
+                                    'pdfHtml5'
+                                ],
+                                autoWidth: false, //step 1
+                                columnDefs: [
+                                    // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
+                                    {
+                                        width: '125px',
+                                        targets: 1
+                                    }, //step 2, column 2 out of 4
+                                    {
+                                        width: '125px',
+                                        targets: 2
+                                    }, //step 2, column 3 out of 4
+                                    {
+                                        width: '125px',
+                                        targets: 3
+                                    }, //step 2, column 3 out of 4
+                                    {
+                                        width: '125px',
+                                        targets: 4
+                                    }, //step 2, column 3 out of 4
+                                    {
+                                        width: '125px',
+                                        targets: 5
+                                    }, //step 2, column 3 out of 4
+                                    {
+                                        width: '125px',
+                                        targets: 6
+                                    }, //step 2, column 3 out of 4
+                                    {
+                                        width: '125px',
+                                        targets: 7
+                                    }, //step 2, column 3 out of 4
+                                ]
+                                // "bDestroy": true
+                            });
+                            feather.replace({
+                                width: 14,
+                                height: 14
+                            });
+                            $('#currentWeek').text(data.week_date)
+                            $('#total_hours').html('Total Hours: ' + data.hours);
+                            $('#total_amount').html('Total Amount: $' + data.amount);
+                            $('#logo').html('<img src="' + data.logo +
+                                '" alt="" class="ml-1" height="45px">');
+
+                            if (data.notification) {
+                                toastr.success(data.notification)
+                            }
+
+                            clearInterval(reload)
+                            reload = setInterval(() => {
+                                searchNow('current')
+                            }, 300000);
+                        },
+                        error: function(err) {
+                            console.log(err)
+
+                            clearInterval(reload)
+                            reload = setInterval(() => {
+                                searchNow('current')
+                            }, 300000);
+                        }
                     });
-
-                    // $('#print_tBody').html(data.report);
-                    // $('#print_client').html('Client: ' + data.client);
-                    // $('#print_project').html('Venue: ' + data.project);
-                    // $('#print_hours').html('Total Hours: ' + data.hours);
-                    // $('#print_amount').html('Total Amount: $' + data.amount);
-                    $('#print_current_week').text('Date: ' + data.week_date)
-                    // $("#myTable").DataTable();
-                    $('#myTable').DataTable({
-                        dom: 'Bfrtip',
-                        paging: false,
-                        buttons: [
-                            'copyHtml5',
-                            'excelHtml5',
-                            'csvHtml5',
-                            'pdfHtml5'
-                        ],
-                        autoWidth: false, //step 1
-                        columnDefs: [
-                            // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
-                            {
-                                width: '125px',
-                                targets: 1
-                            }, //step 2, column 2 out of 4
-                            {
-                                width: '125px',
-                                targets: 2
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 3
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 4
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 5
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 6
-                            }, //step 2, column 3 out of 4
-                            {
-                                width: '125px',
-                                targets: 7
-                            }, //step 2, column 3 out of 4
-                        ]
-                        // "bDestroy": true
-                    });
-                    feather.replace({
-                        width: 14,
-                        height: 14
-                    });
-                    $('#currentWeek').text(data.week_date)
-                    $('#total_hours').html('Total Hours: ' + data.hours);
-                    $('#total_amount').html('Total Amount: $' + data.amount);
-                    $('#logo').html('<img src="' + data.logo + '" alt="" class="ml-1" height="45px">');
-
-                    if (data.notification) {
-                        toastr.success(data.notification)
-                    }
-
-                    clearInterval(reload)
-                    reload = setInterval(() => {
-                        searchNow('current')
-                    }, 300000);
-                },
-                error: function(err) {
-                    console.log(err)
-
-                    clearInterval(reload)
-                    reload = setInterval(() => {
-                        searchNow('current')
-                    }, 300000);
                 }
-            });
-        }
 
-        function deleteRoaster(roasterId) {
-            // let roasterId = $("#deleteBtn").attr("roasterId");
-            swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover this!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
+                function deleteRoaster(roasterId) {
+                    // let roasterId = $("#deleteBtn").attr("roasterId");
+                    swal({
+                            title: "Are you sure?",
+                            text: "Once deleted, you will not be able to recover this!",
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true,
+                        })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                $.ajax({
+                                    url: '/admin/home/report/delete/' + roasterId,
+                                    type: 'GET',
+                                    success: function(data) {
+                                        // $("#roasterClick").modal("hide")
+                                        searchNow('current')
+                                        if (data.notification) {
+                                            toastr.success(data.notification)
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                }
+
+                function publishRoaster(roasterId) {
+                    $.ajax({
+                        url: '/admin/home/report/publish/' + roasterId,
+                        type: 'GET',
+                        success: function(data) {
+                            // $("#roasterClick").modal("hide")
+                            searchNow('current')
+                            if (data.status == true) {
+                                toastr.success(data.notification)
+                            } else {
+                                toastr.info(data.notification)
+                            }
+                        }
+                    });
+
+                }
+
+                $('#addTimekeeperSubmit').on('click', function() {
+                    if ($("#timekeeperAddForm").valid()) {
+                        console.log(ids);
                         $.ajax({
-                            url: '/admin/home/report/delete/' + roasterId,
-                            type: 'GET',
+                            data: $('#timekeeperAddForm').serialize(),
+                            url: "/admin/home/new/timekeeper/store",
+                            type: "POST",
+                            dataType: 'json',
                             success: function(data) {
+                                searchNow('current')
+                                $("#addTimeKeeper").modal("hide")
                                 // $("#roasterClick").modal("hide")
                                 searchNow('current')
                                 if (data.notification) {
                                     toastr.success(data.notification)
                                 }
+                            },
+                            error: function(data) {
+                                console.log(data)
+                                searchNow('current')
                             }
                         });
                     }
-                });
+                })
 
-        }
-
-        function publishRoaster(roasterId) {
-            $.ajax({
-                url: '/admin/home/report/publish/' + roasterId,
-                type: 'GET',
-                success: function(data) {
-                    // $("#roasterClick").modal("hide")
-                    searchNow('current')
-                    if (data.status == true) {
-                        toastr.success(data.notification)
-                    } else {
-                        toastr.info(data.notification)
+                $('#editTimekeeperSubmit').on('click', function() {
+                    if ($("#timekeeperAddForm").valid()) {
+                        $.ajax({
+                            data: $('#timekeeperAddForm').serialize(),
+                            url: "/admin/home/new/timekeeper/update",
+                            type: "POST",
+                            dataType: 'json',
+                            success: function(data) {
+                                $("#addTimeKeeper").modal("hide")
+                                // $("#roasterClick").modal("hide")
+                                searchNow('current')
+                                if (data.notification) {
+                                    toastr.success(data.notification)
+                                }
+                            },
+                            error: function(data) {
+                                console.log(data)
+                            }
+                        });
                     }
-                }
-            });
+                })
 
-        }
-
-        function timekeeperAddFunc() {
-            if ($("#timekeeperAddForm").valid()) {
-                $.ajax({
-                    data: $('#timekeeperAddForm').serialize(),
-                    url: "/admin/home/new/timekeeper/store",
-                    type: "POST",
-                    dataType: 'json',
-                    success: function(data) {
-                        searchNow('current')
-                        $("#addTimeKeeper").modal("hide")
-                        // $("#roasterClick").modal("hide")
-                        searchNow('current')
-                        if (data.notification) {
-                            toastr.success(data.notification)
-                        }
-                    },
-                    error: function(data) {
-                        console.log(data)
-                        searchNow('current')
-                    }
-                });
-            }
-        }
-
-        function timekeeperEditFunc() {
-            if ($("#timekeeperAddForm").valid()) {
-                $.ajax({
-                    data: $('#timekeeperAddForm').serialize(),
-                    url: "/admin/home/new/timekeeper/update",
-                    type: "POST",
-                    dataType: 'json',
-                    success: function(data) {
-                        $("#addTimeKeeper").modal("hide")
-                        // $("#roasterClick").modal("hide")
-                        searchNow('current')
-                        if (data.notification) {
-                            toastr.success(data.notification)
-                        }
-                    },
-                    error: function(data) {
-                        console.log(data)
-                    }
-                });
-            }
-        }
-    </script>
-    <!-- <script type="text/javascript">
-        $.ajaxSetup({
-            headers: {
-                'csrftoken': '{{ csrf_token() }}'
-            }
-        });
-    </script> -->
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
                 searchNow()
 
                 $('#search_date').on('change', function() {
@@ -560,7 +676,7 @@
                     }
                 })
 
-                $('input[name="filter_employee"]').on('change', function() {
+                $('#filterStatus').on('change', function() {
 
                     console.log('filter')
                     filterEmployee()
@@ -572,7 +688,7 @@
                         type: 'get',
                         dataType: 'json',
                         data: {
-                            'filter': $('input[name="filter_employee"]:checked').val(),
+                            'filter': $('#filterStatus').val(),
                             'project_id': $("#project-select").val(),
                             'roster_date': $("#roaster_date").val(),
                             'shift_start': $("#shift_start").val(),
@@ -580,17 +696,19 @@
                         },
                         success: function(data) {
                             // console.log(data)
-                            let html = '<option value="">please choose...</option>'
-                            if (emp = window.current_emp) {
-                                html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp
-                                    .mname) ? emp.mname : '') + " " + emp.lname + "</option>"
-                            }
-                            jQuery.each(data.employees, function(i, val) {
-                                html += "<option value='" + val.id + "'>" + val.fname + " " + ((val
-                                    .mname) ? val.mname : '') + "" + val.lname + "</option>"
-                            })
-                            // console.log(html)
-                            $('#employee_id').html(html)
+                            info = data;
+                            showImployees($('#filterStatus').val(), info)
+                            // let html = '<option value="">please choose...</option>'
+                            // if (emp = window.current_emp) {
+                            //     html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp
+                            //         .mname) ? emp.mname : '') + " " + emp.lname + "</option>"
+                            // }
+                            // jQuery.each(data.employees, function(i, val) {
+                            //     html += "<option value='" + val.id + "'>" + val.fname + " " + ((val
+                            //         .mname) ? val.mname : '') + "" + val.lname + "</option>"
+                            // })
+                            // // console.log(html)
+                            // $('#employee_id').html(html)
                             if (data.notification) {
                                 toastr.success(data.notification)
                             }
@@ -613,6 +731,7 @@
                     $("#project-select").val("").trigger('change');
                     $("#editTimekeeperSubmit").prop("hidden", true)
                     $("#addTimekeeperSubmit").prop("hidden", false)
+                    $("#tableListEmployee").show();
                     $("#addTimeKeeper").modal("show")
                 })
 
@@ -749,6 +868,7 @@
                     $("#remarks").val(rowData.remarks)
 
                     $("#project-select").val(rowData.project_id).trigger('change');
+                    $("#tableListEmployee").hide();
                     $("#addTimeKeeper").modal("show")
 
                     // initAllDatePicker();
