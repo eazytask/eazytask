@@ -347,13 +347,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Calendar plugins
   var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
+    initialView: 'listMonth',
     firstDay: 1,
     eventDisplay: 'block',
     displayEventTime: false,
     eventDidMount: function (info) {
       $(info.el).tooltip({
-        title: "<div class='text-left'>" + info.event.extendedProps.description + "</div>",
+        title: "<b>Start time: "+ info.event.extendedProps.shift_start +"</b><br><b>End time: "+ info.event.extendedProps.shift_end +"</b><br><b>Rate: $"+ info.event.extendedProps.rate +"</b><br><b>Employee required: "+ info.event.extendedProps.no_employee_required +"</b><br><br><div class='text-left'>" + info.event.extendedProps.description + "</div>",
         // title: info.event.extendedProps.calendar,                
         html: true,
         placement: 'top',
