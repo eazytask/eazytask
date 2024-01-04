@@ -51,14 +51,24 @@
                 <div class="card-body pt-0 pb-0">
                     <div class="row row-xs">
                         <div class="col-12 mb-1">
-                            <span class="font-weight-bolder  mt-25 mr-25 text-capitalize float-left">Search a date:</span>
-                            <input type="text" id="search_date" name="search_date"
-                                class="form-control format-picker form-control-sm float-left text-center bg-light-info"
-                                placeholder="dd-mm-yyyy" style="width:135px">
-
-                            <button class="btn btn-default float-right" id="addTimekeeperModal" title="Add Employee"><img
+                            <button class="btn btn-default float-left" id="info" title="Show Info"><img
+                                    src="{{ url('backend/img/info.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
+                            <button class="btn btn-default float-left" id="download" title="Download Report" disabled><img
+                                    src="{{ url('backend/img/download_icon.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
+                            <button class="btn btn-default float-left" id="addTimekeeperModal" title="Add Employee"><img
                                     src="{{ url('backend/img/user_add.png') }}" class="img-responsive"
                                     style="width: 35px;"></button>
+
+                            <input type="text" id="search_date" name="search_date"
+                                class="form-control format-pickers form-control-sm float-right text-center bg-light-info"
+                                placeholder="dd-mm-yyyy" style="width:135px">
+                            <span class="font-weight-bolder  mt-25 mr-25 text-capitalize float-right">Search a date:</span>
+                            <span class="float-right container-picker">
+
+                            </span>
+
                         </div>
                         <div class="col-12 text-center">
 
@@ -99,9 +109,6 @@
                                     @endforeach
                                 </select>
                             </button>
-                            <button id="download" disabled
-                                class="btn text-white bg-gradient-primary pt-50 pb-50 mr-50 mr-25"><i
-                                    data-feather='download' class="mr-25"></i>Download</button>
                             <!-- </div> -->
 
                         </div>
@@ -119,7 +126,7 @@
                             <div class="table-responsive">
 
                                 <div class="mt-2 total-display p-25 pb-75 pt-75 bg-light-primary font-weight-bold border-primary rounded"
-                                    style="margin-bottom: -46px; width: 308px;">
+                                    id="info_label" style="margin-bottom: -46px; width: 308px; display:none;">
                                     <span class="mr-1" id="total_hours"></span>
                                     <span class="" id="total_amount"></span>
                                 </div>
@@ -176,6 +183,13 @@
             let info = null
             let reload;
 
+            var containerSelector = '.container-picker';
+
+            // Initialize the date picker
+            var picker = $('.format-pickers').pickadate({
+                format: 'dd-mm-yyyy',
+                container: containerSelector,
+            }).pickadate('picker');
 
             $(document).on("click", "#checkAllID", function() {
                 let remainingCheckboxes = 9999999;
@@ -314,6 +328,11 @@
                     }
                 });
             });
+
+            $('#info').click(function() {
+                $('#info_label').toggle();
+            });
+
             $('#download').click(function() {
                 const element = document.getElementById('htmlContent').innerHTML;
                 var opt = {
