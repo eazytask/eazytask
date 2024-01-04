@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\JobType;
 use App\Notifications\NewShiftNotification;
 use App\Notifications\UpdateShiftNotification;
+use App\Notifications\DeleteShiftNotification;
 use Illuminate\Support\Facades\Session;
 
 use Illuminate\Http\Request;
@@ -307,9 +308,23 @@ class NewTimeKeeperController extends Controller
         }
         if ($continue) {
 
+            $employee_changed = false;
             $request->roaster_date =  Carbon::parse($request->roaster_date)->format('d-m-Y');
             $shift_start = Carbon::parse($request->roaster_date . $request->shift_start);
             $shift_end = Carbon::parse($shift_start)->addMinute($request->duration * 60);
+
+            $pro = $timekeeper->project;
+
+            if($timekeeper->employee_id != $request->employee_ids[0]) {
+                $employee_changed = true;
+
+                if($timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']){
+                    $noty = 'one of your shift ' . $pro->pName . ' week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y') . ' has been deleted. You are not required to sign on this shift.';
+                    push_notify('Shift Deleted:', $noty.' Please check eazytask.',$timekeeper->employee->employee_role, $timekeeper->employee->firebase,'unconfirmed-shift');
+                    $timekeeper->employee->user->notify(new DeleteShiftNotification($noty,$timekeeper));
+                }
+
+            }
 
             $timekeeper->employee_id = $request->employee_ids[0] ?? $timekeeper->employee_id;
             $timekeeper->client_id = $project->clientName;
@@ -322,11 +337,11 @@ class NewTimeKeeperController extends Controller
             $timekeeper->amount = $request->amount;
             $timekeeper->job_type_id = $request->job_type_id;
 
-            if ($request->roaster_status_id) {
-                $timekeeper->roaster_status_id = $request->roaster_status_id;
-            } else {
-                $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
-            }
+            // if ($request->roaster_status_id) {
+            //     $timekeeper->roaster_status_id = $request->roaster_status_id;
+            // } else {
+            //     $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
+            // }
 
             $timekeeper->remarks = $request->remarks;
             $timekeeper->updated_at = Carbon::now();
@@ -335,9 +350,23 @@ class NewTimeKeeperController extends Controller
             if ($request->roaster_type == 'Schedueled') {
                 $pro = $timekeeper->project;
                 if($timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']){
-                    $noty = 'one of your shift ' . $pro->pName . ' week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y') . ' has been updated.';
-                    push_notify('Shift Update:', $noty.' Please check eazytask for changes.',$timekeeper->employee->employee_role, $timekeeper->employee->firebase,'upcoming-shift');
-                    $timekeeper->employee->user->notify(new UpdateShiftNotification($noty,$timekeeper));
+                    if($employee_changed)
+                    {
+                        $theEmployee = Employee::find($request->employee_ids[0]);
+                        $timekeeper = TimeKeeper::find($request->timepeeper_id);
+                        
+                        $noty = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y');
+                        push_notify('Shift Alert :',$noty.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
+                        $timekeeper->employee->user->notify(new NewShiftNotification($noty,$timekeeper));
+
+                    }else{
+                        $noty = 'one of your shift ' . $pro->pName . ' week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y') . ' has been updated.';
+                        push_notify('Shift Update:', $noty.' Please check eazytask for changes.',$timekeeper->employee->employee_role, $timekeeper->employee->firebase,'upcoming-shift');
+                        $timekeeper->employee->user->notify(new UpdateShiftNotification($noty,$timekeeper));
+                    }
+
+                    $timekeeper->roaster_status_id = Session::get('roaster_status')['Not published'];
+                    $timekeeper->save();
                 }elseif($timekeeper->roaster_status_id == Session::get('roaster_status')['Published']){
                     $noty = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y');
                     push_notify('Shift Alert :',$noty.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
@@ -369,7 +398,15 @@ class NewTimeKeeperController extends Controller
         $timekeeper = TimeKeeper::find($id);
         if ($timekeeper) {
             Session::put('current_employee', $timekeeper->employee_id);
+
+            $pro = $timekeeper->project;
+
+            $noty = 'one of your shift ' . $pro->pName . ' week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y') . ' has been deleted. You are not required to sign on this shift.';
+            push_notify('Shift Deleted:', $noty.' Please check eazytask.',$timekeeper->employee->employee_role, $timekeeper->employee->firebase,'unconfirmed-shift');
+            $timekeeper->employee->user->notify(new UpdateShiftNotification($noty,$timekeeper));
+
             $timekeeper->delete();
+            
             $notification = array(
                 'message' => 'Timekeeper deleted successfully.',
                 'alert-type' => 'error'

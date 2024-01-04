@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Client;
+use App\Notifications\DeleteShiftNotification;
 
 class ReportController extends Controller
 {
@@ -338,6 +339,15 @@ class ReportController extends Controller
                         $project_name = '';
                     }
 
+                    if($timekeeper->shift_start > Carbon::now()) {
+                        $deleteButton = "<a class='dropdown-item' href='javascript:void(0)' onclick='deleteRoaster($timekeeper->id)'>
+                        <i data-feather='trash' class='mr-25'></i>
+                        <span class='align-middle'>Delete</span>
+                        </a>";
+                    }else{
+                        $deleteButton = "";
+                    }
+
                     $has_app = $timekeeper->payment_status || $timekeeper->is_approved ? true : false;
                     //mb-50 dan border-radius
                     $val = "<div id='$unique_id' $colors draggable='" . ($has_app ? 'false' : 'true') . "' ondragstart='drag(event,$timekeeper->id)' class='font-weight-bolder text-uppercase shadow p-50 roster mt-50'>
@@ -353,10 +363,7 @@ class ReportController extends Controller
                             <i data-feather='copy' class='mr-25'></i>
                             <span class='align-middle'>Copy</span>
                         </a>
-                        <a class='dropdown-item' href='javascript:void(0)' onclick='deleteRoaster($timekeeper->id)'>
-                            <i data-feather='trash' class='mr-25'></i>
-                            <span class='align-middle'>Delete</span>
-                        </a>
+                        $deleteButton
                         <a class='dropdown-item' href='javascript:void(0)' " . ($timekeeper->roaster_type=='Unschedueled' ? 'hidden' : '') . " onclick='publishRoaster($timekeeper->id)' >
                             <i data-feather='calendar' class='mr-25'></i>
                             <span class='align-middle'>Publish</span>
@@ -806,6 +813,13 @@ class ReportController extends Controller
     {
         $timekeeper = TimeKeeper::find($id);
         if ($timekeeper) {
+
+            $pro = $timekeeper->project;
+
+            $noty = 'one of your shift ' . $pro->pName . ' week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y') . ' has been deleted. You are not required to sign on this shift.';
+            push_notify('Shift Deleted:', $noty.' Please check eazytask.',$timekeeper->employee->employee_role, $timekeeper->employee->firebase,'unconfirmed-shift');
+            $timekeeper->employee->user->notify(new DeleteShiftNotification($noty,$timekeeper));
+
             $timekeeper->delete();
             $notification = 'Timekeeper deleted successfully.';
         } else {
