@@ -173,567 +173,567 @@
             let ids = []
             let info = null
             let reload;
-            $(document).ready(function() {
 
-                $(document).on("click", "#checkAllID", function() {
-                    let remainingCheckboxes = 9999999;
 
-                    if ($("#checkAllID").is(':checked')) {
-                        let checkboxesToCheck = $('.checkID:not(:checked)').slice(0, remainingCheckboxes);
-                        checkboxesToCheck.prop('checked', true);
-                        ids = ids.concat(checkboxesToCheck.map(function() {
-                            return $(this).val();
-                        }).get());
-                    } else {
-                        ids = [];
-                        $('.checkID').prop('checked', false);
+            $(document).on("click", "#checkAllID", function() {
+                let remainingCheckboxes = 9999999;
+
+                if ($("#checkAllID").is(':checked')) {
+                    let checkboxesToCheck = $('.checkID:not(:checked)').slice(0, remainingCheckboxes);
+                    checkboxesToCheck.prop('checked', true);
+                    ids = ids.concat(checkboxesToCheck.map(function() {
+                        return $(this).val();
+                    }).get());
+                } else {
+                    ids = [];
+                    $('.checkID').prop('checked', false);
+                }
+
+                updateButtonState();
+            });
+
+            //show imployee by status
+            function showImployees(status, info) {
+                // eventToUpdate = info;
+
+                ids = []
+                totalId = []
+                $('#checkAllID').prop('checked', false)
+                // event_id = info.extendedProps.id
+                let employees = info.employees
+
+                let rows = ''
+                $.each(employees, function(index, employee) {
+                    if (status == 'available') {
+                        insertThis(employee)
+                    } else if (status == 'inducted') {
+                        insertThis(employee)
+                    } else if (status == 'all') {
+                        insertThis(employee)
                     }
 
-                    updateButtonState();
-                });
+                })
 
-                //show imployee by status
-                function showImployees(status, info) {
-                    // eventToUpdate = info;
+                function insertThis(employee) {
+                    let status = ''
+                    let employeeId = null
+                    let checkbox_status = ''
+                    if (employee.status == 'Added') {
+                        status = 'badge badge-pill badge-light-success mr-1'
+                        checkbox_status = 'disabled'
+                    } else {
+                        totalId.push(employee.id)
+                        employeeId = employee.id
+                    }
 
-                    ids = []
-                    totalId = []
-                    $('#checkAllID').prop('checked', false)
-                    // event_id = info.extendedProps.id
-                    let employees = info.employees
-
-                    let rows = ''
-                    $.each(employees, function(index, employee) {
-                        if (status == 'available') {
-                            insertThis(employee)
-                        } else if (status == 'inducted') {
-                            insertThis(employee)
-                        } else if (status == 'all') {
-                            insertThis(employee)
-                        }
-
-                    })
-
-                    function insertThis(employee) {
-                        let status = ''
-                        let employeeId = null
-                        let checkbox_status = ''
-                        if (employee.status == 'Added') {
-                            status = 'badge badge-pill badge-light-success mr-1'
-                            checkbox_status = 'disabled'
-                        } else {
-                            totalId.push(employee.id)
-                            employeeId = employee.id
-                        }
-
-                        rows += `
+                    rows += `
                         <tr>
                             <td><input type="checkbox" class="checkID" value="` + employeeId +
-                            `" ` + checkbox_status + `></td>
+                        `" ` + checkbox_status + `></td>
                             <td>` + employee.fname + `</td>
                             <td>` + employee.contact_number + `</td>
                             <td>` + employee.email + `</td>
                             <td class="` + status + `">` + 'Waiting' + `</td>
                         </tr>
             `
-                    }
-                    if (totalId == 0) {
-                        $("#checkAllID").prop('disabled', true)
-                    } else {
-                        $("#checkAllID").prop('disabled', false)
-                    }
-                    $('#eventClickTable').DataTable().clear().destroy();
-                    $('#eventClickTbody').html(rows);
-                    $('#eventClickTable').DataTable();
                 }
-
-                $(document).on("click", ".checkID", function() {
-                    if ($(this).is(':checked')) {
-                        // if (ids.length < info.extendedProps.no_employee_required) {
-                        ids.push($(this).val());
-                        // } else {
-                        // If more than 5 checkboxes are checked, uncheck the current checkbox
-                        // $(this).prop('checked', false);
-                        // }
-                    } else {
-                        let id = $(this).val();
-                        ids = jQuery.grep(ids, function(value) {
-                            return value != id;
-                        });
-                    }
-
-                    updateButtonState();
-                    updateCheckAll();
-                });
-
-                function updateButtonState() {
-                    if (ids.length === 0) {
-                        $("#addTimekeeperSubmit").prop('disabled', true);
-                    } else {
-                        $("#addTimekeeperSubmit").prop('disabled', false);
-                    }
+                if (totalId == 0) {
+                    $("#checkAllID").prop('disabled', true)
+                } else {
+                    $("#checkAllID").prop('disabled', false)
                 }
+                $('#eventClickTable').DataTable().clear().destroy();
+                $('#eventClickTbody').html(rows);
+                $('#eventClickTable').DataTable();
+            }
 
-                function updateCheckAll() {
-                    if (ids.length == totalId.length) {
-                        $('#checkAllID').prop('checked', true);
-                    } else {
-                        $('#checkAllID').prop('checked', false);
-                    }
-                }
-
-                $('#filterStatus').on('change', function() {
-                    showImployees($('#filterStatus').val(), info)
-                });
-
-                // Add change event listener to client dropdown
-                $('#client').change(function() {
-                    var client_id = $(this).val();
-
-                    // Make AJAX request to get related projects
-                    $.ajax({
-                        url: "{{ url('/get-projects') }}/" + client_id,
-                        type: 'GET',
-                        success: function(data) {
-                            // Clear existing options in the project dropdown
-                            $('#project').empty();
-
-                            // Add a default option
-                            $('#project').append(
-                                '<option value="">Select Venue</option>');
-
-                            // Add fetched projects to the project dropdown
-                            $.each(data, function(key, value) {
-                                $('#project').append('<option value="' + value
-                                    .id +
-                                    '">' +
-                                    value.pName + '</option>');
-                            });
-                        }
-                    });
-                });
-                $('#download').click(function() {
-                    const element = document.getElementById('htmlContent').innerHTML;
-                    var opt = {
-                        filename: 'Schedule-Roster.pdf',
-                        html2canvas: {
-                            scale: 2
-                        },
-                        jsPDF: {
-                            unit: 'in',
-                            format: 'tabloid',
-                            orientation: 'portrait'
-                        }
-                    };
-
-                    html2pdf().set(opt).from(element).save();
-                });
-
-                function allowDrop(ev) {
-                    ev.preventDefault();
-                }
-
-                function noAllowDrop(ev) {
-                    ev.stopPropagation();
-                }
-
-                function drag(ev, timekeeper_id) {
-                    ev.dataTransfer.setData("text", ev.target.id);
-                    ev.dataTransfer.setData("timekeeper_id", timekeeper_id);
-                }
-
-                function drop(ev, emp_id, date) {
-                    ev.preventDefault();
-                    var data = ev.dataTransfer.getData("text");
-                    var timekeeper_id = ev.dataTransfer.getData("timekeeper_id");
-                    // console.log(timekeeper_id)
-                    // console.log(emp_id)
-                    // console.log(date)
-                    ev.currentTarget.appendChild(document.getElementById(data));
-
-                    $.ajax({
-                        url: '/admin/home/report/drag/keeper',
-                        type: 'get',
-                        dataType: 'json',
-                        data: {
-                            'timekeeper_id': timekeeper_id,
-                            'employee_id': emp_id,
-                            'date_': date,
-                        },
-                        success: function(data) {
-                            if (data.notification) {
-                                toastr.success(data.notification)
-                            }
-                            searchNow('current')
-                        },
-                        error: function(err) {
-                            console.log(err)
-                            toastr.warning('something went wrong!')
-                        }
+            $(document).on("click", ".checkID", function() {
+                if ($(this).is(':checked')) {
+                    // if (ids.length < info.extendedProps.no_employee_required) {
+                    ids.push($(this).val());
+                    // } else {
+                    // If more than 5 checkboxes are checked, uncheck the current checkbox
+                    // $(this).prop('checked', false);
+                    // }
+                } else {
+                    let id = $(this).val();
+                    ids = jQuery.grep(ids, function(value) {
+                        return value != id;
                     });
                 }
 
+                updateButtonState();
+                updateCheckAll();
+            });
 
-                $('#prev').on('click', function() {
-                    searchNow('previous')
-                })
-                $('#next').on('click', function() {
-                    searchNow('next')
-                })
-                $('#copyWeek').on('click', function() {
-                    searchNow('copy')
-                })
-                $('#publishAll').on('click', function() {
-                    searchNow('publish')
-                })
-
-                function handleProjectChange(selectElement) {
-                    if ($(selectElement).val()) {
-                        $('#download').prop('disabled', false)
-                        $('#copyWeek').prop('disabled', false)
-                    } else {
-                        $('#download').prop('disabled', true)
-                        $('#copyWeek').prop('disabled', true)
-                    }
-
-                    searchNow('current')
+            function updateButtonState() {
+                if (ids.length === 0) {
+                    $("#addTimekeeperSubmit").prop('disabled', true);
+                } else {
+                    $("#addTimekeeperSubmit").prop('disabled', false);
                 }
+            }
 
-                function handleClientChange(selectElement) {
-                    $('#project').empty();
-                    if ($(selectElement).val()) {
-                        $('#download').prop('disabled', false)
-                        $('#copyWeek').prop('disabled', false)
-                    } else {
-                        $('#download').prop('disabled', true)
-                        $('#copyWeek').prop('disabled', true)
-                    }
-
-                    searchNow('current')
+            function updateCheckAll() {
+                if (ids.length == totalId.length) {
+                    $('#checkAllID').prop('checked', true);
+                } else {
+                    $('#checkAllID').prop('checked', false);
                 }
+            }
 
-                $('#addTimekeeperSubmit').on('click', function() {
-                    if ($("#timekeeperAddForm").valid()) {
-                        var serializedData = $('#timekeeperAddForm').serialize();
+            $('#filterStatus').on('change', function() {
+                showImployees($('#filterStatus').val(), info)
+            });
 
-                        // Convert ids array to a serialized format
-                        var employeeIdsSerialized = $.param({
-                            "employee_ids[]": ids
-                        }, true);
 
-                        // Append employeeIdsSerialized to the original serialized data
-                        var newData = serializedData + '&' + employeeIdsSerialized;
+            // Add change event listener to client dropdown
+            $('#client').change(function() {
+                var client_id = $(this).val();
 
-                        // Now, newData contains the updated serialized data with employee_ids
-                        console.log(newData);
+                // Make AJAX request to get related projects
+                $.ajax({
+                    url: "{{ url('/get-projects') }}/" + client_id,
+                    type: 'GET',
+                    success: function(data) {
+                        // Clear existing options in the project dropdown
+                        $('#project').empty();
 
-                        $.ajax({
-                            data: newData,
-                            url: "/admin/home/new/timekeeper/store",
-                            type: "POST",
-                            dataType: 'json',
-                            success: function(data) {
-                                searchNow('current')
-                                $("#addTimeKeeper").modal("hide")
-                                // $("#roasterClick").modal("hide")
-                                searchNow('current')
-                                if (data.notification) {
-                                    toastr.success(data.notification)
-                                }
-                            },
-                            error: function(data) {
-                                console.log(data)
-                                searchNow('current')
-                            }
+                        // Add a default option
+                        $('#project').append(
+                            '<option value="">Select Venue</option>');
+
+                        // Add fetched projects to the project dropdown
+                        $.each(data, function(key, value) {
+                            $('#project').append('<option value="' + value
+                                .id +
+                                '">' +
+                                value.pName + '</option>');
                         });
                     }
-                })
-
-                $('#editTimekeeperSubmit').on('click', function() {
-                    if ($("#timekeeperAddForm").valid()) {
-                        $.ajax({
-                            data: $('#timekeeperAddForm').serialize(),
-                            url: "/admin/home/new/timekeeper/update",
-                            type: "POST",
-                            dataType: 'json',
-                            success: function(data) {
-                                $("#addTimeKeeper").modal("hide")
-                                // $("#roasterClick").modal("hide")
-                                searchNow('current')
-                                if (data.notification) {
-                                    toastr.success(data.notification)
-                                }
-                            },
-                            error: function(data) {
-                                console.log(data)
-                            }
-                        });
-                    }
-                })
-
-                searchNow()
-
-                $('#search_date').on('change', function() {
-                    searchNow('search_date', $('#search_date').val())
-                })
-                $("#timekeeperAddForm").validate({
-                    errorPlacement: function(error, element) {
-                        if (element.hasClass('select2') && element.next('.select2-container').length) {
-                            error.insertAfter(element.next('.select2-container'));
-                        } else if (element.parent('.input-group').length) {
-                            error.insertAfter(element.parent());
-                        } else if (element.prop('type') === 'radio' && element.parent('.radio-inline')
-                            .length) {
-                            error.insertAfter(element.parent().parent());
-                        } else if (element.prop('type') === 'checkbox' || element.prop('type') ===
-                            'radio') {
-                            error.appendTo(element.parent().parent());
-                        } else {
-                            error.insertAfter(element);
-                        }
-                    }
-                })
-
-                $('#project-select').on('change', function() {
-                    console.log('project')
-                    filterEmployee()
-                    if ($(this).val()) {
-                        $('#inducted').prop('disabled', false)
-                    } else {
-                        $('#inducted').prop('disabled', true)
-                    }
-                })
-
-                $('#filterStatus').on('change', function() {
-
-                    console.log('filter')
-                    filterEmployee()
-                })
-
-                function filterEmployee() {
-                    $.ajax({
-                        url: '/admin/home/filter/employee',
-                        type: 'get',
-                        dataType: 'json',
-                        data: {
-                            'filter': $('#filterStatus').val(),
-                            'project_id': $("#project-select").val(),
-                            'roster_date': $("#roaster_date").val(),
-                            'shift_start': $("#shift_start").val(),
-                            'shift_end': $("#shift_end").val(),
-                        },
-                        success: function(data) {
-                            // console.log(data)
-                            info = data;
-                            showImployees($('#filterStatus').val(), info)
-                            // let html = '<option value="">please choose...</option>'
-                            // if (emp = window.current_emp) {
-                            //     html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp
-                            //         .mname) ? emp.mname : '') + " " + emp.lname + "</option>"
-                            // }
-                            // jQuery.each(data.employees, function(i, val) {
-                            //     html += "<option value='" + val.id + "'>" + val.fname + " " + ((val
-                            //         .mname) ? val.mname : '') + "" + val.lname + "</option>"
-                            // })
-                            // // console.log(html)
-                            // $('#employee_id').html(html)
-                            if (data.notification) {
-                                toastr.success(data.notification)
-                            }
-                        },
-                        error: function(err) {
-                            console.log(err)
-                        }
-                    });
-                }
-
-                $(document).on('show.bs.modal', '.modal', function() {
-                    const zIndex = 1040 + 10 * $('.modal:visible').length;
-                    $(this).css('z-index', zIndex);
-                    setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
-                        .addClass('modal-stack'));
                 });
-
-                $(document).on("click", "#addTimekeeperModal", function() {
-                    resetData()
-                    $("#project-select").val("").trigger('change');
-                    $("#editTimekeeperSubmit").prop("hidden", true)
-                    $("#addTimekeeperSubmit").prop("hidden", false)
-                    $("#tableListEmployee").show();
-                    $("#addTimeKeeper").modal("show")
-                })
-
-
-                function timeToSeconds(time) {
-                    time = time.split(/:/);
-                    return time[0] * 3600 + time[1] * 60;
-                }
-                $.time = function(dateObject) {
-                    var t = dateObject.split(/[- :]/);
-                    // Apply each element to the Date function
-                    var actiondate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-                    var d = new Date(actiondate);
-
-                    // var d = new Date(dateObject);
-                    var curr_hour = d.getHours();
-                    var curr_min = d.getMinutes();
-                    var date = curr_hour + ':' + curr_min;
-                    return date;
+            });
+            $('#download').click(function() {
+                const element = document.getElementById('htmlContent').innerHTML;
+                var opt = {
+                    filename: 'Schedule-Roster.pdf',
+                    html2canvas: {
+                        scale: 2
+                    },
+                    jsPDF: {
+                        unit: 'in',
+                        format: 'tabloid',
+                        orientation: 'portrait'
+                    }
                 };
 
-                function allCalculation() {
-                    var start = $("#shift_start").val();
-                    var end = $("#shift_end").val();
-                    var rate = $("#rate").val();
-
-                    if (start && end) {
-                        // calculate hours
-                        var diff = (timeToSeconds(end) - timeToSeconds(start)) / 3600
-                        if (diff < 0) {
-                            diff = 24 - Math.abs(diff)
-                        }
-                        if (diff) {
-                            $("#duration").val(diff);
-                            if (rate) {
-                                $("#amount").val(parseFloat(rate) * diff);
-                            }
-                        }
-
-                    } else {
-                        $("#duration").val('');
-                        $("#amount").val('');
-                    }
-                }
-
-                function roasterEndTimeInit() {
-                    $("#shift_end").change(function() {
-                        console.log('end')
-                        filterEmployee()
-                        allCalculation()
-                    });
-
-                }
-                roasterEndTimeInit()
-
-                function roasterStartTimeInit() {
-                    $("#shift_start").change(function() {
-                        console.log('start')
-                        filterEmployee()
-                        if ($(this).val()) {
-                            $("#shift_end").removeAttr("disabled")
-                        } else {
-                            $("#shift_end").prop('disabled', true);
-                        }
-
-                        allCalculation()
-                    });
-                }
-                roasterStartTimeInit()
-
-                const initDatePicker = () => {
-                    $("#roaster_date").change(function() {
-                        console.log('roster date')
-                        filterEmployee()
-                        if ($(this).val()) {
-                            $("#shift_start").removeAttr("disabled")
-                        } else {
-                            $(".picker__button--clear").removeAttr("disabled")
-
-                            $(".picker__button--clear")[1].click()
-                            $(".picker__button--clear")[2].click()
-
-                            $("#shift_start").prop('disabled', true)
-
-                            $("#shift_end").prop('disabled', true);
-                            allCalculation()
-                        }
-                    });
-                }
-
-                initDatePicker();
-
-                // const initAllDatePicker = () => {
-                //     initDatePicker();
-                //     roasterStartTimeInit();
-                //     roasterEndTimeInit();
-                // }
-
-                $(document).on("click", ".editBtn", function() {
-                    // $("#roasterClick").modal("hide")
-                    resetData()
-                    window.current_emp = $(this).data("employee")
-
-                    let rowData = $(this).data("row")
-                    if ($(this).data("copy")) {
-                        $("#editTimekeeperSubmit").prop("hidden", true)
-                        $("#addTimekeeperSubmit").prop("hidden", false)
-                        $("#roster").val("{{ Session::get('roaster_status')['Not published'] }}").trigger(
-                            'change')
-                    } else {
-                        $("#editTimekeeperSubmit").prop("hidden", false)
-                        $("#addTimekeeperSubmit").prop("hidden", true)
-                        $("#timepeeper_id").val(rowData.id);
-                        $('#timepeeper_id').attr('value', rowData.id);
-                        $("#roster").val(rowData.roaster_status_id).trigger('change')
-                    }
-                    $("#employee_id").val(rowData.employee_id).trigger('change');
-                    $("#client-select").val(rowData.client_id).trigger('change');
-
-                    $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
-                    $("#shift_start").val($.time(rowData.shift_start))
-                    $("#shift_end").val($.time(rowData.shift_end))
-
-                    $("#shift_start").removeAttr("disabled")
-                    $("#shift_end").removeAttr("disabled")
-
-
-                    $("#rate").val(rowData.ratePerHour)
-                    $("#duration").val(rowData.duration)
-                    $("#amount").val(rowData.amount)
-                    $("#job").val(rowData.job_type_id).trigger('change');
-                    $("#roster_type").val(rowData.roaster_type).trigger('change');
-
-                    $("#remarks").val(rowData.remarks)
-
-                    $("#project-select").val(rowData.project_id).trigger('change');
-                    $("#tableListEmployee").hide();
-                    $("#addTimeKeeper").modal("show")
-
-                    // initAllDatePicker();
-                    allCalculation()
-
-                })
-                $(document).on("input", ".reactive", function() {
-                    allCalculation()
-                })
-
-                function resetData() {
-                    window.current_emp = null
-                    window.rowData = ""
-                    $("#timepeeper_id").val("");
-                    $('#timepeeper_id').attr('value', "");
-                    $("#employee_id").val("").trigger('change');
-
-                    $("#roaster_date").val("")
-                    $("#shift_start").val("")
-                    $("#shift_end").val("")
-
-                    $("#shift_start").val("")
-                    $("#shift_end").val("")
-                    $("#sing_in").val("")
-                    $("#sing_out").val("")
-                    $(".sing_body").hide()
-
-                    $("#rate").val("")
-                    $("#duration").val("")
-                    $("#amount").val("")
-                    $("#roster_type").val('Schedueled').trigger('change');
-                    // $("#job").val("")
-                    // $("#roster").val("")
-                    $("#roster").val("{{ Session::get('roaster_status')['Not published'] }}").trigger('change')
-                    $("#remarks").val("")
-                }
+                html2pdf().set(opt).from(element).save();
             });
+
+            function allowDrop(ev) {
+                ev.preventDefault();
+            }
+
+            function noAllowDrop(ev) {
+                ev.stopPropagation();
+            }
+
+            function drag(ev, timekeeper_id) {
+                ev.dataTransfer.setData("text", ev.target.id);
+                ev.dataTransfer.setData("timekeeper_id", timekeeper_id);
+            }
+
+            function drop(ev, emp_id, date) {
+                ev.preventDefault();
+                var data = ev.dataTransfer.getData("text");
+                var timekeeper_id = ev.dataTransfer.getData("timekeeper_id");
+                // console.log(timekeeper_id)
+                // console.log(emp_id)
+                // console.log(date)
+                ev.currentTarget.appendChild(document.getElementById(data));
+
+                $.ajax({
+                    url: '/admin/home/report/drag/keeper',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        'timekeeper_id': timekeeper_id,
+                        'employee_id': emp_id,
+                        'date_': date,
+                    },
+                    success: function(data) {
+                        if (data.notification) {
+                            toastr.success(data.notification)
+                        }
+                        searchNow('current')
+                    },
+                    error: function(err) {
+                        console.log(err)
+                        toastr.warning('something went wrong!')
+                    }
+                });
+            }
+
+
+            $('#prev').on('click', function() {
+                searchNow('previous')
+            })
+            $('#next').on('click', function() {
+                searchNow('next')
+            })
+            $('#copyWeek').on('click', function() {
+                searchNow('copy')
+            })
+            $('#publishAll').on('click', function() {
+                searchNow('publish')
+            })
+
+            function handleProjectChange(selectElement) {
+                if ($(selectElement).val()) {
+                    $('#download').prop('disabled', false)
+                    $('#copyWeek').prop('disabled', false)
+                } else {
+                    $('#download').prop('disabled', true)
+                    $('#copyWeek').prop('disabled', true)
+                }
+
+                searchNow('current')
+            }
+
+            function handleClientChange(selectElement) {
+                $('#project').empty();
+                if ($(selectElement).val()) {
+                    $('#download').prop('disabled', false)
+                    $('#copyWeek').prop('disabled', false)
+                } else {
+                    $('#download').prop('disabled', true)
+                    $('#copyWeek').prop('disabled', true)
+                }
+
+                searchNow('current')
+            }
+
+            $('#addTimekeeperSubmit').on('click', function() {
+                if ($("#timekeeperAddForm").valid()) {
+                    var serializedData = $('#timekeeperAddForm').serialize();
+
+                    // Convert ids array to a serialized format
+                    var employeeIdsSerialized = $.param({
+                        "employee_ids[]": ids
+                    }, true);
+
+                    // Append employeeIdsSerialized to the original serialized data
+                    var newData = serializedData + '&' + employeeIdsSerialized;
+
+                    // Now, newData contains the updated serialized data with employee_ids
+                    console.log(newData);
+
+                    $.ajax({
+                        data: newData,
+                        url: "/admin/home/new/timekeeper/store",
+                        type: "POST",
+                        dataType: 'json',
+                        success: function(data) {
+                            searchNow('current')
+                            $("#addTimeKeeper").modal("hide")
+                            // $("#roasterClick").modal("hide")
+                            searchNow('current')
+                            if (data.notification) {
+                                toastr.success(data.notification)
+                            }
+                        },
+                        error: function(data) {
+                            console.log(data)
+                            searchNow('current')
+                        }
+                    });
+                }
+            })
+
+            $('#editTimekeeperSubmit').on('click', function() {
+                if ($("#timekeeperAddForm").valid()) {
+                    $.ajax({
+                        data: $('#timekeeperAddForm').serialize(),
+                        url: "/admin/home/new/timekeeper/update",
+                        type: "POST",
+                        dataType: 'json',
+                        success: function(data) {
+                            $("#addTimeKeeper").modal("hide")
+                            // $("#roasterClick").modal("hide")
+                            searchNow('current')
+                            if (data.notification) {
+                                toastr.success(data.notification)
+                            }
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                    });
+                }
+            })
+
+            searchNow()
+
+            $('#search_date').on('change', function() {
+                searchNow('search_date', $('#search_date').val())
+            })
+            $("#timekeeperAddForm").validate({
+                errorPlacement: function(error, element) {
+                    if (element.hasClass('select2') && element.next('.select2-container').length) {
+                        error.insertAfter(element.next('.select2-container'));
+                    } else if (element.parent('.input-group').length) {
+                        error.insertAfter(element.parent());
+                    } else if (element.prop('type') === 'radio' && element.parent('.radio-inline')
+                        .length) {
+                        error.insertAfter(element.parent().parent());
+                    } else if (element.prop('type') === 'checkbox' || element.prop('type') ===
+                        'radio') {
+                        error.appendTo(element.parent().parent());
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            })
+
+            $('#project-select').on('change', function() {
+                console.log('project')
+                filterEmployee()
+                if ($(this).val()) {
+                    $('#inducted').prop('disabled', false)
+                } else {
+                    $('#inducted').prop('disabled', true)
+                }
+            })
+
+            $('#filterStatus').on('change', function() {
+
+                console.log('filter')
+                filterEmployee()
+            })
+
+            function filterEmployee() {
+                $.ajax({
+                    url: '/admin/home/filter/employee',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        'filter': $('#filterStatus').val(),
+                        'project_id': $("#project-select").val(),
+                        'roster_date': $("#roaster_date").val(),
+                        'shift_start': $("#shift_start").val(),
+                        'shift_end': $("#shift_end").val(),
+                    },
+                    success: function(data) {
+                        // console.log(data)
+                        info = data;
+                        showImployees($('#filterStatus').val(), info)
+                        // let html = '<option value="">please choose...</option>'
+                        // if (emp = window.current_emp) {
+                        //     html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp
+                        //         .mname) ? emp.mname : '') + " " + emp.lname + "</option>"
+                        // }
+                        // jQuery.each(data.employees, function(i, val) {
+                        //     html += "<option value='" + val.id + "'>" + val.fname + " " + ((val
+                        //         .mname) ? val.mname : '') + "" + val.lname + "</option>"
+                        // })
+                        // // console.log(html)
+                        // $('#employee_id').html(html)
+                        if (data.notification) {
+                            toastr.success(data.notification)
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err)
+                    }
+                });
+            }
+
+            $(document).on('show.bs.modal', '.modal', function() {
+                const zIndex = 1040 + 10 * $('.modal:visible').length;
+                $(this).css('z-index', zIndex);
+                setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
+                    .addClass('modal-stack'));
+            });
+
+            $(document).on("click", "#addTimekeeperModal", function() {
+                resetData()
+                $("#project-select").val("").trigger('change');
+                $("#editTimekeeperSubmit").prop("hidden", true)
+                $("#addTimekeeperSubmit").prop("hidden", false)
+                $("#tableListEmployee").show();
+                $("#addTimeKeeper").modal("show")
+            })
+
+
+            function timeToSeconds(time) {
+                time = time.split(/:/);
+                return time[0] * 3600 + time[1] * 60;
+            }
+            $.time = function(dateObject) {
+                var t = dateObject.split(/[- :]/);
+                // Apply each element to the Date function
+                var actiondate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
+                var d = new Date(actiondate);
+
+                // var d = new Date(dateObject);
+                var curr_hour = d.getHours();
+                var curr_min = d.getMinutes();
+                var date = curr_hour + ':' + curr_min;
+                return date;
+            };
+
+            function allCalculation() {
+                var start = $("#shift_start").val();
+                var end = $("#shift_end").val();
+                var rate = $("#rate").val();
+
+                if (start && end) {
+                    // calculate hours
+                    var diff = (timeToSeconds(end) - timeToSeconds(start)) / 3600
+                    if (diff < 0) {
+                        diff = 24 - Math.abs(diff)
+                    }
+                    if (diff) {
+                        $("#duration").val(diff);
+                        if (rate) {
+                            $("#amount").val(parseFloat(rate) * diff);
+                        }
+                    }
+
+                } else {
+                    $("#duration").val('');
+                    $("#amount").val('');
+                }
+            }
+
+            function roasterEndTimeInit() {
+                $("#shift_end").change(function() {
+                    console.log('end')
+                    filterEmployee()
+                    allCalculation()
+                });
+
+            }
+            roasterEndTimeInit()
+
+            function roasterStartTimeInit() {
+                $("#shift_start").change(function() {
+                    console.log('start')
+                    filterEmployee()
+                    if ($(this).val()) {
+                        $("#shift_end").removeAttr("disabled")
+                    } else {
+                        $("#shift_end").prop('disabled', true);
+                    }
+
+                    allCalculation()
+                });
+            }
+            roasterStartTimeInit()
+
+            const initDatePicker = () => {
+                $("#roaster_date").change(function() {
+                    console.log('roster date')
+                    filterEmployee()
+                    if ($(this).val()) {
+                        $("#shift_start").removeAttr("disabled")
+                    } else {
+                        $(".picker__button--clear").removeAttr("disabled")
+
+                        $(".picker__button--clear")[1].click()
+                        $(".picker__button--clear")[2].click()
+
+                        $("#shift_start").prop('disabled', true)
+
+                        $("#shift_end").prop('disabled', true);
+                        allCalculation()
+                    }
+                });
+            }
+
+            initDatePicker();
+
+            // const initAllDatePicker = () => {
+            //     initDatePicker();
+            //     roasterStartTimeInit();
+            //     roasterEndTimeInit();
+            // }
+
+            $(document).on("click", ".editBtn", function() {
+                // $("#roasterClick").modal("hide")
+                resetData()
+                window.current_emp = $(this).data("employee")
+
+                let rowData = $(this).data("row")
+                if ($(this).data("copy")) {
+                    $("#editTimekeeperSubmit").prop("hidden", true)
+                    $("#addTimekeeperSubmit").prop("hidden", false)
+                    $("#roster").val("{{ Session::get('roaster_status')['Not published'] }}").trigger(
+                        'change')
+                } else {
+                    $("#editTimekeeperSubmit").prop("hidden", false)
+                    $("#addTimekeeperSubmit").prop("hidden", true)
+                    $("#timepeeper_id").val(rowData.id);
+                    $('#timepeeper_id').attr('value', rowData.id);
+                    $("#roster").val(rowData.roaster_status_id).trigger('change')
+                }
+                $("#employee_id").val(rowData.employee_id).trigger('change');
+                $("#client-select").val(rowData.client_id).trigger('change');
+
+                $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
+                $("#shift_start").val($.time(rowData.shift_start))
+                $("#shift_end").val($.time(rowData.shift_end))
+
+                $("#shift_start").removeAttr("disabled")
+                $("#shift_end").removeAttr("disabled")
+
+
+                $("#rate").val(rowData.ratePerHour)
+                $("#duration").val(rowData.duration)
+                $("#amount").val(rowData.amount)
+                $("#job").val(rowData.job_type_id).trigger('change');
+                $("#roster_type").val(rowData.roaster_type).trigger('change');
+
+                $("#remarks").val(rowData.remarks)
+
+                $("#project-select").val(rowData.project_id).trigger('change');
+                $("#tableListEmployee").hide();
+                $("#addTimeKeeper").modal("show")
+
+                // initAllDatePicker();
+                allCalculation()
+
+            })
+            $(document).on("input", ".reactive", function() {
+                allCalculation()
+            })
+
+            function resetData() {
+                window.current_emp = null
+                window.rowData = ""
+                $("#timepeeper_id").val("");
+                $('#timepeeper_id').attr('value', "");
+                $("#employee_id").val("").trigger('change');
+
+                $("#roaster_date").val("")
+                $("#shift_start").val("")
+                $("#shift_end").val("")
+
+                $("#shift_start").val("")
+                $("#shift_end").val("")
+                $("#sing_in").val("")
+                $("#sing_out").val("")
+                $(".sing_body").hide()
+
+                $("#rate").val("")
+                $("#duration").val("")
+                $("#amount").val("")
+                $("#roster_type").val('Schedueled').trigger('change');
+                // $("#job").val("")
+                // $("#roster").val("")
+                $("#roster").val("{{ Session::get('roaster_status')['Not published'] }}").trigger('change')
+                $("#remarks").val("")
+            }
 
             function searchNow(goTo = '', search_date = null) {
                 $.ajax({

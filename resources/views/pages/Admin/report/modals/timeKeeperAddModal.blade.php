@@ -31,7 +31,7 @@
                                                 </ul>
                                             </div>
                                         @endif
-                                        <div class="row">
+                                        <div class="row" style="margin: 0 !important;">
                                             <div class="col-6 pl-25 pr-25">
                                                 <label for="">Select Venue *</label>
                                                 <div class="form-group">
