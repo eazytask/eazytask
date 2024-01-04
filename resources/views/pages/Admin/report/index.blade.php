@@ -51,12 +51,14 @@
                 <div class="card-body pt-0 pb-0">
                     <div class="row row-xs">
                         <div class="col-12 mb-1">
-                            <span class="font-weight-bolder float-left mt-25 mr-25 text-capitalize">Search a date:</span>
+                            <span class="font-weight-bolder  mt-25 mr-25 text-capitalize float-left">Search a date:</span>
                             <input type="text" id="search_date" name="search_date"
                                 class="form-control format-picker form-control-sm float-left text-center bg-light-info"
                                 placeholder="dd-mm-yyyy" style="width:135px">
-                            <button class="btn btn-gradient-primary float-right mt-50 pt-50 pb-50"
-                                id="addTimekeeperModal"><i data-feather='plus'></i></button>
+
+                            <button class="btn btn-default float-right" id="addTimekeeperModal" title="Add Employee"><img
+                                    src="{{ url('backend/img/user_add.png') }}" class="img-responsive"
+                                    style="width: 35px;"></button>
                         </div>
                         <div class="col-12 text-center">
 
@@ -230,7 +232,8 @@
                         <tr>
                             <td><input type="checkbox" class="checkID" value="` + employeeId +
                         `" ` + checkbox_status + `></td>
-                            <td>` + employee.fname + ' ' + employee.mname + ' ' + employee.lname + `</td>
+                            <td>` + (employee.fname || '') + ' ' + (employee.mname || '') + ' ' + (employee.lname ||
+                            '') + `</td>
                             <td>` + employee.contact_number + `</td>
                         </tr>
             `
