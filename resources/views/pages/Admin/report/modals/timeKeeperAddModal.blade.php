@@ -101,7 +101,7 @@
                                                 </div>
                                             </div>
 
-                                            {{-- <div class="col-md-6 pl-25 pr-25">
+                                            <div class="col-md-6 pl-25 pr-25" id="singleEmployee">
 
                                                 <label for="">Select Employee *</label>
                                                 <div class="demo-inline-spacing mb-1" style="margin-top: -16px;">
@@ -124,12 +124,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <select class="form-control select2" name="employee_id"
+                                                    <select class="form-control select2" name="employee_ids[]"
                                                         id="employee_id" aria-label="Default select example" required>
 
                                                     </select>
                                                 </div>
-                                            </div> --}}
+                                            </div>
                                             <div class="col-6 pl-25 pr-25 mt-auto">
                                                 <label for="">Select Job Type *</label>
                                                 <div class="form-group">
@@ -167,62 +167,61 @@
                                                         class="form-control" placeholder="remarks" />
                                                 </div>
                                             </div>
-                                            <span id="tableListEmployee">
-
-                                                <div class="col-12 pl-25 pr-25">
-                                                    <hr>
-                                                    <label for="email-id-column">Select Employee</label>
-                                                    <div class="form-group">
-                                                        <select name="" id="filterStatus"
-                                                            class="float-right form-control">
-                                                            <option value="all" selected>All Employees</option>
-                                                            <option value="available">Available</option>
-                                                            <option value="inducted">Inducted</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-6 pl-25 pr-25">
-                                                    <hr>
-                                                </div>
-                                                {{-- <div class="col-6 pl-25 pr-25 sing_body">
-                                                        <label for="email-id-column">Sign Out</label>
-                                                        <div class="form-group">
-                                                            <input type="text" id="sing_out" name="sing_out" class="form-control pickatime-format sing_body" placeholder="Sign Out Time" />
-                                                        </div>
-                                                    </div> --}}
-
-
-                                            </span>
                                         </div>
-                                        <div class="col-12 pl-25 pr-25">
-                                            <br>
-                                            <div id="table-hover-animation">
-                                                <div class="table-responsive">
-                                                    <table id="eventClickTable"
-                                                        class="table table-hover-animation table-bordered ">
-                                                        <thead>
-                                                            <tr>
-                                                                <th><input type="checkbox" id="checkAllID">
-                                                                </th>
-                                                                <th>Employee Name</th>
-                                                                <th>Contact Number</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="eventClickTbody">
-                                                            <tr>
-                                                                <td><input type="checkbox" class="checkID"
-                                                                        value="` + employeeId + `" ` + checkbox_status
-                                                                        + `></td>
-                                                                <td>` + employee.fname + employee.mname +
-                                                                    employee.lname + `</td>
-                                                                <td>` + employee.contact_number + `</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                        <span id="tableListEmployee">
+
+                                            <div class="col-12 pl-25 pr-25">
+                                                <hr>
+                                                <label for="email-id-column">Select Employee</label>
+                                                <div class="form-group">
+                                                    <select name="" id="filterStatus"
+                                                        class="float-right form-control">
+                                                        <option value="all" selected>All Employees</option>
+                                                        <option value="available">Available</option>
+                                                        <option value="inducted">Inducted</option>
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
+
+                                            <div class="col-6 pl-25 pr-25">
+                                                <hr>
+                                            </div>
+                                            {{-- <div class="col-6 pl-25 pr-25 sing_body">
+                                                    <label for="email-id-column">Sign Out</label>
+                                                    <div class="form-group">
+                                                        <input type="text" id="sing_out" name="sing_out" class="form-control pickatime-format sing_body" placeholder="Sign Out Time" />
+                                                    </div>
+                                                </div> --}}
+
+                                            <div class="col-12 pl-25 pr-25">
+                                                <br>
+                                                <div id="table-hover-animation">
+                                                    <div class="table-responsive">
+                                                        <table id="eventClickTable"
+                                                            class="table table-hover-animation table-bordered ">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th><input type="checkbox" id="checkAllID">
+                                                                    </th>
+                                                                    <th>Employee Name</th>
+                                                                    <th>Contact Number</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="eventClickTbody">
+                                                                <tr>
+                                                                    <td><input type="checkbox" class="checkID"
+                                                                            value="` + employeeId + `" ` +
+                                                                            checkbox_status + `></td>
+                                                                    <td>` + employee.fname + employee.mname +
+                                                                        employee.lname + `</td>
+                                                                    <td>` + employee.contact_number + `</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </span>
                                     </div>
                                 </div>
                             </div>

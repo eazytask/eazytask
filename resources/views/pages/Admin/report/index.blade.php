@@ -528,17 +528,18 @@
                         // console.log(data)
                         info = data;
                         showImployees($('#filterStatus').val(), info)
-                        // let html = '<option value="">please choose...</option>'
-                        // if (emp = window.current_emp) {
-                        //     html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp
-                        //         .mname) ? emp.mname : '') + " " + emp.lname + "</option>"
-                        // }
-                        // jQuery.each(data.employees, function(i, val) {
-                        //     html += "<option value='" + val.id + "'>" + val.fname + " " + ((val
-                        //         .mname) ? val.mname : '') + "" + val.lname + "</option>"
-                        // })
-                        // // console.log(html)
-                        // $('#employee_id').html(html)
+                        let html = '<option value="">please choose...</option>'
+                        if (emp = window.current_emp) {
+                            html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp
+                                .mname) ? emp.mname : '') + " " + emp.lname + "</option>"
+                        }
+                        jQuery.each(data.employees, function(i, val) {
+                            html += "<option value='" + val.id + "'>" + val.fname + " " + ((val
+                                .mname) ? val.mname : '') + "" + val.lname + "</option>"
+                        })
+                        // console.log(html)
+                        $('#employee_id').html(html)
+
                         if (data.notification) {
                             toastr.success(data.notification)
                         }
@@ -562,6 +563,7 @@
                 $("#editTimekeeperSubmit").prop("hidden", true)
                 $("#addTimekeeperSubmit").prop("hidden", false)
                 $("#tableListEmployee").show();
+                $("#singleEmployee").hide();
                 $("#addTimeKeeper").modal("show")
             })
 
@@ -699,6 +701,7 @@
 
                 $("#project-select").val(rowData.project_id).trigger('change');
                 $("#tableListEmployee").hide();
+                $("#singleEmployee").show();
                 $("#addTimeKeeper").modal("show")
 
                 // initAllDatePicker();

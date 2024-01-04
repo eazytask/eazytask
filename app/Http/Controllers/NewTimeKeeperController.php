@@ -206,6 +206,9 @@ class NewTimeKeeperController extends Controller
         $continue = true;
 
         foreach($request->employee_ids as $employee_id) {
+            if(empty($employee_id))
+                continue;
+            
             $timekeeper = new TimeKeeper();
 
             if ($request->roaster_type) {
@@ -308,7 +311,7 @@ class NewTimeKeeperController extends Controller
             $shift_start = Carbon::parse($request->roaster_date . $request->shift_start);
             $shift_end = Carbon::parse($shift_start)->addMinute($request->duration * 60);
 
-            // $timekeeper->employee_id = $request->employee_id;
+            $timekeeper->employee_id = $request->employee_ids[0] ?? $timekeeper->employee_id;
             $timekeeper->client_id = $project->clientName;
             $timekeeper->project_id = $request->project_id;
             $timekeeper->roaster_date = Carbon::parse($request->roaster_date);
