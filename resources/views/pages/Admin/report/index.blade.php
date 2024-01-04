@@ -230,10 +230,8 @@
                         <tr>
                             <td><input type="checkbox" class="checkID" value="` + employeeId +
                         `" ` + checkbox_status + `></td>
-                            <td>` + employee.fname + `</td>
+                            <td>` + employee.fname + ' ' + employee.mname + ' ' + employee.lname + `</td>
                             <td>` + employee.contact_number + `</td>
-                            <td>` + employee.email + `</td>
-                            <td class="` + status + `">` + 'Waiting' + `</td>
                         </tr>
             `
                 }

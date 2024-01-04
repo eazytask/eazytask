@@ -169,7 +169,7 @@
                                             </div>
                                             <span id="tableListEmployee">
 
-                                                <div class="col-6 pl-25 pr-25">
+                                                <div class="col-12 pl-25 pr-25">
                                                     <hr>
                                                     <label for="email-id-column">Select Employee</label>
                                                     <div class="form-group">
@@ -192,40 +192,36 @@
                                                         </div>
                                                     </div> --}}
 
-                                                <div class="col-12 pl-25 pr-25">
-                                                    <br>
-                                                    <div id="table-hover-animation">
-                                                        <div class="table-responsive">
-                                                            <table id="eventClickTable"
-                                                                class="table table-hover-animation table-bordered ">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th><input type="checkbox" id="checkAllID">
-                                                                        </th>
-                                                                        <th>Employee Name</th>
-                                                                        <th>Contact Number</th>
-                                                                        <th>Email</th>
-                                                                        <th>Status</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody id="eventClickTbody">
-                                                                    <tr>
-                                                                        <td><input type="checkbox" class="checkID"
-                                                                                value="` + employeeId + `" ` +
-                                                                                checkbox_status + `></td>
-                                                                        <td>` + employee.fname + `</td>
-                                                                        <td>` + employee.contact_number + `</td>
-                                                                        <td>` + employee.email + `</td>
-                                                                        <td class="` + status + `">` + employee.status
-                                                                            + `
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
+
                                             </span>
+                                        </div>
+                                        <div class="col-12 pl-25 pr-25">
+                                            <br>
+                                            <div id="table-hover-animation">
+                                                <div class="table-responsive">
+                                                    <table id="eventClickTable"
+                                                        class="table table-hover-animation table-bordered ">
+                                                        <thead>
+                                                            <tr>
+                                                                <th><input type="checkbox" id="checkAllID">
+                                                                </th>
+                                                                <th>Employee Name</th>
+                                                                <th>Contact Number</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="eventClickTbody">
+                                                            <tr>
+                                                                <td><input type="checkbox" class="checkID"
+                                                                        value="` + employeeId + `" ` + checkbox_status
+                                                                        + `></td>
+                                                                <td>` + employee.fname + employee.mname +
+                                                                    employee.lname + `</td>
+                                                                <td>` + employee.contact_number + `</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
