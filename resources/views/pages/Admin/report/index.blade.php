@@ -170,9 +170,10 @@
     @push('scripts')
         <script type="text/javascript"></script>
         <script>
+            let ids = []
+            let info = null
+            let reload;
             $(document).ready(function() {
-                let ids = []
-                let info = null
 
                 $(document).on("click", "#checkAllID", function() {
                     let remainingCheckboxes = 9999999;
@@ -227,7 +228,7 @@
 
                         rows += `
                         <tr>
-                            <td><input type="checkbox" name="employee_ids[]" class="checkID" value="` + employeeId +
+                            <td><input type="checkbox" class="checkID" value="` + employeeId +
                             `" ` + checkbox_status + `></td>
                             <td>` + employee.fname + `</td>
                             <td>` + employee.contact_number + `</td>
@@ -411,196 +412,23 @@
                     searchNow('current')
                 }
 
-                let reload;
-
-                function searchNow(goTo = '', search_date = null) {
-                    $.ajax({
-                        url: '/admin/home/report/search',
-                        type: 'get',
-                        dataType: 'json',
-                        data: {
-                            'go_to': goTo,
-                            'project': $('#project').val(),
-                            'client': $('#client').val(),
-                            'search_date': search_date,
-                        },
-                        success: function(data) {
-                            console.log(data);
-                            // $("#myTable").DataTable();
-                            if (data.search_date) {
-                                $("#search_date").val(moment(data.search_date).format('DD-MM-YYYY'))
-                            } else {
-                                $("#search_date").val('')
-                            }
-                            $('#myTable').DataTable().clear().destroy();
-                            $('#tBody').html(data.data);
-                            $('#wrapper_print').empty();
-
-                            data.project.forEach(function(element) {
-                                if (data.report[element.id] == "")
-                                    return;
-
-                                $('#wrapper_print').append(`
-                        <div class="card-header bg-primary m-1 p-1">
-                            <h6 id="print_client" class="text-uppercase text-light">Client Name: ${data.client}</h6>
-                            <h6 id="print_project" class="text-uppercase text-light">Venue Name: ${element.pName}</h6>
-                            <h6 id="print_hours" class="text-light">Total Hours: ${data.final_hours[element.id]}</h6>
-                            <h6 id="print_amount" class="text-light">Total Amount: ${data.final_amount[element.id]}$</h6>
-                        </div>
-                        <div class="container">
-                            <div class="">
-                                <table class="table-bordered text-center" id="printTable" style='width:100%'>
-                                    <thead>
-                                        <tr>
-                                            <th style='width:10%'>Employee Name</th>
-                                            <th style='width:12%'>Monday</th>
-                                            <th style='width:12%'>Tuesday</th>
-                                            <th style='width:12%'>Wednesday</th>
-                                            <th style='width:12%'>Thursday</th>
-                                            <th style='width:12%'>Friday</th>
-                                            <th style='width:12%'>Saturday</th>
-                                            <th style='width:12%'>Sunday</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="print_tBody">
-                                        ${data.report[element.id]}
-                                    </tbody>
-
-                                </table>
-                            </div>
-                        </div>
-                        `)
-                            });
-
-                            // $('#print_tBody').html(data.report);
-                            // $('#print_client').html('Client: ' + data.client);
-                            // $('#print_project').html('Venue: ' + data.project);
-                            // $('#print_hours').html('Total Hours: ' + data.hours);
-                            // $('#print_amount').html('Total Amount: $' + data.amount);
-                            $('#print_current_week').text('Date: ' + data.week_date)
-                            // $("#myTable").DataTable();
-                            $('#myTable').DataTable({
-                                dom: 'Bfrtip',
-                                paging: false,
-                                buttons: [
-                                    'copyHtml5',
-                                    'excelHtml5',
-                                    'csvHtml5',
-                                    'pdfHtml5'
-                                ],
-                                autoWidth: false, //step 1
-                                columnDefs: [
-                                    // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
-                                    {
-                                        width: '125px',
-                                        targets: 1
-                                    }, //step 2, column 2 out of 4
-                                    {
-                                        width: '125px',
-                                        targets: 2
-                                    }, //step 2, column 3 out of 4
-                                    {
-                                        width: '125px',
-                                        targets: 3
-                                    }, //step 2, column 3 out of 4
-                                    {
-                                        width: '125px',
-                                        targets: 4
-                                    }, //step 2, column 3 out of 4
-                                    {
-                                        width: '125px',
-                                        targets: 5
-                                    }, //step 2, column 3 out of 4
-                                    {
-                                        width: '125px',
-                                        targets: 6
-                                    }, //step 2, column 3 out of 4
-                                    {
-                                        width: '125px',
-                                        targets: 7
-                                    }, //step 2, column 3 out of 4
-                                ]
-                                // "bDestroy": true
-                            });
-                            feather.replace({
-                                width: 14,
-                                height: 14
-                            });
-                            $('#currentWeek').text(data.week_date)
-                            $('#total_hours').html('Total Hours: ' + data.hours);
-                            $('#total_amount').html('Total Amount: $' + data.amount);
-                            $('#logo').html('<img src="' + data.logo +
-                                '" alt="" class="ml-1" height="45px">');
-
-                            if (data.notification) {
-                                toastr.success(data.notification)
-                            }
-
-                            clearInterval(reload)
-                            reload = setInterval(() => {
-                                searchNow('current')
-                            }, 300000);
-                        },
-                        error: function(err) {
-                            console.log(err)
-
-                            clearInterval(reload)
-                            reload = setInterval(() => {
-                                searchNow('current')
-                            }, 300000);
-                        }
-                    });
-                }
-
-                function deleteRoaster(roasterId) {
-                    // let roasterId = $("#deleteBtn").attr("roasterId");
-                    swal({
-                            title: "Are you sure?",
-                            text: "Once deleted, you will not be able to recover this!",
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
-                        })
-                        .then((willDelete) => {
-                            if (willDelete) {
-                                $.ajax({
-                                    url: '/admin/home/report/delete/' + roasterId,
-                                    type: 'GET',
-                                    success: function(data) {
-                                        // $("#roasterClick").modal("hide")
-                                        searchNow('current')
-                                        if (data.notification) {
-                                            toastr.success(data.notification)
-                                        }
-                                    }
-                                });
-                            }
-                        });
-
-                }
-
-                function publishRoaster(roasterId) {
-                    $.ajax({
-                        url: '/admin/home/report/publish/' + roasterId,
-                        type: 'GET',
-                        success: function(data) {
-                            // $("#roasterClick").modal("hide")
-                            searchNow('current')
-                            if (data.status == true) {
-                                toastr.success(data.notification)
-                            } else {
-                                toastr.info(data.notification)
-                            }
-                        }
-                    });
-
-                }
-
                 $('#addTimekeeperSubmit').on('click', function() {
                     if ($("#timekeeperAddForm").valid()) {
-                        console.log(ids);
+                        var serializedData = $('#timekeeperAddForm').serialize();
+
+                        // Convert ids array to a serialized format
+                        var employeeIdsSerialized = $.param({
+                            "employee_ids[]": ids
+                        }, true);
+
+                        // Append employeeIdsSerialized to the original serialized data
+                        var newData = serializedData + '&' + employeeIdsSerialized;
+
+                        // Now, newData contains the updated serialized data with employee_ids
+                        console.log(newData);
+
                         $.ajax({
-                            data: $('#timekeeperAddForm').serialize(),
+                            data: newData,
                             url: "/admin/home/new/timekeeper/store",
                             type: "POST",
                             dataType: 'json',
@@ -906,6 +734,189 @@
                     $("#remarks").val("")
                 }
             });
+
+            function searchNow(goTo = '', search_date = null) {
+                $.ajax({
+                    url: '/admin/home/report/search',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        'go_to': goTo,
+                        'project': $('#project').val(),
+                        'client': $('#client').val(),
+                        'search_date': search_date,
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        // $("#myTable").DataTable();
+                        if (data.search_date) {
+                            $("#search_date").val(moment(data.search_date).format('DD-MM-YYYY'))
+                        } else {
+                            $("#search_date").val('')
+                        }
+                        $('#myTable').DataTable().clear().destroy();
+                        $('#tBody').html(data.data);
+                        $('#wrapper_print').empty();
+
+                        data.project.forEach(function(element) {
+                            if (data.report[element.id] == "")
+                                return;
+
+                            $('#wrapper_print').append(`
+                        <div class="card-header bg-primary m-1 p-1">
+                            <h6 id="print_client" class="text-uppercase text-light">Client Name: ${data.client}</h6>
+                            <h6 id="print_project" class="text-uppercase text-light">Venue Name: ${element.pName}</h6>
+                            <h6 id="print_hours" class="text-light">Total Hours: ${data.final_hours[element.id]}</h6>
+                            <h6 id="print_amount" class="text-light">Total Amount: ${data.final_amount[element.id]}$</h6>
+                        </div>
+                        <div class="container">
+                            <div class="">
+                                <table class="table-bordered text-center" id="printTable" style='width:100%'>
+                                    <thead>
+                                        <tr>
+                                            <th style='width:10%'>Employee Name</th>
+                                            <th style='width:12%'>Monday</th>
+                                            <th style='width:12%'>Tuesday</th>
+                                            <th style='width:12%'>Wednesday</th>
+                                            <th style='width:12%'>Thursday</th>
+                                            <th style='width:12%'>Friday</th>
+                                            <th style='width:12%'>Saturday</th>
+                                            <th style='width:12%'>Sunday</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="print_tBody">
+                                        ${data.report[element.id]}
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                        `)
+                        });
+
+                        // $('#print_tBody').html(data.report);
+                        // $('#print_client').html('Client: ' + data.client);
+                        // $('#print_project').html('Venue: ' + data.project);
+                        // $('#print_hours').html('Total Hours: ' + data.hours);
+                        // $('#print_amount').html('Total Amount: $' + data.amount);
+                        $('#print_current_week').text('Date: ' + data.week_date)
+                        // $("#myTable").DataTable();
+                        $('#myTable').DataTable({
+                            dom: 'Bfrtip',
+                            paging: false,
+                            buttons: [
+                                'copyHtml5',
+                                'excelHtml5',
+                                'csvHtml5',
+                                'pdfHtml5'
+                            ],
+                            autoWidth: false, //step 1
+                            columnDefs: [
+                                // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
+                                {
+                                    width: '125px',
+                                    targets: 1
+                                }, //step 2, column 2 out of 4
+                                {
+                                    width: '125px',
+                                    targets: 2
+                                }, //step 2, column 3 out of 4
+                                {
+                                    width: '125px',
+                                    targets: 3
+                                }, //step 2, column 3 out of 4
+                                {
+                                    width: '125px',
+                                    targets: 4
+                                }, //step 2, column 3 out of 4
+                                {
+                                    width: '125px',
+                                    targets: 5
+                                }, //step 2, column 3 out of 4
+                                {
+                                    width: '125px',
+                                    targets: 6
+                                }, //step 2, column 3 out of 4
+                                {
+                                    width: '125px',
+                                    targets: 7
+                                }, //step 2, column 3 out of 4
+                            ]
+                            // "bDestroy": true
+                        });
+                        feather.replace({
+                            width: 14,
+                            height: 14
+                        });
+                        $('#currentWeek').text(data.week_date)
+                        $('#total_hours').html('Total Hours: ' + data.hours);
+                        $('#total_amount').html('Total Amount: $' + data.amount);
+                        $('#logo').html('<img src="' + data.logo +
+                            '" alt="" class="ml-1" height="45px">');
+
+                        if (data.notification) {
+                            toastr.success(data.notification)
+                        }
+
+                        clearInterval(reload)
+                        reload = setInterval(() => {
+                            searchNow('current')
+                        }, 300000);
+                    },
+                    error: function(err) {
+                        console.log(err)
+
+                        clearInterval(reload)
+                        reload = setInterval(() => {
+                            searchNow('current')
+                        }, 300000);
+                    }
+                });
+            }
+
+            function deleteRoaster(roasterId) {
+                // let roasterId = $("#deleteBtn").attr("roasterId");
+                swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: '/admin/home/report/delete/' + roasterId,
+                                type: 'GET',
+                                success: function(data) {
+                                    // $("#roasterClick").modal("hide")
+                                    searchNow('current')
+                                    if (data.notification) {
+                                        toastr.success(data.notification)
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+            }
+
+            function publishRoaster(roasterId) {
+                $.ajax({
+                    url: '/admin/home/report/publish/' + roasterId,
+                    type: 'GET',
+                    success: function(data) {
+                        // $("#roasterClick").modal("hide")
+                        searchNow('current')
+                        if (data.status == true) {
+                            toastr.success(data.notification)
+                        } else {
+                            toastr.info(data.notification)
+                        }
+                    }
+                });
+
+            }
         </script>
     @endpush
 @endsection

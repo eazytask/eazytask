@@ -210,8 +210,7 @@
                                                                 </thead>
                                                                 <tbody id="eventClickTbody">
                                                                     <tr>
-                                                                        <td><input type="checkbox"
-                                                                                name="employee_ids[]" class="checkID"
+                                                                        <td><input type="checkbox" class="checkID"
                                                                                 value="` + employeeId + `" ` +
                                                                                 checkbox_status + `></td>
                                                                         <td>` + employee.fname + `</td>
