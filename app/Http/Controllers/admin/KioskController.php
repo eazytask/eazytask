@@ -303,7 +303,7 @@ class KioskController extends Controller
         $timekeeper->remarks = $request->remarks;
         $timekeeper->save();
 
-        AutoSignOutJob::dispatch($timekeeper->id)->delay(now()->addHours(23));
+        AutoSignOutJob::dispatch($timekeeper->id)->delay(now()->addHours(6));
 
         if ($request->image) {
             $user_activity = new UserActivityPhotoController;
@@ -326,7 +326,7 @@ class KioskController extends Controller
             $user_activity->store($request->image, $roster->id);
         }
 
-        AutoSignOutJob::dispatch($roster->id)->delay(now()->addHours(23));
+        AutoSignOutJob::dispatch($roster->id)->delay(now()->addHours(6));
 
 
         return response()->json([

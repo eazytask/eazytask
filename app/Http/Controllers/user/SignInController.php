@@ -80,7 +80,7 @@ class SignInController extends Controller
                 $user_activity->store($request->image,$roster->id);
         }
 
-        AutoSignOutJob::dispatch($roster->id)->delay(now()->addHours(23));
+        AutoSignOutJob::dispatch($roster->id)->delay(now()->addHours(6));
         FirebaseShiftNotificationJob::dispatch($roster->employee->firebase,$roster->id)->delay(Carbon::parse($roster->shift_end));
         FirebaseShiftNotificationJob::dispatch($roster->employee->firebase,$roster->id)->delay(Carbon::parse($roster->shift_end)->addMinutes(15));
 
@@ -148,7 +148,7 @@ class SignInController extends Controller
         $timekeeper->created_at = Carbon::now();
         $timekeeper->save();
 
-        AutoSignOutJob::dispatch($timekeeper->id)->delay(now()->addHours(23));
+        AutoSignOutJob::dispatch($timekeeper->id)->delay(now()->addHours(6));
 
         if($request->lat && $request->lon){
             $user_activity= new UserActivityPhoto();
