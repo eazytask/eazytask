@@ -20,7 +20,7 @@ class UpcomingEventObserver
      */
     public function created(UpcomingEvent $upcomingEvent)
     {
-        $this->sent_notification($upcomingEvent);
+        // $this->sent_notification($upcomingEvent);
     }
 
     /**
@@ -31,7 +31,7 @@ class UpcomingEventObserver
      */
     public function updated(UpcomingEvent $upcomingEvent)
     {
-        $this->sent_notification($upcomingEvent,true);
+        // $this->sent_notification($upcomingEvent,true);
     }
 
     /**
