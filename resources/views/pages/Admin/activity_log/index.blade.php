@@ -1,7 +1,7 @@
 @extends('layouts.Admin.master')
 
 @php
-    
+
     $fromRoaster = '';
     $toRoaster = '';
     if (Session::get('fromRoaster')) {
@@ -61,7 +61,7 @@
                                             } else {
                                                 $text_color = 'text-primary';
                                             }
-                                            
+
                                             $update = \Carbon\Carbon::parse($row->updated_at)->format('d,M,Y H:i');
                                         @endphp
 
@@ -78,7 +78,10 @@
                                                     @endif
                                                 </div>
                                             </td>
-                                            <td>{{ $row->user->name ?? '' }}</td>
+                                            <td>{{ $row->causer->name ?? '' }} {{ $row->causer->mname ?? '' }}
+                                                {{ $row->causer->lname ?? '' }}
+
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
