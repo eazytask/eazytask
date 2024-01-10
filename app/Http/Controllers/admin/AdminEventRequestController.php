@@ -15,6 +15,9 @@ use App\Models\JobType;
 use App\Models\Upcomingevent;
 use App\Notifications\NewShiftNotification;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\NewEventNotification;
+use App\Mail\NotifyNewEvent;
 
 class AdminEventRequestController extends Controller
 {
@@ -162,8 +165,8 @@ class AdminEventRequestController extends Controller
       $timekeeper->created_at = Carbon::now();
       $timekeeper->save();
 
-      // $timekeeper->employee->user->notify(new NewShiftNotification($msg,$timekeeper));
-      // push_notify('Shift Alert:',$msg.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
+      $timekeeper->employee->user->notify(new NewShiftNotification($msg,$timekeeper));
+      push_notify('Shift Alert:',$msg.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
     }
     return Response()->json(['status' => 'sccess']);
   }
@@ -177,30 +180,57 @@ class AdminEventRequestController extends Controller
     return Response()->json(['status' => 'sccess']);
   }
 
-  public function sendNotif(Request $request)
+  public function sendNotif(Request $request, $ext=false)
   {
     $event = Upcomingevent::find($request->event_id);
-    $pro = $event->project;
-    $msg = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($event->event_date)->endOfWeek()->format('d-m-Y');
 
-    foreach ($request->employee_ids as $employee_id) {
-      $shift_start = Carbon::parse($event->shift_start);
-      $shift_end = Carbon::parse($event->shift_end);
+    if(Carbon::parse($event->event_date)->toDateString() != Carbon::now()->toDateString()){
+          $pro = $event->project;
+          $ext = $ext?' updated':'';
+          $msg = 'There is an event'.$ext.' "'.$pro->pName.'" on ' . Carbon::parse($event->event_date)->format('d-m-Y') . '(' . Carbon::parse($event->shift_start)->format('H:i') . '-' . Carbon::parse($event->shift_end)->format('H:i') . ') near "'.$pro->project_address.' '.$pro->suburb.' '.$pro->project_state.'"';
 
-      $duration = round($shift_start->floatDiffInRealHours($shift_end), 2);
+          $employees = Employee::where([
+              ['company', Auth::user()->company_roles->first()->company->id],
+              ['role', 3],
+              ['status', 1]
+          ])
+          ->where(function ($q) {
+              avoid_expired_license($q);
+          })
+          ->get();
 
-      $timekeeper = TimeKeeper::where('employee_id', $employee_id)
-      ->where('client_id', $event->client_name)
-      ->where('project_id', $event->project_name)
-      ->where('roaster_date', Carbon::parse($event->event_date))
-      ->where('ratePerHour', $event->rate)
-      ->where('job_type_id', $event->job_type_name)
-      ->where('roaster_type', 'Schedueled')
-      ->first();
+          foreach ($employees as $emp) {
+              $emp->user->notify(new NewEventNotification($msg));
+              push_notify('Event Alert :', $msg.'. If you interested please open app and send event request',$emp->employee_role, $emp->firebase,'user-event',$event->id);
+              
+              try {
+                  Mail::to($emp->user->email)->send(new NotifyNewEvent($emp, $msg));
+              } catch (\Exception $e) {
+              }
+          }
+      }
+      return Response()->json(['status' => 'sccess']);
+    // $event = Upcomingevent::find($request->event_id);
+    // $pro = $event->project;
+    // $msg = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($event->event_date)->endOfWeek()->format('d-m-Y');
 
-      $timekeeper->employee->user->notify(new NewShiftNotification($msg,$timekeeper));
-      push_notify('Shift Alert:',$msg.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
-    }
-    return Response()->json(['status' => 'sccess']);
+    // foreach ($request->employee_ids as $employee_id) {
+    //   $shift_start = Carbon::parse($event->shift_start);
+    //   $shift_end = Carbon::parse($event->shift_end);
+
+    //   $duration = round($shift_start->floatDiffInRealHours($shift_end), 2);
+
+    //   $timekeeper = TimeKeeper::where('employee_id', $employee_id)
+    //   ->where('client_id', $event->client_name)
+    //   ->where('project_id', $event->project_name)
+    //   ->where('roaster_date', Carbon::parse($event->event_date))
+    //   ->where('ratePerHour', $event->rate)
+    //   ->where('job_type_id', $event->job_type_name)
+    //   ->where('roaster_type', 'Schedueled')
+    //   ->first();
+
+    //   $timekeeper->employee->user->notify(new NewShiftNotification($msg,$timekeeper));
+    //   push_notify('Shift Alert:',$msg.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
+    // }
   }
 }

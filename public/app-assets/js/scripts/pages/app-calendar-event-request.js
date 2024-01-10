@@ -253,11 +253,11 @@ document.addEventListener('DOMContentLoaded', function () {
       $("#checkAllID").prop('disabled', false)
     }
     console.log(current_ids)
-    if(current_ids.length > 0) {
-      $("#sendNotification").prop('disabled', false)
-    }else{
-      $("#sendNotification").prop('disabled', true)
-    }
+    // if(current_ids.length > 0) {
+    //   $("#sendNotification").prop('disabled', false)
+    // }else{
+    //   $("#sendNotification").prop('disabled', true)
+    // }
     $('#eventClickTable').DataTable().clear().destroy();
     $('#eventClickTbody').html(rows);
     $('#eventClickTable').DataTable();
@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   sendNotif.on('click', function() {
-    $("#sendNotification").prop('disabled', true)
+    // $("#sendNotification").prop('disabled', true)
     $.ajax({
       url: '/admin/home/event/send-notif',
       data: {

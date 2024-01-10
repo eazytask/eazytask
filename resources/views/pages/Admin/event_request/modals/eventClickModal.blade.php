@@ -30,7 +30,7 @@
                         <div class="col-6">
                             <button class="btn btn-gradient-success text-center border-primary" disabled
                                 id="addToRoaster">Add To Roster</button>
-                            <button class="btn btn-gradient-primary text-center border-primary" disabled
+                            <button class="btn btn-gradient-primary text-center border-primary"
                                 id="sendNotification">Send Notification</button>
                         </div>
                         <div class="col-6">
