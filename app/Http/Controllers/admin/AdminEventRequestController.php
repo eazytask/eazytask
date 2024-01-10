@@ -176,4 +176,31 @@ class AdminEventRequestController extends Controller
 
     return Response()->json(['status' => 'sccess']);
   }
+
+  public function sendNotif(Request $request)
+  {
+    $event = Upcomingevent::find($request->event_id);
+    $pro = $event->project;
+    $msg = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($event->event_date)->endOfWeek()->format('d-m-Y');
+
+    foreach ($request->employee_ids as $employee_id) {
+      $shift_start = Carbon::parse($event->shift_start);
+      $shift_end = Carbon::parse($event->shift_end);
+
+      $duration = round($shift_start->floatDiffInRealHours($shift_end), 2);
+
+      $timekeeper = TimeKeeper::where('employee_id', $employee_id)
+      ->where('client_id', $event->client_name)
+      ->where('project_id', $event->project_name)
+      ->where('roaster_date', Carbon::parse($event->event_date))
+      ->where('ratePerHour', $event->rate)
+      ->where('job_type_id', $event->job_type_name)
+      ->where('roaster_type', 'Schedueled')
+      ->first();
+
+      $timekeeper->employee->user->notify(new NewShiftNotification($msg,$timekeeper));
+      push_notify('Shift Alert:',$msg.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
+    }
+    return Response()->json(['status' => 'sccess']);
+  }
 }

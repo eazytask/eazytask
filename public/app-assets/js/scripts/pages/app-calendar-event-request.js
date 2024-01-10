@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var sidebar = $('.event-sidebar');
   var eventForm = $('.event-form');
   var publish = $('#addToRoaster');
+  var sendNotif = $('#sendNotification');
   var addEventBtn = $('#addEventBtn');
   var editEventBtn = $('#editEventBtn');
   var eventTitle = $('#title');
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let ids = []
   let totalId = []
   let event_id = null
+  let current_ids = []
   // --------------------------------------------
   // On add new item, clear sidebar-right field fields
   // --------------------------------------------
@@ -229,6 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (employee.status == 'Added') {
         status = 'badge badge-pill badge-light-success mr-1'
         checkbox_status = 'disabled'
+        current_ids.push(employee.id)
       } else {
         totalId.push(employee.id)
         employeeId = employee.id
@@ -248,6 +251,12 @@ document.addEventListener('DOMContentLoaded', function () {
       $("#checkAllID").prop('disabled', true)
     } else {
       $("#checkAllID").prop('disabled', false)
+    }
+    console.log(current_ids)
+    if(current_ids.length > 0) {
+      $("#sendNotification").prop('disabled', false)
+    }else{
+      $("#sendNotification").prop('disabled', true)
     }
     $('#eventClickTable').DataTable().clear().destroy();
     $('#eventClickTbody').html(rows);
@@ -499,6 +508,32 @@ document.addEventListener('DOMContentLoaded', function () {
     $("#addToRoaster").prop('disabled', true)
   });
 
+  sendNotif.on('click', function() {
+    $.ajax({
+      url: '/admin/home/event/send-notif',
+      data: {
+        'event_id': event_id,
+        'employee_ids': current_ids,
+      },
+      type: 'GET',
+      success: function (data) {
+        calendar.refetchEvents();
+        toastr['success']('👋 Notif Sent Succesfully', 'Success!', {
+          closeButton: true,
+          tapToDismiss: false,
+        });
+      }
+    })
+    $("#eventClick").modal("hide")
+
+    ids = []
+    totalId = []
+    current_ids = []
+    $('#checkAllID').prop('checked', false)
+    $("#addToRoaster").prop('disabled', true)
+    $("#sendNotification").prop('disabled', true)
+  })
+
   // Add new event
   $(addEventBtn).on('click', function () {
     if ($("#addEventForm").valid()) {
@@ -574,6 +609,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Reset sidebar input values
   function resetValues() {
+    current_ids = [];
     //form filed reset
     $('#project_name').val('').trigger('change');
     $('#event_date').val('');

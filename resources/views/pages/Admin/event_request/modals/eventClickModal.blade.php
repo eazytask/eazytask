@@ -1,4 +1,5 @@
-<div class="modal fade text-left p-md-1 p-0" id="eventClick" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17" aria-hidden="true">
+<div class="modal fade text-left p-md-1 p-0" id="eventClick" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-gradient-primary">
@@ -16,15 +17,21 @@
                             <p class="m-0" id="eventRemarks"></p>
                         </div>
                         <div class="col-6">
-                            <button class="btn btn-gradient-danger text-center border-primary float-right p-0 ml-25" style="height: 45px; width:45px" id="deleteEvent"><i data-feather='trash-2'></i></button>
-                            <button class="btn btn-gradient-primary text-center border-primary float-right p-0 ml-25" style="height: 45px; width:45px" id="editEvent"><i data-feather='edit'></i></button>
+                            <button class="btn btn-gradient-danger text-center border-primary float-right p-0 ml-25"
+                                style="height: 45px; width:45px" id="deleteEvent"><i
+                                    data-feather='trash-2'></i></button>
+                            <button class="btn btn-gradient-primary text-center border-primary float-right p-0 ml-25"
+                                style="height: 45px; width:45px" id="editEvent"><i data-feather='edit'></i></button>
                         </div>
                     </div>
                 </div>
                 <div class="card plan-card p-2" id="hasData">
                     <div class="row">
                         <div class="col-6">
-                        <button class="btn btn-gradient-success text-center border-primary" disabled id="addToRoaster">Add To Roster</button>
+                            <button class="btn btn-gradient-success text-center border-primary" disabled
+                                id="addToRoaster">Add To Roster</button>
+                            <button class="btn btn-gradient-primary text-center border-primary" disabled
+                                id="sendNotification">Send Notification</button>
                         </div>
                         <div class="col-6">
                             <select name="" id="filterStatus" class="float-right form-control">
