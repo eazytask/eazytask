@@ -943,7 +943,7 @@ class EmployeeController extends Controller
             $row->state = $request->state;
             $row->status = $request->status;
             $row->postal_code = $request->postal_code;
-            // $row->email = $request->email;
+            $row->email = $request->email;
             $row->contact_number = $request->contact_number;
             $row->date_of_birth = set_date($request->date_of_birth);
             $row->license_no = $request->license_no;

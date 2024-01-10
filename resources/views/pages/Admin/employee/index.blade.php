@@ -431,7 +431,7 @@
                 $("#postal_code").val(rowData.postal_code)
                 $("#email").val(rowData.email)
                 $("#document").val(rowData.document)
-                $("#email").prop('readonly', true)
+                // $("#email").prop('readonly', true)
                 $("#date_of_birth").val(setDate(rowData.date_of_birth))
                 $("#status").val(rowData.status).trigger('change')
                 $("#license_no").val(rowData.license_no)
