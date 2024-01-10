@@ -162,8 +162,8 @@ class AdminEventRequestController extends Controller
       $timekeeper->created_at = Carbon::now();
       $timekeeper->save();
 
-      $timekeeper->employee->user->notify(new NewShiftNotification($msg,$timekeeper));
-      push_notify('Shift Alert:',$msg.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
+      // $timekeeper->employee->user->notify(new NewShiftNotification($msg,$timekeeper));
+      // push_notify('Shift Alert:',$msg.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
     }
     return Response()->json(['status' => 'sccess']);
   }
