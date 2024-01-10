@@ -174,10 +174,10 @@ class SignInController extends Controller
         return Redirect()->back()->with($notification);
     }
 
-    public function addSignOut($timekeeper_id){
+    public function addSignOut($timekeeper_id, $auto = false){
         $roster = TimeKeeper::find($timekeeper_id);
         if(!$roster->sing_out){
-            $roster->sing_out = Carbon::now();
+            $roster->sing_out = $auto ? $roster->shift_end : Carbon::now();
             
             if($roster->roaster_type=='Unschedueled'){
                 $now = Carbon::now();
