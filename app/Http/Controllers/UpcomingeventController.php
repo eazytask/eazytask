@@ -43,8 +43,8 @@ class UpcomingeventController extends Controller
         $msg = Auth::user()->name . ' is interested in "'.$pro->pName.'" event on ' . Carbon::parse($event->event_date)->format('d-m-Y') . '(' . Carbon::parse($event->shift_start)->format('H:i') . '-' . Carbon::parse($event->shift_end)->format('H:i') . ') near "'.$pro->project_address.' '.$pro->suburb.' '.$pro->project_state.'"';
 
         $admin = User::find($event->user_id);
-        Auth::user()->employee->admin->notify(new EventRequestNotification($msg));
-        push_notify('New Event Request :', $msg,$admin->admin_role, Auth::user()->employee->admin->firebase,'admin-event',$event->id);
+        // Auth::user()->employee->admin->notify(new EventRequestNotification($msg));
+        // push_notify('New Event Request :', $msg,$admin->admin_role, Auth::user()->employee->admin->firebase,'admin-event',$event->id);
 
         return Redirect()->back();
     }
