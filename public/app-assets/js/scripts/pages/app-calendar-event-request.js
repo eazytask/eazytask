@@ -485,6 +485,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // publish employee request
   publish.on('click', function () {
+    $("#addToRoaster").prop('disabled', true)
+
     $.ajax({
       url: '/admin/home/event/publish',
       data: {
@@ -505,10 +507,11 @@ document.addEventListener('DOMContentLoaded', function () {
     ids = []
     totalId = []
     $('#checkAllID').prop('checked', false)
-    $("#addToRoaster").prop('disabled', true)
+    // $("#addToRoaster").prop('disabled', true)
   });
 
   sendNotif.on('click', function() {
+    $("#sendNotification").prop('disabled', true)
     $.ajax({
       url: '/admin/home/event/send-notif',
       data: {
@@ -531,7 +534,6 @@ document.addEventListener('DOMContentLoaded', function () {
     current_ids = []
     $('#checkAllID').prop('checked', false)
     $("#addToRoaster").prop('disabled', true)
-    $("#sendNotification").prop('disabled', true)
   })
 
   // Add new event
