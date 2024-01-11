@@ -170,8 +170,8 @@
                                                                                 !auth()->user()->company_roles->contains('role', 7))
                                                                             <option value="4">Supervisor
                                                                             </option>
-                                                                            <option value="2">Admin
-                                                                            </option>
+                                                                            {{-- <option value="2">Admin
+                                                                            </option> --}}
                                                                             <option value="5">Operation
                                                                             </option>
                                                                             <option value="6">Manager
