@@ -136,6 +136,9 @@ class ScheduleStatusController extends Controller
                     if ($timekeeper->sing_in == null && $timekeeper->shift_start <= Carbon::now() && $timekeeper->shift_end >= Carbon::now()) {
                         $status = "bg-gradient-danger";
                     }
+                    if ($timekeeper->sing_in == null && $timekeeper->shift_end <= Carbon::now()) {
+                        $status = "bg-gradient-danger";
+                    }
                     if ($timekeeper->sing_in != null && $timekeeper->sing_out != null && $timekeeper->shift_start <= Carbon::now() && $timekeeper->shift_end >= Carbon::now()) {
                         $status = "bg-gradient-success";
                     }

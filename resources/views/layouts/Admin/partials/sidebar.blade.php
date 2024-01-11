@@ -556,7 +556,7 @@
 
         <li class="nav-item {{ request()->is('user/home') ? 'active' : '' }}"><a class="d-flex align-items-center"
                 href="/user/home"><i data-feather="home"></i><span class="menu-title text-truncate"
-                    data-i18n="Dashboards">Dashboard</span><span
+                    data-i18n="Dashboards">User Dashboard</span><span
                     class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
         </li>
 
