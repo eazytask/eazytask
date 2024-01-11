@@ -918,49 +918,50 @@ class EmployeeController extends Controller
 
             $emp_role = $employee->role;
             $employee->role = $request->role;
+            $employee->save();
 
-        $employees = Employee::where([
-            ['userID', $employee->userID],
-            ['role',$request->role]
-        ])->get();
-
-        if(!$employees->count()){
             $employees = Employee::where([
                 ['userID', $employee->userID],
-                ['role',$emp_role]
+                ['role',$request->role]
             ])->get();
-        }
 
-        function set_date($date=null){
-            return $date? Carbon::parse($date)->toDateString():null;
-        }
-        foreach ($employees as $row) {
-            $row->fname = $request->fname;
-            $row->mname = $request->mname;
-            $row->lname = $request->lname;
-            $row->address = $request->address;
-            $row->suburb = $request->suburb;
-            $row->state = $request->state;
-            $row->status = $request->status;
-            $row->postal_code = $request->postal_code;
-            $row->email = $request->email;
-            $row->contact_number = $request->contact_number;
-            $row->date_of_birth = set_date($request->date_of_birth);
-            $row->license_no = $request->license_no;
-            $row->license_expire_date = set_date($request->license_expire_date);
-            $row->first_aid_license = $request->first_aid_license;
-            $row->first_aid_expire_date = set_date($request->first_aid_expire_date);
-            
-            if ($filename) {
-                $employee->image = $filename;
-
-                $user = User::find($employee->userID);
-                $user->image = $filename;
-                $user->save();
-                $row->image = $filename;
+            if(!$employees->count()){
+                $employees = Employee::where([
+                    ['userID', $employee->userID],
+                    ['role',$emp_role]
+                ])->get();
             }
-            $row->save();
-        }
+
+            function set_date($date=null){
+                return $date? Carbon::parse($date)->toDateString():null;
+            }
+            foreach ($employees as $row) {
+                $row->fname = $request->fname;
+                $row->mname = $request->mname;
+                $row->lname = $request->lname;
+                $row->address = $request->address;
+                $row->suburb = $request->suburb;
+                $row->state = $request->state;
+                $row->status = $request->status;
+                $row->postal_code = $request->postal_code;
+                $row->email = $request->email;
+                $row->contact_number = $request->contact_number;
+                $row->date_of_birth = set_date($request->date_of_birth);
+                $row->license_no = $request->license_no;
+                $row->license_expire_date = set_date($request->license_expire_date);
+                $row->first_aid_license = $request->first_aid_license;
+                $row->first_aid_expire_date = set_date($request->first_aid_expire_date);
+                
+                if ($filename) {
+                    $employee->image = $filename;
+
+                    $user = User::find($employee->userID);
+                    $user->image = $filename;
+                    $user->save();
+                    $row->image = $filename;
+                }
+                $row->save();
+            }
 
             
 
@@ -1024,8 +1025,8 @@ class EmployeeController extends Controller
                         $filename = null;
                 
                         if ($image) {
-                            // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
-                            $basePath = "/Applications/MAMP/htdocs/eazytask/public/";
+                            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+                            // $basePath = "/Applications/MAMP/htdocs/eazytask/public/";
                             $folderPath = "images/compliance/";
                             $image_parts = explode(";base64,", $image);
                             $image_type_aux = explode("image/", $image_parts[0]);
