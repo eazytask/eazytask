@@ -41,8 +41,18 @@
                 @endif
                 <li class="nav-item {{ request()->is('admin/home/dashboard') ? 'active' : '' }}"><a
                         class="d-flex align-items-center" href="/admin/home/dashboard"><i data-feather="home"></i><span
-                            class="menu-title text-truncate" data-i18n="Dashboards">Dashboard</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
+                            class="menu-title text-truncate" data-i18n="Dashboards">
+                            @if (auth()->user()->company_roles->contains('role', 2))
+                                Admin
+                            @elseif(auth()->user()->company_roles->contains('role', 5))
+                                Operation
+                            @elseif(auth()->user()->company_roles->contains('role', 6))
+                                Manager
+                            @elseif(auth()->user()->company_roles->contains('role', 7))
+                                Account
+                            @endif
+                            Dashboard
+                        </span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
                 </li>
 
                 <li class="nav-item {{ request()->is('admin/home/schedule/status') ? 'active' : '' }}"><a
@@ -271,7 +281,7 @@
             </li>
             <li class="nav-ite {{ request()->is('supervisor/home') ? 'active' : '' }}"><a
                     class="d-flex align-items-center" href="/supervisor/home"><i data-feather="home"></i><span
-                        class="menu-title text-truncate" data-i18n="Dashboards">Dashboard</span><span
+                        class="menu-title text-truncate" data-i18n="Dashboards">Supervisor Dashboard</span><span
                         class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
             </li>
 
