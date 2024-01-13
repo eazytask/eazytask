@@ -121,7 +121,7 @@ class ScheduleStatusController extends Controller
                     $roaster_day = Carbon::parse($timekeeper->roaster_date)->format('D');
                     $json = json_encode($timekeeper->toArray(), false);
 
-                    $text = "Complete";
+                    $text = "";
                     $status = "";
                     $symbol = "";
                     $colors = "style='width: 125px; color:#000 !important; display: inline-block;'";
@@ -158,6 +158,10 @@ class ScheduleStatusController extends Controller
                         $status = "bg-gradient-danger";
                     }
 
+                    if ($timekeeper->sing_in != null && $timekeeper->sing_out == null) {
+                        $text = 'On Shift';
+                    }
+
                     if ($timekeeper->sing_in != null && $timekeeper->sing_out == null && $timekeeper->is_approved != 1 && $timekeeper->shift_end > Carbon::now()) {
                         $text = 'On Shift';
                     }
@@ -180,6 +184,10 @@ class ScheduleStatusController extends Controller
 
                     if ($timekeeper->sing_in == null && $timekeeper->sing_out == null && $timekeeper->is_approved != 1 && $timekeeper->shift_end > Carbon::now() &&$timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']) {
                         $text = 'Accepted';
+                    }
+
+                    if ($timekeeper->is_approved == 1) {
+                        $text = 'Approved';
                     }
 
                     // if ($timekeeper->roaster_type  == 'Unschedueled') {
