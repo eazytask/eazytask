@@ -178,6 +178,10 @@ class ScheduleStatusController extends Controller
                         $text = 'Waiting';
                     }
 
+                    if ($timekeeper->sing_in == null && $timekeeper->sing_out == null && $timekeeper->is_approved != 1 && $timekeeper->shift_end > Carbon::now() &&$timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']) {
+                        $text = 'Accepted';
+                    }
+
                     // if ($timekeeper->roaster_type  == 'Unschedueled') {
                     //     $status = "bg-gradient-info";
                     // } elseif ($timekeeper->shift_start < Carbon::now() && $timekeeper->sing_in == null) {
