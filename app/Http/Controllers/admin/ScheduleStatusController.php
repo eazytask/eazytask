@@ -172,6 +172,7 @@ class ScheduleStatusController extends Controller
 
                     if ($timekeeper->sing_in != null && $timekeeper->sing_out != null && $timekeeper->is_approved != 1) {
                         $text = 'Pending';
+                        $status = "bg-gradient-success";
                     }
 
                     if ($timekeeper->sing_in == null && $timekeeper->sing_out == null && $timekeeper->is_approved != 1 && $timekeeper->shift_end < Carbon::now() &&$timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']) {
@@ -184,10 +185,12 @@ class ScheduleStatusController extends Controller
 
                     if ($timekeeper->sing_in == null && $timekeeper->sing_out == null && $timekeeper->is_approved != 1 && $timekeeper->shift_end > Carbon::now() &&$timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']) {
                         $text = 'Accepted';
+                        $status = "bg-gradient-success";
                     }
 
                     if ($timekeeper->is_approved == 1) {
                         $text = 'Approved';
+                        $status = "bg-gradient-success";
                     }
 
                     // if ($timekeeper->roaster_type  == 'Unschedueled') {
