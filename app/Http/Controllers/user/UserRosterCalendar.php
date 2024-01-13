@@ -171,6 +171,7 @@ class UserRosterCalendar extends Controller
                     $roaster_day = Carbon::parse($timekeeper->roaster_date)->format('D');
                     $json = json_encode($timekeeper->toArray(), false);
 
+                    $text = "";
                     $status = "";
                     $symbol = "";
                     $colors = "style='width: 125px; color:#000 !important'";
@@ -206,6 +207,42 @@ class UserRosterCalendar extends Controller
                     if ($timekeeper->sing_in != null && $timekeeper->sing_out == null && $timekeeper->shift_start <= Carbon::now() && $timekeeper->shift_end < Carbon::now()) {
                         $status = "bg-gradient-danger";
                     }
+
+                    if ($timekeeper->sing_in != null && $timekeeper->sing_out == null) {
+                        $text = 'On Shift';
+                    }
+
+                    if ($timekeeper->sing_in != null && $timekeeper->sing_out == null && $timekeeper->is_approved != 1 && $timekeeper->shift_end > Carbon::now()) {
+                        $text = 'On Shift';
+                    }
+
+                    if ($timekeeper->sing_in == null && $timekeeper->shift_start < Carbon::now() && $timekeeper->is_approved != 1 && $timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']) {
+                        $text = 'Absent';
+                    }
+
+                    if ($timekeeper->sing_in != null && $timekeeper->sing_out != null && $timekeeper->is_approved != 1) {
+                        $text = 'Pending';
+                        $status = "bg-gradient-success";
+                    }
+
+                    if ($timekeeper->sing_in == null && $timekeeper->sing_out == null && $timekeeper->is_approved != 1 && $timekeeper->shift_end < Carbon::now() &&$timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']) {
+                        $text = 'Absent';
+                    }
+                    
+                    if ($timekeeper->roaster_status_id == Session::get('roaster_status')['Published'] && $timekeeper->shift_end > Carbon::now()) {
+                        $text = 'Waiting';
+                    }
+
+                    if ($timekeeper->sing_in == null && $timekeeper->sing_out == null && $timekeeper->is_approved != 1 && $timekeeper->shift_end > Carbon::now() &&$timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']) {
+                        $text = 'Accepted';
+                        $status = "bg-gradient-success";
+                    }
+
+                    if ($timekeeper->is_approved == 1) {
+                        $text = 'Approved';
+                        $status = "bg-gradient-success";
+                    }
+
                     // if ($timekeeper->roaster_type  == 'Unschedueled') {
                     //     $status = "bg-gradient-info";
                     // } elseif ($timekeeper->shift_start < Carbon::now() && $timekeeper->sing_in == null) {
@@ -223,9 +260,10 @@ class UserRosterCalendar extends Controller
                     }
 
                     $has_app = $timekeeper->payment_status || $timekeeper->is_approved ? true : false;
-                    $val = "<div $colors  class='text-uppercase shadow p-50 roster mb-50 mt-50 editBtn font-weight-bolder " . $status . "' data-copy='false' data-row='$json'>
+                    $val = "<div $colors  class='text-uppercase shadow p-50 roster mt-50 editBtn font-weight-bolder " . $status . "' data-copy='false' data-row='$json'>
                     <i data-feather='" . ($timekeeper->payment_status ? 'dollar-sign' : 'check-circle') . "' class='float-right' " . ($has_app ? '' : 'hidden') . "></i>
-                    <div>$project_name" . "<span class='font-small-2 font-weight-bold'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2'>" . $timekeeper->job_type->name . "<br>" . $symbol . "</span></div></div>";
+                    <div>$project_name" . "<span class='font-small-2 font-weight-bold'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2'>" . $timekeeper->job_type->name . "<br>" . $symbol . "</span></div></div>
+                    <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . $text . "</b></span>";
 
                     if ($roaster_day == 'Mon') {
                         $mon_ .= $val;
