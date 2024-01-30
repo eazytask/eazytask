@@ -1,7 +1,6 @@
 {
     "private": true,
     "scripts": {
-        "clean": "rimraf public/build",
         "dev": "npm run development",
         "development": "mix",
         "watch": "mix watch",
@@ -9,8 +8,9 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-        "velzon-build": "npm run clean && vite build",
-        "velzon-build-rtl": "rtlcss public/build/css/app.min.css & rtlcss public/build/css/bootstrap.min.css"
+        "velzon-clean": "rimraf public/app-assets/velzon",
+        "velzon-build": "npm run velzon-clean && vite build",
+        "velzon-build-rtl": "rtlcss public/app-assets/velzon/css/app.min.css & rtlcss public/app-assets/velzon/css/bootstrap.min.css"
     },
     "devDependencies": {
         "@popperjs/core": "^2.10.2",

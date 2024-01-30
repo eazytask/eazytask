@@ -10,14 +10,14 @@ const folder = {
     src: "resources/", // source files
     src_assets: "resources/", // source assets files
     dist: "public/", // build files
-    dist_assets: "public/build/" //build assets files
+    dist_assets: "public/app-assets/velzon" //build assets files
 };
 
 export default vite.defineConfig({
     build: {
         manifest: true,
         rtl: true,
-        outDir: 'public/build/',
+        outDir: 'public/app-assets/velzon',
         cssCodeSplit: true,
         rollupOptions: {
             output: {
