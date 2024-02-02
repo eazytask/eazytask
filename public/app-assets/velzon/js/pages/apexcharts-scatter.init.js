@@ -332,7 +332,7 @@ var options = {
         type: 'image',
         opacity: 1,
         image: {
-            src: ['build/images/users/avatar-1.jpg', 'build/images/users/avatar-2.jpg'],
+            src: ['app-assets/velzon/images/users/avatar-1.jpg', 'app-assets/velzon/images/users/avatar-2.jpg'],
             width: 40,
             height: 40
         }

@@ -100,7 +100,7 @@ xhttp.onload = function () {
   });
   customerList.remove("id", '<a href="javascript:void(0);" class="fw-medium link-primary">#VZ2101</a>');
 }
-xhttp.open("GET", "build/json/customer-list.json");
+xhttp.open("GET", "app-assets/velzon/json/customer-list.json");
 xhttp.send();
 
 isCount = new DOMParser().parseFromString(

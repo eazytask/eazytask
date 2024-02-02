@@ -32,21 +32,21 @@ File: Main Js File
 	function setLanguage(lang) {
 		if (document.getElementById("header-lang-img")) {
 			if (lang == "en") {
-				document.getElementById("header-lang-img").src = "build/images/flags/us.svg";
+				document.getElementById("header-lang-img").src = "app-assets/velzon/images/flags/us.svg";
 			} else if (lang == "sp") {
-				document.getElementById("header-lang-img").src = "build/images/flags/spain.svg";
+				document.getElementById("header-lang-img").src = "app-assets/velzon/images/flags/spain.svg";
 			} else if (lang == "gr") {
-				document.getElementById("header-lang-img").src = "build/images/flags/germany.svg";
+				document.getElementById("header-lang-img").src = "app-assets/velzon/images/flags/germany.svg";
 			} else if (lang == "it") {
-				document.getElementById("header-lang-img").src = "build/images/flags/italy.svg";
+				document.getElementById("header-lang-img").src = "app-assets/velzon/images/flags/italy.svg";
 			} else if (lang == "ru") {
-				document.getElementById("header-lang-img").src = "build/images/flags/russia.svg";
+				document.getElementById("header-lang-img").src = "app-assets/velzon/images/flags/russia.svg";
 			} else if (lang == "ch") {
-				document.getElementById("header-lang-img").src = "build/images/flags/china.svg";
+				document.getElementById("header-lang-img").src = "app-assets/velzon/images/flags/china.svg";
 			} else if (lang == "fr") {
-				document.getElementById("header-lang-img").src = "build/images/flags/french.svg";
+				document.getElementById("header-lang-img").src = "app-assets/velzon/images/flags/french.svg";
 			} else if (lang == "ar") {
-				document.getElementById("header-lang-img").src = "build/images/flags/ae.svg";
+				document.getElementById("header-lang-img").src = "app-assets/velzon/images/flags/ae.svg";
 			}
 			localStorage.setItem("language", lang);
 			language = localStorage.getItem("language");
@@ -59,7 +59,7 @@ File: Main Js File
 		language == null ? setLanguage(default_lang) : false;
 		var request = new XMLHttpRequest();
 		// Instantiating the request object
-		request.open("GET", "build/lang/" + language + ".json");
+		request.open("GET", "app-assets/velzon/lang/" + language + ".json");
 		// Defining event listener for readystatechange event
 		request.onreadystatechange = function () {
 			// Check if the request is compete and was successful
@@ -372,7 +372,7 @@ File: Main Js File
 				document.querySelector(".navbar-menu").innerHTML = navbarMenuHTML;
 			}
 			var ul = document.createElement("ul");
-			ul.innerHTML = '<a href="#" class="logo"><img src="build/images/logo-sm.png" alt="" height="22"></a>';
+			ul.innerHTML = '<a href="#" class="logo"><img src="app-assets/velzon/images/logo-sm.png" alt="" height="22"></a>';
 			Array.from(document.getElementById("navbar-nav").querySelectorAll(".menu-link")).forEach(function (item) {
 				ul.className = "twocolumn-iconview";
 				var li = document.createElement("li");
@@ -1026,16 +1026,17 @@ File: Main Js File
 						if (elem.querySelector(".view-all")) {
 							elem.querySelector(".view-all").style.display = "none";
 						}
+	
 						var emptyNotificationElem = elem.querySelector(".empty-notification-elem")
 						if (!emptyNotificationElem) {
-							elem.innerHTML += '<div class="empty-notification-elem">\
+							elem.innerHTML += `<div class="empty-notification-elem">\
 							<div class="w-25 w-sm-50 pt-3 mx-auto">\
-								<img src="build/images/svg/bell.svg" class="img-fluid" alt="user-pic">\
+								<img src="${window.location.origin}/app-assets/velzon/images/svg/bell.svg" class="img-fluid" alt="user-pic">\
 							</div>\
 							<div class="text-center pb-5 mt-2">\
 								<h6 class="fs-18 fw-semibold lh-base">Hey! You have no any notifications </h6>\
 							</div>\
-						</div>'
+						</div>`
 						}
 					}
 				});
@@ -1067,19 +1068,19 @@ File: Main Js File
 				});
 			});
 
-			var removeItem = document.getElementById('removeNotificationModal');
-			removeItem.addEventListener('show.bs.modal', function (event) {
-				document.getElementById("delete-notification").addEventListener("click", function () {
-					Array.from(document.querySelectorAll(".notification-item")).forEach(function (element) {
-						if (element.classList.contains("active")) {
-							element.remove();
-						}
-					});
-					emptyNotification();
+			// var removeItem = document.getElementById('removeNotificationModal');
+			// removeItem.addEventListener('show.bs.modal', function (event) {
+			// 	document.getElementById("delete-notification").addEventListener("click", function () {
+			// 		Array.from(document.querySelectorAll(".notification-item")).forEach(function (element) {
+			// 			if (element.classList.contains("active")) {
+			// 				element.remove();
+			// 			}
+			// 		});
+			// 		emptyNotification();
 
-					document.getElementById("NotificationModalbtn-close").click();
-				})
-			})
+			// 		document.getElementById("NotificationModalbtn-close").click();
+			// 	})
+			// })
 		}
 	}
 

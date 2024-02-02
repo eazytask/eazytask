@@ -483,7 +483,7 @@ function loadCharts() {
 }
 
 
-var url = "build/json/";
+var url = "app-assets/velzon/json/";
 var sellerListData = '';
 var editList = false;
 

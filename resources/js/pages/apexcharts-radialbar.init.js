@@ -297,7 +297,7 @@ if (chartStorkeRadialbarColors) {
                 hollow: {
                     margin: 15,
                     size: '65%',
-                    image: 'build/images/comingsoon.png',
+                    image: 'app-assets/velzon/images/comingsoon.png',
                     imageWidth: 56,
                     imageHeight: 56,
                     imageClipped: false
@@ -319,7 +319,7 @@ if (chartStorkeRadialbarColors) {
         fill: {
             type: 'image',
             image: {
-                src: ['build/images/small/img-4.jpg'],
+                src: ['app-assets/velzon/images/small/img-4.jpg'],
             }
         },
         stroke: {

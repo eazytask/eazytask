@@ -143,7 +143,7 @@ if (document.getElementById("sa-image"))
         Swal.fire({
             title: 'Sweet!',
             text: 'Modal with a custom image.',
-            imageUrl: 'build/images/logo-sm.png',
+            imageUrl: 'app-assets/velzon/images/logo-sm.png',
             imageHeight: 40,
             confirmButtonClass: 'btn btn-primary w-xs mt-2',
             buttonsStyling: false,
@@ -261,7 +261,7 @@ if (document.getElementById("custom-padding-width-alert"))
             padding: 100,
             confirmButtonClass: 'btn btn-primary w-xs',
             buttonsStyling: false,
-            background: '#fff url(build/images/chat-bg-pattern.png)'
+            background: '#fff url(app-assets/velzon/images/chat-bg-pattern.png)'
         })
     });
 
@@ -376,7 +376,7 @@ if (document.getElementById("custom-sa-community"))
                 '<label for="input-email" class="form-label fs-13">Email</label>' +
                 '<input type="email" class="form-control" id="input-email" placeholder="Enter Email Address">' +
                 '</div>',
-            imageUrl: 'build/images/logo-sm.png',
+            imageUrl: 'app-assets/velzon/images/logo-sm.png',
             footer: '<p class="fs-13 text-muted mb-0">Already have an account ? <a href="#" class="fw-semibold text-decoration-underline"> Signin </a> </p>',
             imageHeight: 40,
             confirmButtonClass: 'btn btn-primary w-xs mb-2',
@@ -417,7 +417,7 @@ if (document.getElementById("custom-sa-notification"))
         Swal.fire({
             html: '<div class="mt-3">' +
                 '<div class="avatar-lg mx-auto">' +
-                '<img src="build/images/users/avatar-2.jpg" class="rounded-circle img-thumbnail" alt="thumbnail">' +
+                '<img src="app-assets/velzon/images/users/avatar-2.jpg" class="rounded-circle img-thumbnail" alt="thumbnail">' +
                 '</div>' +
                 '<div class="mt-4 pt-2 fs-15">' +
                 '<h4 class="fs-18 fw-semibold">Welcome <span class="fw-semibold">Mike Mayer</span></h4>' +

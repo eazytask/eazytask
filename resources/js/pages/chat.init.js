@@ -7,8 +7,8 @@ File: Chat init js
 */
 
 (function () {
-    var dummyUserImage = "build/images/users/user-dummy-img.jpg";
-    var dummyMultiUserImage = "build/images/users/multi-user.jpg";
+    var dummyUserImage = "app-assets/velzon/images/users/user-dummy-img.jpg";
+    var dummyMultiUserImage = "app-assets/velzon/images/users/multi-user.jpg";
     var isreplyMessage = false;
 
     // favourite btn
@@ -48,7 +48,7 @@ File: Chat init js
     //User current Id
     var currentChatId = "users-chat";
     var currentSelectedChat = "users";
-    var url="build/json/";
+    var url="app-assets/velzon/json/";
     var usersList = "";
     var userChatId = 1;
 
@@ -922,7 +922,7 @@ File: Chat init js
         closeButton: true,
         position: ["top", "right"],
         preFetch: true,
-        dir: "build/js/pages/plugins/json",
+        dir: "app-assets/velzon/js/pages/plugins/json",
         insertInto: document.querySelector(".chat-input"),
     });
 

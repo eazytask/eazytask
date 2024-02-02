@@ -46,7 +46,7 @@ function formatState (state) {
   if (!state.id) {
     return state.text;
   }
-  var baseUrl = "build/images/flags/select2";
+  var baseUrl = "app-assets/velzon/images/flags/select2";
   var $state = $(
     '<span><img src="' + baseUrl + '/' + state.element.value.toLowerCase() + '.png" class="img-flag rounded" height="18" /> ' + state.text + '</span>'
   );
@@ -62,7 +62,7 @@ function formatState (state) {
     return state.text;
   }
 
-  var baseUrl = "build/images/flags/select2";
+  var baseUrl = "app-assets/velzon/images/flags/select2";
   var $state = $(
     '<span><img class="img-flag rounded" height="18" /> <span></span></span>'
   );

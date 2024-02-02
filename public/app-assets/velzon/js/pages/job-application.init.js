@@ -119,7 +119,7 @@ xhttp.onload = function () {
     });
     applicationList.remove("id", `<a href="#" class="fw-medium link-primary">#VZ001</a>`);
 }
-xhttp.open("GET", "build/json/application-list.json");
+xhttp.open("GET", "app-assets/velzon/json/application-list.json");
 xhttp.send();
 
 function isStatus(val) {

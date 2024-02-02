@@ -773,7 +773,7 @@ var options = {
         type: 'image',
         opacity: 0.87,
         image: {
-            src: ['build/images/small/img-4.jpg'],
+            src: ['app-assets/velzon/images/small/img-4.jpg'],
             width: 466,
             height: 406
         }

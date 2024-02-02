@@ -270,7 +270,7 @@ var options = {
         type: 'image',
         opacity: 0.85,
         image: {
-            src: ['build/images/small/img-1.jpg', 'build/images/small/img-2.jpg', 'build/images/small/img-3.jpg', 'build/images/small/img-4.jpg'],
+            src: ['app-assets/velzon/images/small/img-1.jpg', 'app-assets/velzon/images/small/img-2.jpg', 'app-assets/velzon/images/small/img-3.jpg', 'app-assets/velzon/images/small/img-4.jpg'],
             width: 25,
             imagedHeight: 25
         },

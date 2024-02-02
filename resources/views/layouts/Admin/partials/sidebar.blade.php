@@ -1,681 +1,635 @@
-<div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
-    <div class="navbar-header">
-        <ul class="nav navbar-nav flex-row">
-            <li class="nav-item mr-auto"><a class="navbar-brand"
-                    href="/admin/home/{{ Auth::user()->company_roles->first()->company->id }}">
-                    <span class="brand-logo">
-                        <!-- <img src="{{ asset('images/app/logo.png') }}" alt="" style="margin-top:-17px"> -->
-                    </span>
-                    <!--<h2 class="brand-text">Roster</h2>-->
-                </a></li>
-            <li class="nav-item nav-toggle"><a class="nav-link modern-nav-toggle pr-0" data-toggle="collapse"><i
-                        class="d-block d-xl-none text-primary toggle-icon font-medium-4" data-feather="x"></i><i
-                        class="d-none d-xl-block collapse-toggle-icon font-medium-4  text-primary" data-feather="disc"
-                        data-ticon="disc"></i></a></li>
-        </ul>
+@php
+    $isRoleAdmin = auth()->user()->company_roles->contains('role', 2);
+    $isRoleSupervisor = auth()->user()->company_roles->contains('role', 4);
+    $isRoleOperation = auth()->user()->company_roles->contains('role', 5);
+    $isRoleManager = auth()->user()->company_roles->contains('role', 6);
+    $isRoleAccount = auth()->user()->company_roles->contains('role', 7);
+
+    $isRequestAdminDashboard = request()->is('admin/home/dashboard');
+    $isRequestUserDashboard = request()->is('user/home');
+    $isRequestSupervisorDashboard = request()->is('supervisor/home'); 
+    $isRequestSchedule = request()->is('admin/home/schedule/status');
+    $isRequestRosterEntry = request()->is('admin/home/report');
+    $isRequestEventCalendar = request()->is('admin/home/event/request');
+    $isRequestNewTimesheet = request()->is('admin/home/new/timekeeper/*');
+    $isRequestViewTimesheet = request()->is('admin/home/view/schedule/*');
+    $isRequestTimeKeeperApprove = request()->is('admin/home/timekeeper/approve/*');
+    $isRequestEmployee = request()->is('admin/home/employee/*');
+    $isRequestMyAvailability = request()->is('admin/home/myavailability/*');
+    $isRequestLeave = request()->is('admin/home/leave/*');
+    $isRequestInductedSite = request()->is('admin/home/inducted/site/*');
+    $isRequestClient = request()->is('admin/home/client/*');
+    $isRequestProject = request()->is('admin/home/project/*');
+    $isRequestRevenue = request()->is('admin/home/revenue/*');
+    $isRequestPaymentAdd = request()->is('admin/home/payment/add');
+    $isRequestPaymentList = request()->is('admin/home/payment/list');
+    $isRequestEventReport = request()->is('admin/home/event-report');
+    $isRequestSignInStatus = request()->is('admin/home/sign/in/status');
+    $isRequestCustomReport = request()->is('admin/home/all/report');
+    $isRequestMessages = request()->is('home/messages');
+    $isRequestJobType = request()->is('admin/home/job/type');
+    $isRequestRosterStatus = request()->is('admin/home/roster/status');
+    $isRequestActivityLog = request()->is('admin/home/activity/log');
+    
+    $companyId = Auth::user()->company_roles->first()->company->id;
+@endphp
+
+<!-- ========== App Menu ========== -->
+<div class="app-menu navbar-menu">
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <!-- Light Logo-->
+        <a href="/" class="logo logo-light">
+            <span class="logo-sm">
+                <img src="{{ URL::asset('app-assets/images/ico/favicon.ico') }}" alt="" height="22">
+            </span>
+            <span class="logo-lg">
+                {{-- <img src="{{ URL::asset('app-assets/images/ico/favicon.ico') }}" alt="" height="17"> --}}
+            </span>
+        </a>
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
+            <i class="ri-record-circle-line"></i>
+        </button>
     </div>
-    <div class="shadow-bottom"></div>
-    <div class="main-menu-content">
-        <ul class="navigation navigation-main pb-2" id="main-menu-navigation" data-menu="menu-navigation">
-            @if (auth()->user()->company_roles->contains('role', 2) ||
-                    auth()->user()->company_roles->contains('role', 5) ||
-                    auth()->user()->company_roles->contains('role', 6) ||
-                    auth()->user()->company_roles->contains('role', 7))
-                <!----------------------------------------------- all admin menus --------------------------------------------------->
-                @if (auth()->user()->company_roles->contains('role', 2))
-                    <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Admin</span><i
-                            data-feather="more-horizontal"></i>
+
+    <div id="scrollbar">
+        <div class="container-fluid">
+            <div id="two-column-menu">
+            </div>
+
+            <ul class="navbar-nav" id="navbar-nav">
+                <!-- Admin Menus -->
+                @if($isRoleAdmin || $isRoleOperation || $isRoleManager || $isRoleAccount)
+                    <li class="menu-title">
+                        @if ($isRoleAdmin)
+                            <span>Admin</span>
+                        @elseif($isRoleOperation)
+                            <span>Operation</span>
+                        @elseif($isRoleManager)
+                            <span>Manager</span>
+                        @elseif($isRoleAccount);
+                            <span>Account</span>
+                        @endif    
                     </li>
-                @elseif(auth()->user()->company_roles->contains('role', 5))
-                    <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Operation</span><i
-                            data-feather="more-horizontal"></i>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestAdminDashboard ? 'active' : '' }}" href="/admin/home/dashboard">
+                            <i data-feather="home"></i>
+                            <span>
+                                @if ($isRoleAdmin)
+                                    Admin
+                                @elseif($isRoleOperation)
+                                    Operation
+                                @elseif($isRoleManager)
+                                    Manager
+                                @elseif($isRoleAccount)
+                                    Account
+                                @endif
+
+                                Dashboard    
+                            </span>
+                        </a>
                     </li>
-                @elseif(auth()->user()->company_roles->contains('role', 6))
-                    <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Manager</span><i
-                            data-feather="more-horizontal"></i>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestSchedule ? 'active' : '' }}" href="/admin/home/schedule/status">
+                            <i data-feather="alert-circle"></i>
+                            <span>Schedule</span>
+                        </a>
                     </li>
-                @elseif(auth()->user()->company_roles->contains('role', 7))
-                    <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Account</span><i
-                            data-feather="more-horizontal"></i>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestRosterEntry ? 'active' : '' }}" href="/admin/home/report">
+                            <i data-feather="file-text"></i>
+                            <span>Roster Entry</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestEventCalendar ? 'active' : '' }}" href="/admin/home/event/request">
+                            <i data-feather="calendar"></i>
+                            <span>Event Calendar</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestNewTimesheet || $isRequestViewTimesheet || $isRequestViewTimesheet ? 'active' : '' }}" 
+                            href="#timesheet" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="timesheet"
+                        >
+                            <i data-feather='clock'></i> 
+                            <span>Timesheet</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestNewTimesheet || $isRequestViewTimesheet || $isRequestViewTimesheet ? 'show' : '' }}" id="timesheet">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/new/timekeeper/{{ $companyId }}" class="nav-link {{ $isRequestNewTimesheet ? 'active' : '' }}">
+                                        Add Timesheet
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/view/schedule/{{ $companyId }}" class="nav-link {{ $isRequestViewTimesheet || $isRequestViewTimesheet ? 'active' : '' }}">
+                                        View Timesheet
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestLeave || $isRequestInductedSite ? 'active' : '' }}" 
+                            href="#employee" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="employee"
+                        >
+                            <i data-feather='user-check'></i> 
+                            <span>Employee</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestLeave || $isRequestInductedSite ? 'show' : '' }}" id="employee">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/employee/{{ $companyId }}" class="nav-link {{ $isRequestEmployee ? 'active' : '' }}">
+                                        Profile
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a 
+                                        href="#timeOff" 
+                                        class="nav-link" 
+                                        data-bs-toggle="collapse" 
+                                        role="button" 
+                                        aria-expanded="false" 
+                                        aria-controls="timeOff"
+                                    >
+                                        Time Off
+                                    </a>
+        
+                                    <div class="collapse menu-dropdown {{ $isRequestMyAvailability || $isRequestLeave ? 'show' : '' }}" id="timeOff">
+                                        <ul class="nav nav-sm flex-column">
+                                            <li class="nav-item">
+                                                <a href="/admin/home/myavailability/go" class="nav-link {{ $isRequestMyAvailability ? 'active' : '' }}">
+                                                    Unavailability
+                                                </a>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <a href="/admin/home/leave/go" class="nav-link {{ $isRequestLeave ? 'active' : '' }}">
+                                                    Leave
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/inducted/site/{{ $companyId }}" class="nav-link {{ $isRequestInductedSite ? 'active' : '' }}">
+                                        Inducted Site
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestClient || $isRequestProject || $isRequestRevenue ? 'active' : '' }}" 
+                            href="#client" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="client"
+                        >
+                            <i data-feather='users'></i> 
+                            <span>Client</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestClient || $isRequestProject || $isRequestRevenue ? 'show' : '' }}" id="client">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/client/{{ $companyId }}" class="nav-link {{ $isRequestClient ? 'active' : '' }}">
+                                        Profile
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/project/{{ $companyId }}" class="nav-link {{ $isRequestProject ? 'active' : '' }}">
+                                        Venue / Site
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/revenue/{{ $companyId }}" class="nav-link {{ $isRequestRevenue ? 'active' : '' }}">
+                                        Invoice
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestPaymentAdd || $isRequestPaymentList ? 'active' : '' }}" 
+                            href="#payment" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="payment"
+                        >
+                            <i data-feather='dollar-sign'></i> 
+                            <span>Payment</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestPaymentAdd || $isRequestPaymentList ? 'show' : '' }}" id="payment">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/payment/add" class="nav-link {{ $isRequestPaymentAdd ? 'active' : '' }}">
+                                        Add
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/payment/list" class="nav-link {{ $isRequestPaymentList ? 'active' : '' }}">
+                                        List
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestEventReport || $isRequestSignInStatus || $isRequestCustomReport  ? 'active' : '' }}" 
+                            href="#report" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="report"
+                        >
+                            <i data-feather='file-plus'></i> 
+                            <span>Report</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestEventReport || $isRequestSignInStatus || $isRequestCustomReport ? 'show' : '' }}" id="report">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/event-report" class="nav-link {{ $isRequestEventReport ? 'active' : '' }}">
+                                        Event Report
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/sign/in/status" class="nav-link {{ $isRequestSignInStatus ? 'active' : '' }}">
+                                        Sign In Report
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/all/report" class="nav-link {{ $isRequestCustomReport ? 'active' : '' }}">
+                                        Custom Report
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestMessages ? 'active' : '' }}" href="/home/messages">
+                            <i data-feather="message-square"></i>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestJobType || $isRequestRosterStatus || $isRequestActivityLog  ? 'active' : '' }}" 
+                            href="#settings" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="settings"
+                        >
+                            <i data-feather='users'></i> 
+                            <span>Settings</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestJobType || $isRequestRosterStatus || $isRequestActivityLog ? 'show' : '' }}" id="settings">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/job/type" class="nav-link {{ $isRequestJobType ? 'active' : '' }}">
+                                        Job Types
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/roster/status" class="nav-link {{ $isRequestRosterStatus ? 'active' : '' }}">
+                                        Roster Status
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/activity/log" class="nav-link {{ $isRequestActivityLog ? 'active' : '' }}">
+                                        Activity Log
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 @endif
-                <li class="nav-item {{ request()->is('admin/home/dashboard') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center" href="/admin/home/dashboard"><i data-feather="home"></i><span
-                            class="menu-title text-truncate" data-i18n="Dashboards">
-                            @if (auth()->user()->company_roles->contains('role', 2))
-                                Admin
-                            @elseif(auth()->user()->company_roles->contains('role', 5))
-                                Operation
-                            @elseif(auth()->user()->company_roles->contains('role', 6))
-                                Manager
-                            @elseif(auth()->user()->company_roles->contains('role', 7))
-                                Account
-                            @endif
-                            Dashboard
-                        </span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                </li>
+                <!-- Admin Menus End -->
 
-                <li class="nav-item {{ request()->is('admin/home/schedule/status') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center" href="/admin/home/schedule/status"><i
-                            data-feather='alert-circle'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Schedule</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
+                <!-- Supervisor Menus -->
+                @if ($isRoleSupervisor && !$isRoleAdmin && !$isRoleOperation)
+                    <li class="menu-title">
+                        <span>Supervisor</span>
+                    </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestSupervisorDashboard ? 'active' : '' }}" href="/supervisor/home">
+                            <i data-feather="home"></i>
+                            <span>Supervisor Dashboard</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item {{ request()->is('admin/home/report') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center" href="/admin/home/report"><i
-                            data-feather='file-text'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Roster Entry</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestSchedule ? 'active' : '' }}" href="/admin/home/schedule/status">
+                            <i data-feather="alert-circle"></i>
+                            <span>Schedule</span>
+                        </a>
+                    </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestRosterEntry ? 'active' : '' }}" href="/admin/home/report">
+                            <i data-feather="file-text"></i>
+                            <span>Roster Entry</span>
+                        </a>
+                    </li>
 
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestEventCalendar ? 'active' : '' }}" href="/admin/home/event/request">
+                            <i data-feather="calendar"></i>
+                            <span>Event Calendar</span>
+                        </a>
+                    </li>
 
-                <li class="nav-item {{ request()->is('admin/home/event/request') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center" href="/admin/home/event/request"><i
-                            data-feather='calendar'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Event
-                            Calendar</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                </li>
-                <li class="nav-item"><a class="d-flex align-items-center" href="#"><i
-                            data-feather='clock'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Timesheet</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    <ul>
-                        <li class="nav-item {{ request()->is('admin/home/new/timekeeper/*') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center"
-                                href="/admin/home/new/timekeeper/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='users'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Add Timesheet</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                        <li
-                            class="nav-item {{ request()->is('admin/home/view/schedule/*') || request()->is('admin/home/timekeeper/approve/*') ? 'active' : '' }}">
-                            <a class="d-flex align-items-center"
-                                href="/admin/home/view/schedule/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='eye'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">View Timesheet</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                        </li>
-                    </ul>
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestNewTimesheet || $isRequestViewTimesheet || $isRequestViewTimesheet ? 'active' : '' }}" 
+                            href="#timesheet" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="timesheet"
+                        >
+                            <i data-feather='clock'></i> 
+                            <span>Timesheet</span>
+                        </a>
 
-                </li>
-
-
-                <li class="nav-item {{ request()->is('admin/home/employee/*') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center"
-                        href="/admin/home/employee/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                            data-feather='user-check'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Employee</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    <ul>
-                        <li class="nav-item {{ request()->is('admin/home/employee/*') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center"
-                                href="/admin/home/employee/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='users'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Profile</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                        </li>
-                        <!-- <li class="nav-item {{ request()->is('admin/home/myavailability/*') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/admin/home/myavailability/{{ Auth::user()->company_roles->first()->company->id }}"><i data-feather='battery-charging'></i><span class="menu-title text-truncate" data-i18n="Dashboards">
-                                Availavility</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    </li> -->
-
-                        <li><a class="d-flex align-items-center" href="#"><i
-                                    data-feather="battery-charging"></i><span class="menu-item text-truncate">Time
-                                    off</span></a>
-                            <ul class="menu-content">
-                                <li class="{{ request()->is('admin/home/myavailability/*') ? 'active' : '' }}"><a
-                                        class="d-flex align-items-center" href="/admin/home/myavailability/go"><span
-                                            class="menu-item text-truncate"
-                                            data-i18n="Third Level">Unavailavility</span></a>
+                        <div class="collapse menu-dropdown {{ $isRequestNewTimesheet || $isRequestViewTimesheet || $isRequestViewTimesheet ? 'show' : '' }}" id="timesheet">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/new/timekeeper/{{ $companyId }}" class="nav-link {{ $isRequestNewTimesheet ? 'active' : '' }}">
+                                        Add Timesheet
+                                    </a>
                                 </li>
-                                <li class="{{ request()->is('admin/home/leave/*') ? 'active' : '' }}"><a
-                                        class="d-flex align-items-center" href="/admin/home/leave/go"><span
-                                            class="menu-item text-truncate" data-i18n="Third Level">Leave</span></a>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/view/schedule/{{ $companyId }}" class="nav-link {{ $isRequestViewTimesheet || $isRequestViewTimesheet ? 'active' : '' }}">
+                                        View Timesheet
+                                    </a>
                                 </li>
                             </ul>
-                        </li>
-                        <li class="nav-item {{ request()->is('admin/home/inducted/site/*') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center"
-                                href="/admin/home/inducted/site/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='alert-octagon'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Inducted Site</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                        </li>
-                    </ul>
+                        </div>
+                    </li>
 
-                </li>
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestLeave || $isRequestInductedSite ? 'active' : '' }}" 
+                            href="#employee" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="employee"
+                        >
+                            <i data-feather='user-check'></i> 
+                            <span>Employee</span>
+                        </a>
 
-                <li class="nav-item"><a class="d-flex align-items-center" href="#"><i
-                            data-feather='users'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Client</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    <ul>
-                        <li class="nav-item {{ request()->is('admin/home/client/*') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center"
-                                href="/admin/home/client/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='users'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Profile</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-
-                        </li>
-                        <li class="nav-item {{ request()->is('admin/home/project/*') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center"
-                                href="/admin/home/project/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='briefcase'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Venue/Site</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                        <li class="nav-item {{ request()->is('admin/home/revenue/*') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center"
-                                href="/admin/home/revenue/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='briefcase'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Invoice</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                    </ul>
-
-                </li>
-
-                {{-- <li class="nav-item {{ request()->is('admin/home/contractor/*') ? 'active' : '' }}"><a
-                    class="d-flex align-items-center"
-                    href="/admin/home/contractor/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                        data-feather="users"></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Contractor</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li> --}}
-
-                <li class="nav-item"><a class="d-flex align-items-center"
-                        href="/admin/home/project/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                            data-feather='dollar-sign'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Payment</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    <ul>
-                        <li
-                            class="nav-item {{ request()->is('admin/home/payment/add') || request()->is('admin/home/payment/search') ? 'active' : '' }}">
-                            <a class="d-flex align-items-center" href="/admin/home/payment/add"><i
-                                    data-feather='plus-circle'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Add</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                        <li class="nav-item {{ request()->is('admin/home/payment/list') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center" href="/admin/home/payment/list"><i
-                                    data-feather='list'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">List</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-
-                    </ul>
-                </li>
-
-                <li class="nav-item"><a class="d-flex align-items-center" href="/admin/home/project"><i
-                            data-feather='file-plus'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Report</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    <ul>
-                        <li class="nav-item {{ request()->is('admin/home/event-report') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center" href="/admin/home/event-report"><i
-                                    data-feather='book-open'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Event Report</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                </li>
-                <li class="nav-item {{ request()->is('admin/home/sign/in/status') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center" href="/admin/home/sign/in/status"><i
-                            data-feather='alert-triangle'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Sign In Report</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-
-                <li class="nav-item {{ request()->is('admin/home/all/report') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center" href="/admin/home/all/report"><i
-                            data-feather='filter'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Custom Report</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-        </ul>
-        </li>
-
-        <li class="nav-item {{ request()->is('home/messages') ? 'active' : '' }}"><a
-                class="d-flex align-items-center" href="/home/messages"><i data-feather="message-square"></i><span
-                    class="menu-title text-truncate" data-i18n="Messages">Messages</span><span
-                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-        </li>
-
-        <li class="nav-item mb-2"><a class="d-flex align-items-center" href="#"><i
-                    data-feather='users'></i><span class="menu-title text-truncate"
-                    data-i18n="Dashboards">Settings</span><span
-                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            <ul>
-                <li class="nav-item {{ request()->is('admin/home/job/type') ? 'active' : '' }}">
-                    <a class="d-flex align-items-center" href="/admin/home/job/type">
-                        <i data-feather='columns'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Job Types</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                    </a>
-                </li>
-                <li class="nav-item {{ request()->is('admin/home/roster/status') ? 'active' : '' }}">
-                    <a class="d-flex align-items-center" href="/admin/home/roster/status">
-                        <i data-feather='command'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Roster status</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                    </a>
-                </li>
-                <li class="nav-item {{ request()->is('admin/home/activity/log') ? 'active' : '' }}">
-                    <a class="d-flex align-items-center" href="/admin/home/activity/log">
-                        <i data-feather='activity'></i>
-                        <span class="menu-title text-truncate" data-i18n="Dashboards">Activity Log</span>
-                        <span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                </li>
-            </ul>
-
-        </li>
-
-        {{-- <li class="nav-item {{ request()->is('admin/kisok') ? 'active' : '' }}">
-                <a class="d-flex align-items-center" href="/admin/kisok" target="blank">
-                    <i data-feather='target'></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">Kiosk</span>
-                    <span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li> --}}
-        @endif
-
-        @if (auth()->user()->company_roles->contains('role', 4) &&
-                !auth()->user()->company_roles->contains('role', 2) &&
-                !auth()->user()->company_roles->contains('role', 5))
-            <!---------------------------------------- all supervisor menus ------------------------------------>
-
-            <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Supervisor</span><i
-                    data-feather="more-horizontal"></i>
-            </li>
-            <li class="nav-ite {{ request()->is('supervisor/home') ? 'active' : '' }}"><a
-                    class="d-flex align-items-center" href="/supervisor/home"><i data-feather="home"></i><span
-                        class="menu-title text-truncate" data-i18n="Dashboards">Supervisor Dashboard</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li>
-
-            {{-- <li class="nav-item {{ request()->is('admin/home/employee/*') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center"
-                        href="/admin/home/employee/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                            data-feather='user-check'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Employee</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    <ul>
-                        <li class="nav-item {{ request()->is('admin/home/employee/*') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center"
-                                href="/admin/home/employee/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='users'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Profile</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                        </li>
-                        <!-- <li class="nav-item {{ request()->is('admin/home/myavailability/*') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/admin/home/myavailability/{{ Auth::user()->company_roles->first()->company->id }}"><i data-feather='battery-charging'></i><span class="menu-title text-truncate" data-i18n="Dashboards">
-                                Availavility</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    </li> -->
-
-                        <li><a class="d-flex align-items-center" href="#"><i
-                                    data-feather="battery-charging"></i><span class="menu-item text-truncate">Time
-                                    off</span></a>
-                            <ul class="menu-content">
-                                <li class="{{ request()->is('admin/home/myavailability/*') ? 'active' : '' }}"><a
-                                        class="d-flex align-items-center" href="/admin/home/myavailability/go"><span
-                                            class="menu-item text-truncate"
-                                            data-i18n="Third Level">Unavailavility</span></a>
+                        <div class="collapse menu-dropdown {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestLeave || $isRequestInductedSite ? 'show' : '' }}" id="employee">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/employee/{{ $companyId }}" class="nav-link {{ $isRequestEmployee ? 'active' : '' }}">
+                                        Profile
+                                    </a>
                                 </li>
-                                <li class="{{ request()->is('admin/home/leave/*') ? 'active' : '' }}"><a
-                                        class="d-flex align-items-center" href="/admin/home/leave/go"><span
-                                            class="menu-item text-truncate" data-i18n="Third Level">Leave</span></a>
+
+                                <li class="nav-item">
+                                    <a 
+                                        href="#timeOff" 
+                                        class="nav-link" 
+                                        data-bs-toggle="collapse" 
+                                        role="button" 
+                                        aria-expanded="false" 
+                                        aria-controls="timeOff"
+                                    >
+                                        Time Off
+                                    </a>
+        
+                                    <div class="collapse menu-dropdown {{ $isRequestMyAvailability || $isRequestLeave ? 'show' : '' }}" id="timeOff">
+                                        <ul class="nav nav-sm flex-column">
+                                            <li class="nav-item">
+                                                <a href="/admin/home/myavailability/go" class="nav-link {{ $isRequestMyAvailability ? 'active' : '' }}">
+                                                    Unavailability
+                                                </a>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <a href="/admin/home/leave/go" class="nav-link {{ $isRequestLeave ? 'active' : '' }}">
+                                                    Leave
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/inducted/site/{{ $companyId }}" class="nav-link {{ $isRequestInductedSite ? 'active' : '' }}">
+                                        Inducted Site
+                                    </a>
                                 </li>
                             </ul>
-                        </li>
-                        <li class="nav-item {{ request()->is('admin/home/inducted/site/*') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center"
-                                href="/admin/home/inducted/site/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                    data-feather='alert-octagon'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Inducted Site</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                        </li>
-                    </ul>
+                        </div>
+                    </li>
 
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestClient || $isRequestProject || $isRequestRevenue ? 'active' : '' }}" 
+                            href="#client" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="client"
+                        >
+                            <i data-feather='users'></i> 
+                            <span>Client</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestClient || $isRequestProject || $isRequestRevenue ? 'show' : '' }}" id="client">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/client/{{ $companyId }}" class="nav-link {{ $isRequestClient ? 'active' : '' }}">
+                                        Profile
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/project/{{ $companyId }}" class="nav-link {{ $isRequestProject ? 'active' : '' }}">
+                                        Venue / Site
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/revenue/{{ $companyId }}" class="nav-link {{ $isRequestRevenue ? 'active' : '' }}">
+                                        Invoice
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestPaymentAdd || $isRequestPaymentList ? 'active' : '' }}" 
+                            href="#payment" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="payment"
+                        >
+                            <i data-feather='dollar-sign'></i> 
+                            <span>Payment</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestPaymentAdd || $isRequestPaymentList ? 'show' : '' }}" id="payment">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/payment/add" class="nav-link {{ $isRequestPaymentAdd ? 'active' : '' }}">
+                                        Add
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/payment/list" class="nav-link {{ $isRequestPaymentList ? 'active' : '' }}">
+                                        List
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestEventReport || $isRequestSignInStatus || $isRequestCustomReport  ? 'active' : '' }}" 
+                            href="#report" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="report"
+                        >
+                            <i data-feather='file-plus'></i> 
+                            <span>Report</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestEventReport || $isRequestSignInStatus || $isRequestCustomReport ? 'show' : '' }}" id="report">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/sign/in/status" class="nav-link {{ $isRequestSignInStatus ? 'active' : '' }}">
+                                        Sign In Report
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/all/report" class="nav-link {{ $isRequestCustomReport ? 'active' : '' }}">
+                                        Custom Report
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $isRequestMessages ? 'active' : '' }}" href="/home/messages">
+                            <i data-feather="message-square"></i>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link {{ $isRequestJobType || $isRequestRosterStatus || $isRequestActivityLog  ? 'active' : '' }}" 
+                            href="#settings" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="settings"
+                        >
+                            <i data-feather='users'></i> 
+                            <span>Settings</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ $isRequestJobType || $isRequestRosterStatus || $isRequestActivityLog ? 'show' : '' }}" id="settings">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="/admin/home/job/type" class="nav-link {{ $isRequestJobType ? 'active' : '' }}">
+                                        Job Types
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/roster/status" class="nav-link {{ $isRequestRosterStatus ? 'active' : '' }}">
+                                        Roster Status
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/admin/home/activity/log" class="nav-link {{ $isRequestActivityLog ? 'active' : '' }}">
+                                        Activity Log
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endif
+                <!-- Supervisor Menus End -->
+
+                <!-- All Employees Menu -->
+                <li class="menu-title">
+                    <span>Employee</span>
                 </li>
 
-                <li class="nav-item {{ request()->is('supervisor/home/roster/calender') ? 'active' : '' }}"><a
-                        class="d-flex align-items-center" href="/supervisor/home/roster/calender"><i
-                            data-feather="calendar"></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Roster Calendar</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ $isRequestUserDashboard ? 'active' : '' }}" href="/user/home">
+                        <i data-feather="home"></i>
+                        <span>User Dashboard</span>
+                    </a>
                 </li>
-
-                <li class="nav-item"><a class="d-flex align-items-center" href="/admin/home/project"><i
-                            data-feather='dollar-sign'></i><span class="menu-title text-truncate"
-                            data-i18n="Dashboards">Payment</span><span
-                            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    <ul>
-                        <li class="nav-item {{ request()->is('supervisor/home/payment/sup') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center" href="/supervisor/home/payment/sup"><i
-                                    data-feather='plus-circle'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">Add</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                        <li class="nav-item {{ request()->is('supervisor/home/payslip/list') ? 'active' : '' }}"><a
-                                class="d-flex align-items-center" href="/supervisor/home/payslip/list"><i
-                                    data-feather='list'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards">List</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-
-                    </ul>
-                </li> --}}
-            <!-- <li class="nav-item mb-2"><a class="d-flex align-items-center" href="/admin/home/project"><i data-feather='file-plus'></i><span class="menu-title text-truncate" data-i18n="Dashboards">Report</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                <ul>
-                    <li class="nav-item {{ request()->is('supervisor/home/date/wise/report') }} "><a class="d-flex align-items-center" href="/supervisor/home/date/wise/report"><i data-feather='file'></i><span class="menu-title text-truncate" data-i18n="Dashboards">Quick Report</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                    <li class="nav-item {{ request()->is('supervisor/home/all/report') }} "><a class="d-flex align-items-center" href="/supervisor/home/all/report"><i data-feather='filter'></i><span class="menu-title text-truncate" data-i18n="Dashboards">Custom Report</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-
-                </ul>
-            </li> -->
-
-            {{-- THIS IS COPY FROM ADMIN --}}
-            <li class="nav-item {{ request()->is('admin/home/schedule/status') ? 'active' : '' }}"><a
-                    class="d-flex align-items-center" href="/admin/home/schedule/status"><i
-                        data-feather='alert-circle'></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Schedule</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-
-
-            <li class="nav-item {{ request()->is('admin/home/report') ? 'active' : '' }}"><a
-                    class="d-flex align-items-center" href="/admin/home/report"><i data-feather='file-text'></i><span
-                        class="menu-title text-truncate" data-i18n="Dashboards">Roster Entry</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-
-
-            </li>
-            <li class="nav-item {{ request()->is('admin/home/event/request') ? 'active' : '' }}"><a
-                    class="d-flex align-items-center" href="/admin/home/event/request"><i
-                        data-feather='calendar'></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Event
-                        Calendar</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li>
-            <li class="nav-item"><a class="d-flex align-items-center" href="#"><i
-                        data-feather='clock'></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Timesheet</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                <ul>
-                    <li class="nav-item {{ request()->is('admin/home/new/timekeeper/*') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center"
-                            href="/admin/home/new/timekeeper/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                data-feather='users'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Add Timesheet</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                    <li
-                        class="nav-item {{ request()->is('admin/home/view/schedule/*') || request()->is('admin/home/timekeeper/approve/*') ? 'active' : '' }}">
-                        <a class="d-flex align-items-center"
-                            href="/admin/home/view/schedule/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                data-feather='eye'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">View Timesheet</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    </li>
-                </ul>
-
-            </li>
-
-
-            <li class="nav-item {{ request()->is('admin/home/employee/*') ? 'active' : '' }}"><a
-                    class="d-flex align-items-center"
-                    href="/admin/home/employee/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                        data-feather='user-check'></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Employee</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                <ul>
-                    <li class="nav-item {{ request()->is('admin/home/employee/*') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center"
-                            href="/admin/home/employee/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                data-feather='users'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Profile</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    </li>
-                    <li><a class="d-flex align-items-center" href="#"><i
-                                data-feather="battery-charging"></i><span class="menu-item text-truncate">Time
-                                off</span></a>
-                        <ul class="menu-content">
-                            <li class="{{ request()->is('admin/home/myavailability/*') ? 'active' : '' }}"><a
-                                    class="d-flex align-items-center" href="/admin/home/myavailability/go"><span
-                                        class="menu-item text-truncate"
-                                        data-i18n="Third Level">Unavailavility</span></a>
-                            </li>
-                            <li class="{{ request()->is('admin/home/leave/*') ? 'active' : '' }}"><a
-                                    class="d-flex align-items-center" href="/admin/home/leave/go"><span
-                                        class="menu-item text-truncate" data-i18n="Third Level">Leave</span></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item {{ request()->is('admin/home/inducted/site/*') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center"
-                            href="/admin/home/inducted/site/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                data-feather='alert-octagon'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Inducted Site</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    </li>
-                </ul>
-
-            </li>
-
-            <li class="nav-item"><a class="d-flex align-items-center" href="#"><i
-                        data-feather='users'></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Client</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                <ul>
-                    <li class="nav-item {{ request()->is('admin/home/client/*') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center"
-                            href="/admin/home/client/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                data-feather='users'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Profile</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-
-                    </li>
-                    <li class="nav-item {{ request()->is('admin/home/project/*') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center"
-                            href="/admin/home/project/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                data-feather='briefcase'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Venue/Site</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                    <li class="nav-item {{ request()->is('admin/home/revenue/*') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center"
-                            href="/admin/home/revenue/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                                data-feather='briefcase'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Invoice</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                </ul>
-
-            </li>
-
-            <li class="nav-item"><a class="d-flex align-items-center"
-                    href="/admin/home/project/{{ Auth::user()->company_roles->first()->company->id }}"><i
-                        data-feather='dollar-sign'></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Payment</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                <ul>
-                    <li
-                        class="nav-item {{ request()->is('admin/home/payment/add') || request()->is('admin/home/payment/search') ? 'active' : '' }}">
-                        <a class="d-flex align-items-center" href="/admin/home/payment/add"><i
-                                data-feather='plus-circle'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Add</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    <li class="nav-item {{ request()->is('admin/home/payment/list') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center" href="/admin/home/payment/list"><i
-                                data-feather='list'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">List</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-
-                </ul>
-            </li>
-
-            <li class="nav-item"><a class="d-flex align-items-center" href="/admin/home/project"><i
-                        data-feather='file-plus'></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Report</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                <ul>
-                    <li class="nav-item {{ request()->is('admin/home/sign/in/status') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center" href="/admin/home/sign/in/status"><i
-                                data-feather='alert-triangle'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Sign In Report</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-
-                    <li class="nav-item {{ request()->is('admin/home/all/report') ? 'active' : '' }}"><a
-                            class="d-flex align-items-center" href="/admin/home/all/report"><i
-                                data-feather='filter'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Custom Report</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item {{ request()->is('home/messages') ? 'active' : '' }}"><a
-                    class="d-flex align-items-center" href="/home/messages"><i
-                        data-feather="message-square"></i><span class="menu-title text-truncate"
-                        data-i18n="Messages">Messages</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li>
-
-            <li class="nav-item mb-2"><a class="d-flex align-items-center" href="#"><i
-                        data-feather='users'></i><span class="menu-title text-truncate"
-                        data-i18n="Dashboards">Settings</span><span
-                        class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                <ul>
-                    <li class="nav-item {{ request()->is('admin/home/job/type') ? 'active' : '' }}">
-                        <a class="d-flex align-items-center" href="/admin/home/job/type">
-                            <i data-feather='columns'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Job Types</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ request()->is('admin/home/roster/status') ? 'active' : '' }}">
-                        <a class="d-flex align-items-center" href="/admin/home/roster/status">
-                            <i data-feather='command'></i><span class="menu-title text-truncate"
-                                data-i18n="Dashboards">Roster status</span><span
-                                class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ request()->is('admin/home/activity/log') ? 'active' : '' }}">
-                        <a class="d-flex align-items-center" href="/admin/home/activity/log">
-                            <i data-feather='activity'></i>
-                            <span class="menu-title text-truncate" data-i18n="Dashboards">Activity Log</span>
-                            <span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                    </li>
-                </ul>
-
-            </li>
-        @endif
-
-
-        <!---------------------------------------- all employee menus ------------------------------------>
-
-        <li class="navigation-header"><span data-i18n="Apps &amp; Pages">Employee</span><i
-                data-feather="more-horizontal"></i>
-        </li>
-
-        <!-- <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="menu"></i><span class="menu-title text-truncate" data-i18n="Menu Levels">Employee</span></a>
-                <ul class="menu-content"> -->
-
-        <li class="nav-item {{ request()->is('user/home') ? 'active' : '' }}"><a class="d-flex align-items-center"
-                href="/user/home"><i data-feather="home"></i><span class="menu-title text-truncate"
-                    data-i18n="Dashboards">User Dashboard</span><span
-                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-        </li>
-
-        <!--<li class="nav-item {{ request()->is('home/messages') ? 'active' : '' }}"><a-->
-        <!--        class="d-flex align-items-center" href="/home/messages"><i-->
-        <!--            data-feather="message-square"></i><span class="menu-title text-truncate"-->
-        <!--            data-i18n="Messages">Messages</span><span-->
-        <!--            class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>-->
-        <!--</li>-->
-        <!--<li class="nav-item {{ request()->is('home/compliance') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/compliance">-->
-        <!--        <i data-feather="folder-plus"></i>-->
-        <!--        <span class="menu-title text-truncate" data-i18n="Dashboards">-->
-        <!--            Compliance</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>-->
-        <!--    </a>-->
-        <!--</li>-->
-
-        <!-- <li class="nav-item {{ request()->is('user/roster/schedule') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/user/roster/schedule">
-                    <i data-feather="briefcase"></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">Schedule</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li>
-
-            <li class="nav-item {{ request()->is('home/sign/in') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/sign/in">
-                    <i data-feather="briefcase"></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">SignIn</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li>
-
-            <li class="nav-item {{ request()->is('home/calender') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/calender">
-                    <i data-feather="calendar"></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">Calendar</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li>
-
-            <li class="nav-item {{ request()->is('home/timesheet') || request()->is('home/timesheet/*') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/timesheet">
-                    <i data-feather="clock"></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">My Timesheet</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li>
-
-            <li class="nav-item {{ request()->is('user/home/upcomingevent/*') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/user/home/upcomingevent/{{ Auth::user()->employee->company ?? '' }}">
-                    <i data-feather='circle'></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">Upcomming Event</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            </li>
-            <li class="nav-item {{ request()->is('home/upcoming/shift') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/upcoming/shift">
-
-                    <i data-feather="check-circle"></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">All
-                        upcoming shift</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                </a>
-            </li>
-
-            <li class="nav-item {{ request()->is('home/unconfirmed/shift') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/unconfirmed/shift">
-                    <i data-feather="folder-plus"></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">
-                        Unconfirmed shift</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                </a>
-            </li>
-
-            <li><a class="d-flex align-items-center" href="#">
-                    <i data-feather="file-plus"></i>
-                    <span class="menu-title text-truncate" data-i18n="Dashboards">Report</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                <ul>
-
-                    <li class="nav-item {{ request()->is('home/past/shift') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/past/shift">
-
-                            <span class="menu-title text-truncate" data-i18n="Dashboards">
-                                All past shift</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ request()->is('home/payment/report') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/payment/report">
-
-                            <span class="menu-title text-truncate" data-i18n="Dashboards">Payment Report</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ request()->is('home/all/report') ? 'active' : '' }}"><a class="d-flex align-items-center" href="/home/all/report">
-
-                            <span class="menu-title text-truncate" data-i18n="Dashboards">Roster Report</span><span class="badge badge-light-warning badge-pill ml-auto mr-1"></span>
-                        </a>
-                    </li>
-                </ul>
-            </li> -->
-
-        <li class="nav-item {{ auth()->user()->user_roles->unique('company_code')->count() - 1? '': 'hidden' }}">
-            <a class="d-flex align-items-center" href="/admin/home/project"><i data-feather='refresh-cw'></i><span
-                    class="menu-title text-truncate" data-i18n="Dashboards">Switch Company</span><span
-                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-            <ul>
-
-                @php
-                    $comp = auth()
-                        ->user()
-                        ->user_roles->unique('company_code');
-                @endphp
-
-                @foreach ($comp as $company)
-                    @if (
-                        $company->status == 1 &&
-                            $company->company->status == 1 &&
-                            \Carbon\Carbon::parse($company->company->expire_date) > \Carbon\Carbon::now()->toDateString())
-                        <li
-                            class="nav-item {{ $company->company_code == Auth::user()->company_roles->first()->company->id ? 'bg-light-danger disabled' : '' }}">
-                            <a class="d-flex align-items-center"
-                                href="/home/switch/company/{{ $company->company_code }}"><i
-                                    data-feather='circle'></i><span class="menu-title text-truncate"
-                                    data-i18n="Dashboards"> {{ $company->company->company_code }}</span><span
-                                    class="badge badge-light-warning badge-pill ml-auto mr-1"></span></a>
-                        </li>
-                    @endif
-                @endforeach
-
+                <!-- All Employees Menu End -->
             </ul>
-        </li>
-        </ul>
+        </div>
+        <!-- Sidebar -->
     </div>
+    <div class="sidebar-background"></div>
 </div>
+<!-- Left Sidebar End -->
+<!-- Vertical Overlay-->
+<div class="vertical-overlay"></div>

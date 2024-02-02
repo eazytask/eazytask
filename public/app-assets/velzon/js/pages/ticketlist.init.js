@@ -112,7 +112,7 @@ xhttp.onload = function () {
     });
     ticketsList.remove("id", `<a href="javascript:void(0);" onclick="ViewTickets(this)" data-id="001" class="fw-medium link-primary">#VLZ001</a>`);
 }
-xhttp.open("GET", "build/json/support-tickets-list.json");
+xhttp.open("GET", "app-assets/velzon/json/support-tickets-list.json");
 xhttp.send();
 
 isCount = new DOMParser().parseFromString(

@@ -7,7 +7,7 @@ File: flag input Js File
 */
 (function () {
     ("use strict");
-    var url = "build/json/";
+    var url = "app-assets/velzon/json/";
     var countryListData = '';
     var getJSON = function (jsonurl, callback) {
         var xhr = new XMLHttpRequest();

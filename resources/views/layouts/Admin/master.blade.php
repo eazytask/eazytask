@@ -1,51 +1,46 @@
-@include('layouts.Admin.partials.header')
+<!doctype html >
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 
-<!-- BEGIN: Body-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
+    <meta name="description" content="Easytask/roster, a personalized and simple way to get more done. All projects and lists customized to you.">
+    <meta name="keywords" content="Easytask.au Scheduler roster">
+    <meta name="author" content="Ahsan">
+    <title>Online Scheduler </title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/images/ico/favicon.ico') }}">
+    @include('layouts.Admin.partials.head-css')
+</head>
 
-<body class="vertical-layout vertical-menu-modern  navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="">
-
-<div class="d-print-none">
-    <!-- BEGIN: Header-->
-  @include('layouts.Admin.partials.nav')
-
-    <!-- END: Header-->
-    <!-- @include('layouts.Admin.partials.search') -->
-
-
-    <!-- BEGIN: Main Menu-->
-  @include('layouts.Admin.partials.sidebar')
-    <!-- END: Main Menu-->
-    </div>
-    <!-- BEGIN: Content-->
-    <div class="app-content content d-block d-print-none">
-        <div class="content-overlay"></div>
-        <div class="header-navbar-shadow"></div>
-        <div class="content-wrapper">
-            <div class="content-header row">
+@section('body')
+    @include('layouts.Admin.partials.body')
+@show
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        @include('layouts.Admin.partials.nav')
+        @include('layouts.Admin.partials.sidebar')
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    {{-- @yield('admincontent') --}}
+                </div>
+                <!-- container-fluid -->
             </div>
-            <div class="content-body">
-    @yield('admincontent')
-
-  </div>
-  </div>
-  </div>
-
-    <!-- END: Content-->
-    <div>
-    @yield('pdf_generator')
+            <!-- End Page-content -->
+            {{-- @include('layouts.Admin.partials.footer') --}}
+        </div>
+        <!-- end main content-->
     </div>
-  <div class="d-print-none">
-      
-    <div class="sidenav-overlay"></div>
-    <div class="drag-target"></div>
+    <!-- END layout-wrapper -->
 
-    <!-- BEGIN: Footer-->
-    @include('layouts.Admin.partials.footer')
-    <!-- END: Footer-->
-    </div>
-
-    @include('layouts.Admin.partials.scripts')
+    <!-- JAVASCRIPT -->
+    {{-- @include('layouts.Admin.partials.scripts') --}}
+    @include('layouts.Admin.partials.velzon-scripts')
 </body>
-<!-- END: Body-->
+
 
 </html>

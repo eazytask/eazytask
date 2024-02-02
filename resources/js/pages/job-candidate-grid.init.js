@@ -6,7 +6,7 @@ Contact: Themesbrand@gmail.com
 File: job candidate grid init js
 */
 
-var url = "build/json/";
+var url = "app-assets/velzon/json/";
 var allcandidateList = '';
 
 var prevButton = document.getElementById('page-prev');

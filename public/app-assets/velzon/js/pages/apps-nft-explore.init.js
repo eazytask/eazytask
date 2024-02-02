@@ -7,7 +7,7 @@ File: apps-nft-explore init js
 */
 
 
-var url="build/json/";
+var url="app-assets/velzon/json/";
 var allproductlist = '';
 
 //mail list by json

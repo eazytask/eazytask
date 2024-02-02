@@ -820,7 +820,7 @@ if (linechartannotationsColors) {
                     size: 0
                 },
                 image: {
-                    path: 'build/images/logo-sm.png',
+                    path: 'app-assets/velzon/images/logo-sm.png',
                     width: 40,
                     height: 40
                 }

@@ -57,7 +57,7 @@ if (chartDonutBasicColors) {
     chart.render();
 }
 
-var url = "build/json/";
+var url = "app-assets/velzon/json/";
 var allJobList = '';
 var editList = false;
 
@@ -392,7 +392,7 @@ searchElementList.addEventListener("keyup", function () {
 
 // clearFields
 function clearFields() {
-    document.getElementById("companylogo-img").src = "build/images/users/multi-user.jpg";
+    document.getElementById("companylogo-img").src = "app-assets/velzon/images/users/multi-user.jpg";
     document.getElementById("jobtitle-field").value = "";
     document.getElementById("companyname-field").value = "";
     document.getElementById("job_type-field").value = "Full Time";

@@ -57,7 +57,7 @@ if (chartDonutBasicColors) {
   chart.render();
 }
 
-var url="build/json/";
+var url="app-assets/velzon/json/";
 var allFileList = '';
 var editFlag = false;
 

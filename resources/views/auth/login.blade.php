@@ -1,4 +1,4 @@
-@extends('layouts.VelzonAdmin.master-without-nav')
+@extends('layouts.Admin.master-without-nav')
 
 @section('title')
     @lang('translation.signin')

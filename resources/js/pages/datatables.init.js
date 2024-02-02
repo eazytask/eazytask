@@ -55,7 +55,7 @@ function initializeTables() {
 
     //buttons examples
     let ajaxDataTables = new DataTable('#ajax-datatables', {
-        "ajax": 'build/json/datatable.json'
+        "ajax": 'app-assets/velzon/json/datatable.json'
     });
 
     var t = $('#add-rows').DataTable();

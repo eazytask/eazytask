@@ -111,7 +111,7 @@ xhttp.onload = function () {
     apiKeyList.remove("id", `<a href="javascript:void(0);" class="fw-medium link-primary">#VZ001</a>`);
 }
 
-xhttp.open("GET", "build/json/api-key-list.json");
+xhttp.open("GET", "app-assets/velzon/json/api-key-list.json");
 xhttp.send();
 
 function isStatus(val) {

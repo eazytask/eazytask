@@ -20,8 +20,8 @@
     "real-time",
     "framework"
   ],
-  "main": "./build/ckeditor.js",
-  "types": "./build/ckeditor.d.ts",
+  "main": "./app-assets/velzon/ckeditor.js",
+  "types": "./app-assets/velzon/ckeditor.d.ts",
   "files": [
     "build",
     "ckeditor5-metadata.json",

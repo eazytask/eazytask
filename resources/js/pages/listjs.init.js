@@ -98,7 +98,7 @@ xhttp.onload = function () {
   });
   customerList.remove("id", '<a href="javascript:void(0);" class="fw-medium link-primary">#VZ2101</a>');
 }
-xhttp.open("GET", "build/json/table-customer-list.json");
+xhttp.open("GET", "app-assets/velzon/json/table-customer-list.json");
 xhttp.send();
 
 isCount = new DOMParser().parseFromString(
@@ -434,7 +434,7 @@ var attrList = new List('users', attroptions);
 attrList.add({
     name: 'Leia',
     born: '1954',
-    image: 'build/images/users/avatar-5.jpg',
+    image: 'app-assets/velzon/images/users/avatar-5.jpg',
     id: 5,
     timestamp: '67893'
 });

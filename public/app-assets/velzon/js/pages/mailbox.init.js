@@ -6,7 +6,7 @@ Contact: Themesbrand@gmail.com
 File: mailbox init Js File
 */
 
-var url="build/json/";
+var url="app-assets/velzon/json/";
 var allmaillist = '';
 const loader = document.querySelector("#elmLoader");
 // showing loading
@@ -407,7 +407,7 @@ markAllReadBtn.addEventListener('click', function (event) {
     });
 });
 
-var dummyUserImage = "build/images/users/user-dummy-img.jpg";
+var dummyUserImage = "app-assets/velzon/images/users/user-dummy-img.jpg";
 
 // email chat detail element
 var mailChatDetailElm = false;

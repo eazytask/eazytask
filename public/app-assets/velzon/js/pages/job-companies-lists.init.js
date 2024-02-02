@@ -7,7 +7,7 @@ File: job companies list init js
 */
 
 
-var url = "build/json/";
+var url = "app-assets/velzon/json/";
 var allCompaniesList = '';
 
 var prevButton = document.getElementById('page-prev');
