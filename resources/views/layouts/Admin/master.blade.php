@@ -10,6 +10,7 @@
     <meta name="author" content="Ahsan">
     <title>Online Scheduler </title>
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/images/ico/favicon.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/plugins/forms/form-validation.css')}}">
     @include('layouts.Admin.partials.head-css')
 </head>
 
@@ -26,7 +27,7 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
-                    {{-- @yield('admincontent') --}}
+                    @yield('admin_page_content')
                 </div>
                 <!-- container-fluid -->
             </div>

@@ -32,6 +32,7 @@
     $isRequestActivityLog = request()->is('admin/home/activity/log');
     
     $companyId = Auth::user()->company_roles->first()->company->id;
+    $companyCode = auth()->user()->user_roles->unique('company_code');
 @endphp
 
 <!-- ========== App Menu ========== -->
@@ -624,6 +625,41 @@
                     </a>
                 </li>
                 <!-- All Employees Menu End -->
+
+                @if ($companyCode->count() - 1) 
+                    <li class="menu-title">
+                        <span>Switch Company</span>
+                    </li>
+
+                    <li class="nav-item">
+                        <a 
+                            class="nav-link menu-link" 
+                            href="#switchcompany" 
+                            data-bs-toggle="collapse" 
+                            role="button" 
+                            aria-expanded="false" 
+                            aria-controls="switchcompany"
+                        >
+                            <i data-feather='refresh-cw'></i> 
+                            <span>Switch Company</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown" id="switchcompany">
+                            <ul class="nav nav-sm flex-column">
+                                @foreach ($companyCode as $c)
+                                    @if ($c->status == 1 && $c->company->status == 1 
+                                        && \Carbon\Carbon::parse($c->company->expire_date) > \Carbon\Carbon::now()->toDateString())
+                                        <li class="nav-item">
+                                            <a href="/home/switch/company/{{ $c->company_code }}" class="nav-link {{ $c->company_code == Auth::user()->company_roles->first()->company->id ? 'text-danger disabled' : '' }}">
+                                                {{ $c->company->company_code }}
+                                            </a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li>
+                @endif
             </ul>
         </div>
         <!-- Sidebar -->

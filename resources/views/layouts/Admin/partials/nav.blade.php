@@ -171,6 +171,8 @@
                             Welcome <span>{{ Auth::user()->name }} {{ Auth::user()->mname }} {{ Auth::user()->lname }}!</span>
                         </h6>
 
+                        <a class="dropdown-item" href="/admin/company/profile-settings/{{ Auth::user()->id }}"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> Profile</a>
+
                         @if (auth()->user()->company_roles->contains('role', 3) || auth()->user()->company_roles->contains('role', 7))
                             <a class="dropdown-item" href="/home/time/off"><i class="mdi mdi-clock-time-eight-outline text-muted fs-16 align-middle me-1"></i> Time off</a>
                         @endif

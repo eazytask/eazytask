@@ -454,3 +454,150 @@ if (dountchartUserDeviceColors) {
     var chart = new ApexCharts(document.querySelector("#user_device_pie_charts"), options);
     chart.render();
 }
+
+// Statistics BarChart
+function renderStatisticsBarChart() { 
+    $.ajax({
+        url: '/order/chart/data',
+        type: 'GET',
+        success: function (result) {
+            orderChartData = result
+            
+            var statisticsOrderBarchartColors = getChartColorsArray("statistics-order-chart");
+            if (statisticsOrderBarchartColors) {
+                var statisticsOrderChartOptions = {
+                    chart: {
+                        height: 309,
+                        type: 'bar',
+                        stacked: true,
+                        toolbar: {
+                            show: false
+                        }
+                    },
+                    grid: {
+                        show: false,
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            columnWidth: '25%',
+                            startingShape: 'rounded',
+                            colors: {
+                                backgroundBarColors: ['#f3f3f3', '#f3f3f3', '#f3f3f3', '#f3f3f3', '#f3f3f3'],
+                                backgroundBarRadius: 5
+                            }
+                        }
+                    },
+                    legend: {
+                        show: false
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: statisticsOrderBarchartColors,
+                    series: [{
+                        name: 'Hour',
+                        data: orderChartData
+                    }],
+                    xaxis: {
+                        categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+                        labels: {
+                            style: {
+                                colors: '#b9b9c3',
+                                fontSize: '0.86rem'
+                            }
+                        },
+                        axisBorder: {
+                            show: false
+                        },
+                        axisTicks: {
+                            show: false
+                        }
+                    },
+                    yaxis: {
+                        show: true
+                    },
+                    tooltip: {
+                        x: {
+                            show: false
+                        }
+                    }
+                };
+
+                var statisticsOrderBarChart = new ApexCharts(document.querySelector("#statistics-order-chart"), statisticsOrderChartOptions);
+                statisticsOrderBarChart.render();
+            }
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    }); 
+}
+
+renderStatisticsBarChart();
+
+// Clients PieChart
+function renderClientsPieChart() {
+    $.ajax({
+        url: '/client/portion/data',
+        type: 'GET',
+        success: function (result) {
+            var clientsPieChartColors = getChartColorsArray("client-portions-chart");
+
+            if (clientsPieChartColors) {
+                var clientsPieChartOptions = {
+                    series: result.percentage,
+                    labels: result.labels,
+                    chart: {
+                        type: "donut",
+                        height: 309,
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: '75%'
+                            }
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        position: 'bottom',
+                        horizontalAlign: 'center',
+                        offsetX: 0,
+                        offsetY: 0,
+                        markers: {
+                            width: 20,
+                            height: 6,
+                            radius: 2,
+                        },
+                        itemMargin: {
+                            horizontal: 12,
+                            vertical: 0
+                        },
+                    },
+                    stroke: {
+                        width: 0
+                    },
+                    yaxis: {
+                        labels: {
+                            formatter: function (value) {
+                                return value;
+                            }
+                        },
+                        tickAmount: 4,
+                        min: 0
+                    },
+                    colors: clientsPieChartColors,
+                };
+
+                var clientsPieChart = new ApexCharts(document.querySelector("#client-portions-chart"), clientsPieChartOptions);
+                clientsPieChart.render();
+            }
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    }); 
+}
+
+renderClientsPieChart();

@@ -231,3 +231,63 @@ if (revenueExpensesChartsColors) {
     var chart = new ApexCharts(document.querySelector("#revenue-expenses-charts"), options);
     chart.render();
 }
+
+// Revenue & Expenses Report Chart
+function fetchRevenueChart() {
+    $.ajax({
+       url: '/revenue/report/data',
+       type: 'GET',
+       success: function (result) {
+        var revenueExpensesChartsColors = getChartColorsArray("revenue-expenses-report-chart");
+        if (revenueExpensesChartsColors) {
+            var options = {
+                series: [{
+                    name: 'Revenue',
+                    data: result.revenue
+                },
+                {
+                    name: 'Expenses',
+                    data: result.amount.map(i => Math.abs(i))
+                }],
+                chart: {
+                    height: 309,
+                    type: 'area',
+                    toolbar: 'false',
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 2,
+                },
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return "$" + value;
+                        }
+                    },
+                    tickAmount: 5,
+                    min: 0,
+                    max: Math.max(...result.revenue)
+                },
+                colors: revenueExpensesChartsColors,
+                fill: {
+                    opacity: 0.06,
+                    colors: revenueExpensesChartsColors,
+                    type: 'solid'
+                }
+            };
+            var chart = new ApexCharts(document.querySelector("#revenue-expenses-report-chart"), options);
+            chart.render();
+        }
+       },
+       error: function (error) {
+         console.log(error);
+       }
+     }); 
+}
+fetchRevenueChart();
