@@ -17,8 +17,9 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center flex-wrap gap-2">
                         <div class="flex-grow-1">
-                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#showModal"><i
-                                    class="ri-add-fill me-1 align-bottom"></i> Add Company</button>
+                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addClient"><i
+                                    class="ri-add-fill me-1 align-bottom"></i>Add Client</button>
+                                @include('pages.Admin.client.modals.clientaddmodal')
                         </div>
                         <div class="flex-shrink-0">
                             <div class="hstack text-nowrap gap-2">
@@ -242,98 +243,6 @@
         </div>
     </div>
     <!-- end page title -->
-
-@endsection
-@section('')
-    @include('sweetalert::alert')
-    <div class="content-header row">
-        <div class="content-header-left col-md-9 col-12 mb-2">
-            <div class="row breadcrumbs-top">
-                <div class="col-12">
-                    <h2 class="content-header-title float-left mb-0">Clients</h2>
-                    <div class="breadcrumb-wrapper">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a
-                                    href="/admin/home/{{ Auth::user()->company_roles->first()->company->id }}">Home</a>
-                            </li>
-                            <li class="breadcrumb-item active">Client Lists
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <!-- Basic Tables start -->
-    <!-- Table Hover Animation start -->
-    <div class="row" id="table-hover-animation">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                </div>
-
-
-                <div class="card-body">
-                    <div class="container row row-xs">
-                        <div class="col mt-md-0">
-                            <button class="btn btn-default float-left" id="download" title="Download Report"><img
-                                    src="{{ url('backend/img/download_icon.png') }}" class="img-responsive"
-                                    style="width: 35px;"></button>
-                            <button class="btn btn-default" id="add" title="Add Client"><img
-                                    src="{{ url('backend/img/user_add.png') }}" class="img-responsive"
-                                    style="width: 35px;"></button>
-                            @include('pages.Admin.client.modals.clientaddmodal')
-                        </div>
-
-                        <div class="col-lg-2">
-                            <select class="form-control select2" name="status_id" id="status_id">
-                                <option>Select Status</option>
-                                <option value="0">All</option>
-                                <option value="1">Active</option>
-                                <option value="2">Inactive</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-1 col-lg-1">
-                            <button type="button" onclick="handleStatusChange(this)"
-                                class="btn btn btn-outline-primary btn-block" id="btn_search"><i
-                                    data-feather='search'></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container">
-                    <div class="table-responsive">
-                        <table id="example" class="table table-hover-animation table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    {{-- <th>Image</th> --}}
-                                    <th>Name</th>
-                                    <th>Contact Person</th>
-                                    <th>Contact No</th>
-                                    <th>Email</th>
-                                    <th>No of Sites</th>
-                                    {{-- <th>Address</th>
-                                    <th>State</th>
-                                    <th>Post</th>
-                                    <th>Status</th> --}}
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="clientBody">
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- Table head options end -->
-    <!-- Basic Tables end -->
 @endsection
 
 @push('scripts')
