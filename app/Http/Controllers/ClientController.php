@@ -60,23 +60,32 @@ class ClientController extends Controller
   
         $html .= "
               <tr>
-                  <td>" . $loop + 1 . "</td>
+                  <td>". $loop + 1 ."</td>
                   <td>$row->cname</td>
                   <td>$row->cperson</td>
                   <td>$row->cnumber</td>
                   <td>$row->cemail</td>
                   <td>$no_of_sites</td>
                   <td>
-                        <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
-                        <a class='btn btn-gradient-danger text-white del' url='/admin/home/client/delete/$row->id' data-id='$row->id'><i data-feather='trash-2'></i></a>
+                  <div class='dropdown'>
+                    <button class='btn btn-soft-info btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                      <i class='ri-more-2-fill'></i>
+                    </button>
+                    <ul class='dropdown-menu'>
+                      <li><button data-row='$json'  data-bs-toggle='modal' data-bs-target='#showModal' class='edit-btn dropdown-item' href='#'>Edit</button></li>
+                      <li><a class='dropdown-item del' url='/admin/home/client/delete/$row->id' data-id='$row->id'>Delete</a></li>
+                    </ul>
+                  </div>
                   </td>
               </tr>
               ";
       }
     }
     return response()->json(['data' => $html]);
+    // // return view('pages.Admin.client.index', compact('clients'));
+    // <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
+    // <a class='btn btn-gradient-danger text-white del' url='/admin/home/client/delete/$row->id' data-id='$row->id'><i data-feather='trash-2'></i></a>
 
-    // return view('pages.Admin.client.index', compact('clients'));
   }
 
   public function store(Request $request)

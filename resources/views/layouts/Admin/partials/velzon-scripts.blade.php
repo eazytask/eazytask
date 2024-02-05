@@ -10,3 +10,4 @@
 <script type="text/javascript" src="{{ asset('backend') }}/lib/toastr/toastr.min.js"></script>
 @yield('script')
 @yield('script-bottom')
+@stack('scripts')
