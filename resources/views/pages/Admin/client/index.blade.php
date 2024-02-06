@@ -17,26 +17,10 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center flex-wrap gap-2">
                         <div class="flex-grow-1">
-                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addClient" id="add"><i
-                                    class="ri-add-fill me-1 align-bottom"></i>Add Client</button>
-                                @include('pages.Admin.client.modals.clientaddmodal')
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="hstack text-nowrap gap-2">
-                                <button class="btn btn-soft-danger" id="remove-actions" onClick="deleteMultiple()"><i
-                                        class="ri-delete-bin-2-line"></i></button>
-                                <button class="btn btn-danger"><i
-                                        class="ri-filter-2-line me-1 align-bottom"></i> Filters</button>
-                                <button class="btn btn-soft-success" id="download">Import</button>
-                                <button type="button" id="dropdownMenuLink1" data-bs-toggle="dropdown"
-                                    aria-expanded="false" class="btn btn-soft-info"><i class="ri-more-2-fill"></i></button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-                                    <li><a class="dropdown-item" href="#">All</a></li>
-                                    <li><a class="dropdown-item" href="#">Last Week</a></li>
-                                    <li><a class="dropdown-item" href="#">Last Month</a></li>
-                                    <li><a class="dropdown-item" href="#">Last Year</a></li>
-                                </ul>
-                            </div>
+                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addClient" id="add">
+                                <i class="ri-add-fill me-1 align-bottom"></i>Add Client
+                            </button>
+                            @include('pages.Admin.client.modals.clientaddmodal')
                         </div>
                     </div>
                 </div>
@@ -198,13 +182,6 @@
             });
         }
 
-        $(document).on("click", "#download", function() {
-            $(".dt-buttons .buttons-copy").toggle()
-            $(".dt-buttons .buttons-csv").toggle()
-            $(".dt-buttons .buttons-excel").toggle()
-            $(".dt-buttons .buttons-pdf").toggle()
-            $(".dt-buttons .buttons-print").toggle()
-        })
 
         $(document).ready(function() {
             encodeImageFileAsURL = function(element) {
@@ -239,7 +216,13 @@
                                 lengthMenu: [30, 50,
                                     100, 200
                                 ], // Set the options for the number of records to display
-                                buttons: [{
+                                buttons: [
+                                    {
+                                        extend: 'colvis',
+                                        fade: 0,
+                                        // text:      '<i class="material-icons" data-uk-tooltip="" title="Column selector">view_module</i>',
+                                    },
+                                    {
                                         extend: 'copy',
                                         exportOptions: {
                                             columns: [0, 1, 2, 3, 4, 5]
@@ -258,17 +241,11 @@
                                         }
                                     },
                                     {
-                                        extend: 'pdf',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
                                         extend: 'print',
                                         exportOptions: {
                                             columns: [0, 1, 2, 3, 4, 5]
                                         }
-                                    }
+                                    },
                                 ]
                             });
                         }
@@ -373,25 +350,6 @@
     
 
     <style>
-        .dt-buttons .buttons-copy {
-            display: none;
-        }
-
-        .dt-buttons .buttons-csv {
-            display: none;
-        }
-
-        .dt-buttons .buttons-excel {
-            display: none;
-        }
-
-        .dt-buttons .buttons-pdf {
-            display: none;
-        }
-
-        .dt-buttons .buttons-print {
-            display: none;
-        }
 
         /* Custom styles for DataTables search and length menu alignment */
         .dataTables_wrapper .dataTables_filter {
@@ -405,16 +363,40 @@
         }
         div.dt-buttons {
             padding:1rem;
-            padding-bottom: 0;
-        }
-        table.dataTable>thead .sorting:before, table.dataTable>thead .sorting_asc:before, table.dataTable>thead .sorting_desc:before, table.dataTable>thead .sorting_asc_disabled:before, table.dataTable>thead .sorting_desc_disabled:before {
-            content: "" !important;
-        }
-        table.dataTable>thead .sorting:after, table.dataTable>thead .sorting_asc:after, table.dataTable>thead .sorting_desc:after, table.dataTable>thead .sorting_asc_disabled:after, table.dataTable>thead .sorting_desc_disabled:after {
-            content: "" !important;
         }
         .dropdown-item.del{
             cursor: pointer;
+        }
+        .buttons-columnVisibility{
+            text-align: left;
+        }
+        .buttons-columnVisibility:after {
+            content: '\2714';
+            left: 15px;
+            top: 6px;
+            position: absolute;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .buttons-columnVisibility:not(.active):after{
+            display: none;
+        }
+        .buttons-columnVisibility span{
+            vertical-align:top;
+        }
+        .buttons-columnVisibility:before {
+            content: '\25a2';
+            display: inline-block;
+            font-size: 20px;
+            margin-right: 5px;
+        }
+        button.dt-button:active:not(.disabled), button.dt-button.active:not(.disabled), div.dt-button:active:not(.disabled), div.dt-button.active:not(.disabled), a.dt-button:active:not(.disabled), a.dt-button.active:not(.disabled), input.dt-button:active:not(.disabled), input.dt-button.active:not(.disabled) {
+            background-color: #2e3957 !important;
+            box-shadow: none !important;
+        }
+        div.dt-button-collection button.dt-button:active:not(.disabled), div.dt-button-collection button.dt-button.active:not(.disabled), div.dt-button-collection div.dt-button:active:not(.disabled), div.dt-button-collection div.dt-button.active:not(.disabled), div.dt-button-collection a.dt-button:active:not(.disabled), div.dt-button-collection a.dt-button.active:not(.disabled) {
+            background-color: none !important;
+            background: none !important;
         }
     </style>
 @endpush

@@ -11,3 +11,4 @@
 <script src="{{asset('app-assets/vendors/js/tables/datatable/buttons.html5.min.js')}}"></script>
 <script src="{{asset('app-assets/vendors/js/tables/datatable/buttons.print.min.js')}}"></script>
 <script src="{{asset('app-assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js')}}"></script>
+<script src="{{asset('app-assets/vendors/js/tables/datatable/buttons.colVis.js')}}"></script>
