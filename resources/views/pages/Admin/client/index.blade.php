@@ -17,7 +17,7 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center flex-wrap gap-2">
                         <div class="flex-grow-1">
-                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addClient"><i
+                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addClient" id="add"><i
                                     class="ri-add-fill me-1 align-bottom"></i>Add Client</button>
                                 @include('pages.Admin.client.modals.clientaddmodal')
                         </div>
@@ -27,7 +27,7 @@
                                         class="ri-delete-bin-2-line"></i></button>
                                 <button class="btn btn-danger"><i
                                         class="ri-filter-2-line me-1 align-bottom"></i> Filters</button>
-                                <button class="btn btn-soft-success">Import</button>
+                                <button class="btn btn-soft-success" id="download">Import</button>
                                 <button type="button" id="dropdownMenuLink1" data-bs-toggle="dropdown"
                                     aria-expanded="false" class="btn btn-soft-info"><i class="ri-more-2-fill"></i></button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
@@ -44,28 +44,7 @@
         </div>
         <!--end col-->
         <div class="col-xxl-9">
-            <div class="card" id="companyList">
-                {{-- <div class="card-header">
-                    <div class="row g-2">
-                        <div class="col-md-3">
-                            <div class="search-box">
-                                <input type="text" class="form-control search" placeholder="Search for company...">
-                                <i class="ri-search-line search-icon"></i>
-                            </div>
-                        </div>
-                        <div class="col-md-auto ms-auto">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="text-muted">Sort by: </span>
-                                <select class="form-control mb-0" data-choices data-choices-search-false
-                                    id="choices-single-default">
-                                    <option value="Owner">Owner</option>
-                                    <option value="Company">Company</option>
-                                    <option value="location">Location</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
+            <div class="card" id="client_list">
                 <div class="card-body">
                     <div>
                         <div class="table-responsive table-card mb-3">
@@ -97,115 +76,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end mt-3">
-                            <div class="pagination-wrap hstack gap-2">
-                                <a class="page-item pagination-prev disabled" href="#">
-                                    Previous
-                                </a>
-                                <ul class="pagination listjs-pagination mb-0"></ul>
-                                <a class="page-item pagination-next" href="#">
-                                    Next
-                                </a>
-                            </div>
-                        </div>
                     </div>
-                    <div class="modal fade" id="showModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content border-0">
-                                <div class="modal-header bg-info-subtle p-3">
-                                    <h5 class="modal-title" id="exampleModalLabel"></h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                                        id="close-modal"></button>
-                                </div>
-                                <form class="tablelist-form" autocomplete="off">
-                                    <div class="modal-body">
-                                        <input type="hidden" id="id-field" />
-                                        <div class="row g-3">
-                                            <div class="col-lg-12">
-                                                <div>
-                                                    <label for="client_name" class="form-label">Client Name *</label>
-                                                    <input type="text" id="client_name" class="form-control"
-                                                        placeholder="Enter client name" name="cname" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <label for="email" class="form-label">Email *</label>
-                                                    <input type="emmail" id="email" class="form-control"
-                                                        placeholder="Enter email address" name="cemail" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <label for="number" class="form-label">Contact Number *</label>
-                                                    <input type="number" id="number" class="form-control"
-                                                        placeholder="Enter contact number" name="cnumber" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div>
-                                                    <label for="avatar" class="form-label">Avatar</label>
-                                                    <input type="file" id="avatar" class="form-control"
-                                                         required accept="image/*" onchange="encodeImageFileAsURL(this)" />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div>
-                                                    <label for="person" class="form-label">Contact Person *</label>
-                                                    <input type="text" id="person" class="form-control"
-                                                        placeholder="Enter location" name="cperson" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div>
-                                                    <label for="status" class="form-label">Status *</label>
-                                                    <select name="" id="" class="form-select" id="status" name="status" required tabindex="-1">
-                                                        <option value="" disabled="" selected="" hidden="" data-select2-id="8">Please Choose...
-                                                        </option>
-                                                        <option value="1" data-select2-id="40">Active</option>
-                                                        <option value="2" data-select2-id="41">Inactive</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <label for="website-field" class="form-label">Website</label>
-                                                    <input type="text" id="website-field" class="form-control"
-                                                        placeholder="Enter website" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <label for="contact_email-field" class="form-label">Contact
-                                                        Email</label>
-                                                    <input type="text" id="contact_email-field" class="form-control"
-                                                        placeholder="Enter contact email" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div>
-                                                    <label for="since-field" class="form-label">Since</label>
-                                                    <input type="text" id="since-field" class="form-control"
-                                                        placeholder="Enter since" required />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <div class="hstack gap-2 justify-content-end">
-                                            <button type="button" class="btn btn-light"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-success" id="add-btn">Add
-                                                Company</button>
-                                            {{-- <button type="button" class="btn btn-success" id="edit-btn">Update</button> --}}
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!--end add modal-->
 
                     <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1"
                         aria-labelledby="deleteRecordLabel" aria-hidden="true">
@@ -247,6 +118,17 @@
 
 @push('scripts')
     @include('components/datatablescript')
+    <script src="{{ asset('backend') }}/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/code.js"></script>
+    <script src="{{asset('app-assets/vendors/js/forms/wizard/bs-stepper.min.js')}}"></script>
+    <script src="{{asset('app-assets/js/scripts/forms/form-wizard.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/pages/app-calendar.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/plugins/forms/form-wizard.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/forms/wizard/bs-stepper.min.css')}}">
+
     <script>
         function handleStatusChange() {
             var status = $('#status_id').val();
@@ -342,8 +224,10 @@
                     dataType: 'json',
                     success: function(data) {
                         if (data.data) {
+                            console.log($('#example'));
                             $('#example').DataTable().clear().destroy();
-                            $('#clientBody').html(data.data)
+                            $('#clientBody').html(data.data);
+                            console.log($('#example'));
                             $('#example').DataTable({
                                 "drawCallback": function(settings) {
                                     feather.replace({
@@ -485,6 +369,9 @@
         })
     </script>
 
+
+    
+
     <style>
         .dt-buttons .buttons-copy {
             display: none;
@@ -515,6 +402,19 @@
         .dataTables_wrapper .dataTables_length {
             float: left;
             margin-right: 20px;
+        }
+        div.dt-buttons {
+            padding:1rem;
+            padding-bottom: 0;
+        }
+        table.dataTable>thead .sorting:before, table.dataTable>thead .sorting_asc:before, table.dataTable>thead .sorting_desc:before, table.dataTable>thead .sorting_asc_disabled:before, table.dataTable>thead .sorting_desc_disabled:before {
+            content: "" !important;
+        }
+        table.dataTable>thead .sorting:after, table.dataTable>thead .sorting_asc:after, table.dataTable>thead .sorting_desc:after, table.dataTable>thead .sorting_asc_disabled:after, table.dataTable>thead .sorting_desc_disabled:after {
+            content: "" !important;
+        }
+        .dropdown-item.del{
+            cursor: pointer;
         }
     </style>
 @endpush
