@@ -105,7 +105,8 @@ xhttp.onload = function () {
     });
     companyList.remove("id", `<a href="javascript:void(0);" class="fw-medium link-primary">#VZ001</a>`);
 }
-xhttp.open("GET", "app-assets/velzon/json/company-list.json");
+let url = $('meta[name="site_url"]').attr('content')
+xhttp.open("GET", url+"app-assets/velzon/json/company-list.json");
 xhttp.send();
 
 isCount = new DOMParser().parseFromString(

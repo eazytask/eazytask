@@ -11,6 +11,7 @@
     <title>Online Scheduler </title>
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/images/ico/favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/plugins/forms/form-validation.css')}}">
+    <meta name="site_url" content="{{asset('/')}}">
     @include('layouts.Admin.partials.head-css')
 </head>
 

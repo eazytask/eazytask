@@ -1615,13 +1615,13 @@ input:focus ~ .bg-secondary {
   background: rgba(40, 199, 111, 0.6); }
 
 .btn-success {
-  border-color: #28c76f !important;
-  background-color: #28c76f !important;
+  border-color: #299cdb !important;
+  background-color: #299cdb !important;
   color: #fff !important; }
 
 .btn-success:focus, .btn-success:active, .btn-success.active {
   color: #fff;
-  background-color: #24b263 !important; }
+  background-color: #2385ba !important; }
 
 .btn-success:hover:not(.disabled):not(:disabled) {
   box-shadow: 0 8px 25px -8px #28c76f; }
@@ -2188,7 +2188,7 @@ input:focus ~ .bg-success {
   /* The Fallback */
   background: rgba(0, 207, 232, 0.6); }
 
-.btn-info {
+/* .btn-info {
   border-color: #00cfe8 !important;
   background-color: #00cfe8 !important;
   color: #fff !important; }
@@ -2201,7 +2201,7 @@ input:focus ~ .bg-success {
   box-shadow: 0 8px 25px -8px #00cfe8; }
 
 .btn-info:not(:disabled):not(.disabled):active:focus {
-  box-shadow: none; }
+  box-shadow: none; } */
 
 .btn-flat-info {
   background-color: transparent;

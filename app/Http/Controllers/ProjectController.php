@@ -44,18 +44,24 @@ class ProjectController extends Controller
             }
             $json = json_encode($project->toArray(), false);
             $html .= "<tr>
-            <td>" . $loop + 1 . "</td>
-            <td>$project->pName</td>
-            <td>$project->cName</td>
-            <td>$project->cNumber</td>
-            <td>$cn</td>
-            <td>$project->project_address $project->suburb $project->project_state $project->postal_code</td>
-            <td>
-        <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
-                <a class='btn btn-gradient-danger text-white del'  data-id='$project->id'><i
-                        data-feather='trash-2'></i></a>
-            </td>
-        </tr>";
+                <td>" . $loop + 1 . "</td>
+                <td>$project->pName</td>
+                <td>$project->cName</td>
+                <td>$project->cNumber</td>
+                <td>$cn</td>
+                <td>$project->project_address $project->suburb $project->project_state $project->postal_code</td>
+                <td>
+                    <div class='dropdown'>
+                        <button class='btn btn-soft-info btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                            <i class='ri-more-2-fill'></i>
+                        </button>
+                        <ul class='dropdown-menu'>
+                            <li><button data-row='$json' class='edit-btn dropdown-item'>Edit</button></li>
+                            <li><a class='dropdown-item del' data-id='$project->id'>Delete</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>";
         }
         return response()->json(['data' => $html]);
     }

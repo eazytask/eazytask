@@ -1,7 +1,104 @@
 @extends('layouts.Admin.master')
 
+@section('admin_page_content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            Client
+        @endslot
+        @slot('title')
+            Site / Venue
+        @endslot
+    @endcomponent
+    <div class="content-header row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <div class="flex-grow-1">
+                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addProject" id="add">
+                                <i class="ri-add-fill me-1 align-bottom"></i>Add Client Site/Venue
+                            </button>
+                            @include('pages.Admin.project.modals.projectAddModal')
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-9">
+            <div class="card" id="client_list">
+                <div class="card-body">
+                    <div>
+                        <div class="table-responsive mb-3">
+                            <table id="example" class="table table-bordered table-hover-animation">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Venue Name</th>
+                                        <th>Contact Person</th>
+                                        <th>Contact No</th>
+                                        <th>Client Name</th>
+                                        <th>Address</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projectBody">
+    
+                                </tbody>
+                            </table>
+                            <div class="noresult" style="display: none">
+                                <div class="text-center">
+                                    <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
+                                        colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px">
+                                    </lord-icon>
+                                    <h5 class="mt-2">Sorry! No Result Found</h5>
+                                    <p class="text-muted mb-0">We've searched more than 150+ companies
+                                        We did not find any
+                                        companies for you search.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-@section('admincontent')
+                    <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1"
+                        aria-labelledby="deleteRecordLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        id="btn-close deleteRecord-close"></button>
+                                </div>
+                                <div class="modal-body p-5 text-center">
+                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
+                                        colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px">
+                                    </lord-icon>
+                                    <div class="mt-4 text-center">
+                                        <h4 class="fs-semibold">You are about to delete a company ?</h4>
+                                        <p class="text-muted fs-14 mb-4 pt-1">Deleting your company will
+                                            remove all of your information from our database.</p>
+                                        <div class="hstack gap-2 justify-content-center remove">
+                                            <button class="btn btn-link link-success fw-medium text-decoration-none"
+                                                data-bs-dismiss="modal"><i class="ri-close-line me-1 align-middle"></i>
+                                                Close</button>
+                                            <button class="btn btn-danger" id="delete-record">Yes,
+                                                Delete It!!</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end delete modal -->
+
+                </div>
+            </div>
+            <!--end card-->
+        </div>
+    </div>
+
+@endsection
+
+@section('')
     @include('sweetalert::alert')
     <div class="content-header row">
         <div class="content-header-left col-md-9 col-12 mb-2">
@@ -91,7 +188,71 @@
 @endsection
 
 @push('scripts')
+    @include('components.datatablescript')
+    <script src="{{ asset('backend') }}/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/code.js"></script>
+    @include('components.stepper')
     <script>
+        const dataTableTitle = 'Client Site Report';
+        const dataTableOptions = {
+            "drawCallback": function(settings) {
+                feather.replace({
+                    width: 14,
+                    height: 14
+                });
+            },
+            dom: 'Blfrtip', // Include 'l' for length menu
+            lengthMenu: [30, 50,
+                100, 200
+            ], // Set the options for the number of records to display
+            buttons: [
+                {
+                    extend: 'colvis',
+                    fade: 0,
+                },
+                {
+                    extend: 'copy',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle,
+                },
+                {
+                    extend: 'csv',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle,
+                },
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle,
+                },
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible',
+                    },
+                    title: dataTableTitle,
+                }
+            ],
+            initComplete: function() {
+                let table = this.api();
+            
+                let search = `<div class="search-box">
+                                <input type="text" class="form-control form-control-sm search" placeholder="Search for company...">
+                                <i class="ri-search-line search-icon"></i>
+                            </div>`;
+                $('#example_filter').html(search);
+
+                $('.search').on('keyup', function(){
+                    table.search( this.value ).draw();
+                });
+            },
+        }
         function handleStatusChange() {
             var status = $('#status_id').val();
             $.ajax({
@@ -105,51 +266,9 @@
                         }
                         $('#projectBody').html(data.data)
                         if (data.data.length > 100) {
-                            $('#example').DataTable({
-                                "drawCallback": function(settings) {
-                                    feather.replace({
-                                        width: 14,
-                                        height: 14
-                                    });
-                                },
-                                dom: 'Blfrtip', // Include 'l' for length menu
-                                lengthMenu: [30, 50,
-                                    100, 200
-                                ], // Set the options for the number of records to display
-                                buttons: [{
-                                        extend: 'copy',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
-                                        extend: 'csv',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
-                                        extend: 'excel',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
-                                        extend: 'pdf',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
-                                        extend: 'print',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    }
-                                ]
-                            });
+                            $('#example').DataTable(dataTableOptions);
+                            
                         }
-
                     }
 
                     $("#addClient").modal("hide")
@@ -160,16 +279,7 @@
             });
         }
 
-        $(document).on("click", "#download", function() {
-            $(".dt-buttons .buttons-copy").toggle()
-            $(".dt-buttons .buttons-csv").toggle()
-            $(".dt-buttons .buttons-excel").toggle()
-            $(".dt-buttons .buttons-pdf").toggle()
-            $(".dt-buttons .buttons-print").toggle()
-        })
-
         $(document).ready(function() {
-
             $('#clientName').wrap('<div class="position-relative"></div>').select2({
                 placeholder: 'Select Client',
                 dropdownParent: $('#clientName').parent(),
@@ -183,51 +293,11 @@
                     dataType: 'json',
                     success: function(data) {
                         if (data.data) {
+                            console.log('before',$('#example'));
                             $('#example').DataTable().clear().destroy();
                             $('#projectBody').html(data.data)
-                            $('#example').DataTable({
-                                "drawCallback": function(settings) {
-                                    feather.replace({
-                                        width: 14,
-                                        height: 14
-                                    });
-                                },
-                                dom: 'Blfrtip', // Include 'l' for length menu
-                                lengthMenu: [30, 50,
-                                    100, 200
-                                ], // Set the options for the number of records to display
-                                buttons: [{
-                                        extend: 'copy',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
-                                        extend: 'csv',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
-                                        extend: 'excel',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
-                                        extend: 'pdf',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    },
-                                    {
-                                        extend: 'print',
-                                        exportOptions: {
-                                            columns: [0, 1, 2, 3, 4, 5]
-                                        }
-                                    }
-                                ]
-                            });
+                            let table = $('#example').DataTable(dataTableOptions);
+                           
                         }
 
                         $("#addProject").modal("hide")
@@ -241,31 +311,31 @@
 
             $(document).on("click", ".del", function() {
                 swal({
-                        title: "Are you sure?",
-                        text: "Once deleted, you will not be able to recover this!",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            $.ajax({
-                                url: '/admin/home/project/delete/' + $(this).data("id"),
-                                type: 'get',
-                                dataType: 'json',
-                                success: function(data) {
-                                    toastr[data.alertType](data.message, {
-                                        closeButton: true,
-                                        tapToDismiss: false,
-                                    });
-                                    fetchProjects()
-                                },
-                                error: function(err) {
-                                    console.log(err)
-                                }
-                            });
-                        }
-                    });
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: '/admin/home/project/delete/' + $(this).data("id"),
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(data) {
+                                toastr[data.alertType](data.message, {
+                                    closeButton: true,
+                                    tapToDismiss: false,
+                                });
+                                fetchProjects()
+                            },
+                            error: function(err) {
+                                console.log(err)
+                            }
+                        });
+                    }
+                });
             })
             // $("#newModalForm").validate()
             $(document).on("click", ".edit-btn", function() {
@@ -583,26 +653,6 @@
     </script>
 
     <style>
-        .dt-buttons .buttons-copy {
-            display: none;
-        }
-
-        .dt-buttons .buttons-csv {
-            display: none;
-        }
-
-        .dt-buttons .buttons-excel {
-            display: none;
-        }
-
-        .dt-buttons .buttons-pdf {
-            display: none;
-        }
-
-        .dt-buttons .buttons-print {
-            display: none;
-        }
-
         /* Custom styles for DataTables search and length menu alignment */
         .dataTables_wrapper .dataTables_filter {
             float: right;
@@ -612,6 +662,46 @@
         .dataTables_wrapper .dataTables_length {
             float: left;
             margin-right: 20px;
+        }
+        div.dt-buttons {
+            padding-right:1rem;
+        }
+        .dropdown-item.del{
+            cursor: pointer;
+        }
+        .buttons-columnVisibility{
+            text-align: left;
+        }
+        .buttons-columnVisibility:after {
+            content: '\2714';
+            left: 15px;
+            top: 6px;
+            position: absolute;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .buttons-columnVisibility:not(.active):after{
+            display: none;
+        }
+        .buttons-columnVisibility span{
+            vertical-align:top;
+        }
+        .buttons-columnVisibility:before {
+            content: '\25a2';
+            display: inline-block;
+            font-size: 20px;
+            margin-right: 5px;
+        }
+        button.dt-button:active:not(.disabled), button.dt-button.active:not(.disabled), div.dt-button:active:not(.disabled), div.dt-button.active:not(.disabled), a.dt-button:active:not(.disabled), a.dt-button.active:not(.disabled), input.dt-button:active:not(.disabled), input.dt-button.active:not(.disabled) {
+            background-color: none !important;
+            box-shadow: none !important;
+        }
+        div.dt-button-collection button.dt-button:active:not(.disabled), div.dt-button-collection button.dt-button.active:not(.disabled), div.dt-button-collection div.dt-button:active:not(.disabled), div.dt-button-collection div.dt-button.active:not(.disabled), div.dt-button-collection a.dt-button:active:not(.disabled), div.dt-button-collection a.dt-button.active:not(.disabled) {
+            background-color: none !important;
+            background: none !important;
+        }
+        button.dt-button:hover:not(.disabled), div.dt-button:hover:not(.disabled), a.dt-button:hover:not(.disabled), input.dt-button:hover:not(.disabled){
+            border-color: transparent !important;
         }
     </style>
 @endpush
