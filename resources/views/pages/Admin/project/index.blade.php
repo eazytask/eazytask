@@ -669,39 +669,5 @@
         .dropdown-item.del{
             cursor: pointer;
         }
-        .buttons-columnVisibility{
-            text-align: left;
-        }
-        .buttons-columnVisibility:after {
-            content: '\2714';
-            left: 15px;
-            top: 6px;
-            position: absolute;
-            font-size: 12px;
-            display: inline-block;
-        }
-        .buttons-columnVisibility:not(.active):after{
-            display: none;
-        }
-        .buttons-columnVisibility span{
-            vertical-align:top;
-        }
-        .buttons-columnVisibility:before {
-            content: '\25a2';
-            display: inline-block;
-            font-size: 20px;
-            margin-right: 5px;
-        }
-        button.dt-button:active:not(.disabled), button.dt-button.active:not(.disabled), div.dt-button:active:not(.disabled), div.dt-button.active:not(.disabled), a.dt-button:active:not(.disabled), a.dt-button.active:not(.disabled), input.dt-button:active:not(.disabled), input.dt-button.active:not(.disabled) {
-            background-color: none !important;
-            box-shadow: none !important;
-        }
-        div.dt-button-collection button.dt-button:active:not(.disabled), div.dt-button-collection button.dt-button.active:not(.disabled), div.dt-button-collection div.dt-button:active:not(.disabled), div.dt-button-collection div.dt-button.active:not(.disabled), div.dt-button-collection a.dt-button:active:not(.disabled), div.dt-button-collection a.dt-button.active:not(.disabled) {
-            background-color: none !important;
-            background: none !important;
-        }
-        button.dt-button:hover:not(.disabled), div.dt-button:hover:not(.disabled), a.dt-button:hover:not(.disabled), input.dt-button:hover:not(.disabled){
-            border-color: transparent !important;
-        }
     </style>
 @endpush

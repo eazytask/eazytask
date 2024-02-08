@@ -1,73 +1,50 @@
-<div class="modal fade text-left p-md-1 p-0" id="addEmployee" role="dialog" aria-labelledby="myModalLabel17"
+<div class="modal fade text-left p-md-1 p-0 horizontal-wizard-example" id="addEmployee" role="dialog" aria-labelledby="myModalLabel17"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-gradient-primary">
-                <h4 class="modal-title text-white" id="myModalLabel17">Add Employee</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+            <div class="modal-header bg-info-subtle py-3">
+                <h5 class="modal-title" id="myModalLabel17">Add Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <div class="modal-body">
+            <form class="modal-body">
                 <section id="multiple-column-form">
                     <div class="row">
                         <div class="col-12">
                             <div class="card mb-0">
 
                                 <div class="pb-0">
-                                    <!-- <form class="form" id="newModalForm"> -->
-                                    <!-- Horizontal Wizard -->
-                                    <section class="horizontal-wizard">
-                                        <div class="bs-stepper horizontal-wizard-example">
-                                            <div class="bs-stepper-header">
-                                                <div class="step" data-target="#account-details">
-                                                    <button type="button" class="step-trigger">
-                                                        <span class="bs-stepper-box">1</span>
-                                                        <span class="bs-stepper-label">
-                                                            <span class="bs-stepper-title">Personal Info</span>
-                                                            <span class="bs-stepper-subtitle">Add Personal Info</span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                                <div class="line">
-                                                    <i data-feather="chevron-right" class="font-medium-2"></i>
-                                                </div>
-                                                <div class="step" data-target="#personal-info">
-                                                    <button type="button" class="step-trigger">
-                                                        <span class="bs-stepper-box">2</span>
-                                                        <span class="bs-stepper-label">
-                                                            <span class="bs-stepper-title">Address & License</span>
-                                                            <span class="bs-stepper-subtitle">Add Info</span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                                <div class="line">
-                                                    <i data-feather="chevron-right" class="font-medium-2"></i>
-                                                </div>
-                                                <div class="step" data-target="#address-step">
-                                                    <button type="button" class="step-trigger">
-                                                        <span class="bs-stepper-box">3</span>
-                                                        <span class="bs-stepper-label">
-                                                            <span class="bs-stepper-title">Compliance</span>
-                                                            <span class="bs-stepper-subtitle">Add Employee
-                                                                Compliance</span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                                <!-- <div class="line">
-                                                    <i data-feather="chevron-right" class="font-medium-2"></i>
-                                                </div> -->
-                                            </div>
-                                            <div class="bs-stepper-content">
-                                                <div id="account-details" class="content">
-                                                    <div class="content-header">
-                                                        <h5 class="mb-0">Personal Info</h5>
-                                                        <small class="text-muted">Add Personal Info</small>
-                                                    </div>
-                                                    <form>
+                                    <div class="card">
+                                        <div class="border">
+                                            <ul class="nav nav-pills custom-hover-nav-tabs">
+                                                <li class="nav-item">
+                                                    <a href="#custom-hover-customere" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                                                        <i class="ri-user-fill nav-icon nav-tab-position"></i>
+                                                        <h5 class="nav-titl nav-tab-position m-0">Employee</h5>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item d-none" id="compliance_tab">
+                                                    <a href="#custom-hover-description" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                                        <i class="ri-file-text-line nav-icon nav-tab-position"></i>
+                                                        <h5 class="nav-titl nav-tab-position m-0">Compliance</h5>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="#custom-hover-reviews" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                                        <i class="ri-star-half-line nav-icon nav-tab-position"></i>
+                                                        <h5 class="nav-titl nav-tab-position m-0">Reviews</h5>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="tab-content text-muted">
+                                                <div class="tab-pane show active" id="custom-hover-customere">
+                                                    <h5>Personal Information</h5>
+                                                    <div>
                                                         <div class="row">
                                                             <div class="col-md-4 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="first-name-column">First Name *</label>
                                                                     <input type="text" id="name"
                                                                         class="form-control" placeholder="First Name"
@@ -75,7 +52,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-4 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="first-name-column">Middle Name</label>
                                                                     <input type="text" id="mname"
                                                                         class="form-control" placeholder="Middle name"
@@ -83,7 +60,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-4 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="last-name-column">Last Name *</label>
                                                                     <input type="text" id="lname"
                                                                         class="form-control" placeholder="Last Name"
@@ -91,7 +68,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="email-id-column">Email *</label>
                                                                     <input type="email" id="email"
                                                                         class="form-control" name="email"
@@ -117,13 +94,10 @@
                                                                             <strong>{{ $message }}</strong>
                                                                         </span>
                                                                     @enderror
-                                                                    <div class="input-group-append"><span
-                                                                            class="input-group-text cursor-pointer"><i
-                                                                                data-feather="eye"></i></span></div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="email-id-column">Contact Number
                                                                         *</label>
                                                                     <input type="number" id="contact_number"
@@ -134,7 +108,7 @@
                                                             </div>
 
                                                             <div class="col-md-6 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="company-column">Date of Birth</label>
                                                                     <input type="date"
                                                                         class="form-control flatpickr-basic"
@@ -143,7 +117,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="company-column">Avatar</label>
                                                                     <input type="file" class="form-control"
                                                                         id="_image" placeholder="Avatar"
@@ -154,7 +128,7 @@
                                                             </div>
                                                             <div class="col-md-6 col-6">
                                                                 <label for="email-id-column">Select Role *</label>
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <select class="form-control select2"
                                                                         name="role" id="role"
                                                                         aria-label="Default select example" required>
@@ -185,7 +159,7 @@
 
                                                             <div class="col-md-6 col-6">
                                                                 <label for="email-id-column">Select Status *</label>
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <select class="form-control select2"
                                                                         name="status" id="status" required>
                                                                         <option value="" disabled selected
@@ -198,35 +172,14 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                    <div class="d-flex justify-content-between">
-                                                        <button type="button"
-                                                            class="btn btn-outline-secondary btn-prev" disabled>
-                                                            <i data-feather="arrow-left"
-                                                                class="align-middle mr-sm-25 mr-0"></i>
-                                                            <span
-                                                                class="align-middle d-sm-inline-block d-none">Previous</span>
-                                                        </button>
-                                                        <button type="button"
-                                                            class="btn btn-gradient-primary btn-next">
-                                                            <span
-                                                                class="align-middle d-sm-inline-block d-none">Next</span>
-                                                            <i data-feather="arrow-right"
-                                                                class="align-middle ml-sm-25 ml-0"></i>
-                                                        </button>
                                                     </div>
-                                                </div>
-                                                <div id="personal-info" class="content">
-                                                    <div class="content-header">
-                                                        <h5 class="mb-0">Address & License</h5>
-                                                        <small>Enter Info</small>
-                                                    </div>
-                                                    <form>
+                                                    <h5 class="mt-3">Address & License</h5>
+                                                    <div>
                                                         @csrf
                                                         <input type="hidden" name="id" id="id">
                                                         <div class="row">
                                                             <div class="col-md-6 col-12">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="email-id-column">Street*</label>
                                                                     <input type="text" id="address"
                                                                         class="form-control" name="address"
@@ -234,7 +187,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-12">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="email-id-column">Suburb*</label>
                                                                     <input type="text" id="suburb"
                                                                         class="form-control" name="suburb"
@@ -242,7 +195,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="email-id-column">Post Code*</label>
                                                                     <input type="number" id="postal_code"
                                                                         minlength="4" maxlength="4"
@@ -252,7 +205,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">
-                                                                <div class="form-group">
+                                                                <div class="mb-3">
                                                                     <label for="email-id-column">State*</label>
                                                                     <input type="text" id="state"
                                                                         class="form-control" name="state"
@@ -269,7 +222,7 @@
                                                                     <hr class="invoice-spacing">
                                                                 </div>
                                                                 <div class="col-md-6 col-6">
-                                                                    <div class="form-group">
+                                                                    <div class="mb-3">
                                                                         <label for="company-column">Security License
                                                                             No</label>
                                                                         <input type="text" class="form-control"
@@ -281,7 +234,7 @@
                                                                 <div class="col-md-6 col-6">
                                                                     <label for="company-column">Security License
                                                                         Expire</label>
-                                                                    <div class="form-group">
+                                                                    <div class="mb-3">
                                                                         <input type="date"
                                                                             class="form-control flatpickr-basic"
                                                                             id="license_expire_date"
@@ -294,7 +247,7 @@
                                                                 <div class="col-md-6 col-6">
                                                                     <label for="company-column">First Aid License
                                                                         No</label>
-                                                                    <div class="form-group">
+                                                                    <div class="mb-3">
                                                                         <input type="text" class="form-control"
                                                                             id="first_aid_license"
                                                                             name="first_aid_license"
@@ -305,7 +258,7 @@
                                                                 <div class="col-md-6 col-6">
                                                                     <label for="company-column">First Aid License
                                                                         Expire</label>
-                                                                    <div class="form-group">
+                                                                    <div class="mb-3">
                                                                         <input type="date"
                                                                             class="form-control flatpickr-basic"
                                                                             id="first_aid_expire_date"
@@ -316,49 +269,30 @@
                                                                 </div>
                                                             @endif
                                                         </div>
-                                                    </form>
-                                                    <div class="d-flex justify-content-between">
-                                                        <button type="button"
-                                                            class="btn btn-gradient-primary btn-prev">
-                                                            <i data-feather="arrow-left"
-                                                                class="align-middle mr-sm-25 mr-0"></i>
-                                                            <span
-                                                                class="align-middle d-sm-inline-block d-none">Previous</span>
-                                                        </button>
-                                                        <button type="button"
-                                                            class="btn btn-gradient-primary btn-next">
-                                                            <span
-                                                                class="align-middle d-sm-inline-block d-none">Next</span>
-                                                            <i data-feather="arrow-right"
-                                                                class="align-middle ml-sm-25 ml-0"></i>
-                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div id="address-step" class="content">
-                                                    <div class="content-header">
-                                                        <h5 class="mb-0">Compliance</h5>
-                                                    </div>
-                                                    <form>
+                                                <div class="tab-pane" id="custom-hover-description">
+                                                    <h6>Compliance</h6>
+                                                    <div>
                                                         <div class="row">
                                                             <div
                                                                 class="custom-control custom-control-primary custom-checkbox col-12 mb-2 ml-1">
                                                                 <input type="checkbox" class="custom-control-input"
-                                                                    id="checkCompliance" name="has_compliance" />
+                                                                    id="check_compliance" name="has_compliance" />
                                                                 <label class="custom-control-label"
-                                                                    for="checkCompliance">Add Compliance</label>
+                                                                    for="check_compliance">Add Compliance</label>
                                                             </div>
 
                                                             <div id="compliance" class="col-12 disablediv">
                                                                 <div action="#" class="invoice-repeater">
-                                                                    <div data-repeater-list="Compliance"
-                                                                        id="compliance_list">
+                                                                    <div data-repeater-list="Compliance" id="compliance_list">
                                                                         <div data-repeater-item class="inner_repeat">
                                                                             <div class="row d-flex align-items-end">
                                                                                 <div class="col-md-6 col-6">
                                                                                     <label
                                                                                         for="email-id-column">Compliance
                                                                                         Name *</label>
-                                                                                    <div class="form-group">
+                                                                                    <div class="mb-3">
                                                                                         <select
                                                                                             class="form-control comp"
                                                                                             name="compliance"
@@ -378,7 +312,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="col-md-6 col-6">
-                                                                                    <div class="form-group">
+                                                                                    <div class="mb-3">
                                                                                         <label
                                                                                             for="company-column">Certificate
                                                                                             NO. *</label>
@@ -391,7 +325,7 @@
                                                                                 <div class="col-md-6 col-6">
                                                                                     <label for="company-column">Expire
                                                                                         Date *</label>
-                                                                                    <div class="form-group">
+                                                                                    <div class="mb-3">
                                                                                         <input type="text"
                                                                                             class="form-control comp exp_date"
                                                                                             name="expire_date"
@@ -401,7 +335,7 @@
                                                                                 <div class="col-md-6 col-6 m-auto">
                                                                                     <label
                                                                                         for="company-column">Comment</label>
-                                                                                    <div class="form-group">
+                                                                                    <div class="mb-3">
                                                                                         <input type="textarea"
                                                                                             class="form-control"
                                                                                             name="comment"
@@ -409,7 +343,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="col-md-6 col-6">
-                                                                                    <div class="form-group">
+                                                                                    <div class="mb-3">
                                                                                         <label
                                                                                             for="company-column">Document
                                                                                             Image Upload</label>
@@ -420,12 +354,13 @@
                                                                                             onchange="encodeDocumentFileAsURL(this)" />
                                                                                         <input type="text"
                                                                                             id="document"
+                                                                                            class="image_document"
                                                                                             name="document" hidden>
                                                                                     </div>
                                                                                 </div>
 
                                                                                 <div class="mb-50 ml-auto mr-1">
-                                                                                    <div class="form-group">
+                                                                                    <div class="mb-3">
                                                                                         <button
                                                                                             class="btn btn-outline-danger text-nowrap px-1"
                                                                                             data-repeater-delete
@@ -443,7 +378,7 @@
                                                                     <div class="row">
                                                                         <div class="col-12">
                                                                             <button
-                                                                                class="btn btn-icon btn-gradient-primary mb-2"
+                                                                                class="btn btn-gradient-primary mb-2"
                                                                                 type="button" data-repeater-create>
                                                                                 <i data-feather="plus"
                                                                                     class="mr-25"></i>
@@ -454,45 +389,28 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                    <div class="d-flex justify-content-between">
-                                                        <button type="button"
-                                                            class="btn btn-gradient-primary btn-prev">
-                                                            <i data-feather="arrow-left"
-                                                                class="align-middle mr-sm-25 mr-0"></i>
-                                                            <span
-                                                                class="align-middle d-sm-inline-block d-none">Previous</span>
-                                                        </button>
-                                                        <button type="button" id="button_add_submit"
-                                                            class="btn btn-success btn-submit">Submit</button>
                                                     </div>
                                                 </div>
+                                                <div class="tab-pane" id="custom-hover-reviews">
+                                                    <h6>Descirptions</h6>
+                                                    description
+                                                </div>
                                             </div>
-
-                                            <hr>
-                                            <form enctype="multipart/form-data" id="full_form">
-                                            </form>
-                                            <div class="d-flex justify-content-between p-1" id="buttom_bar">
-                                                <button type="button" class="btn btn-outline-dark"
-                                                    data-dismiss="modal">
-                                                    <span class="align-middle d-sm-inline-block d-none">Cancel</span>
-                                                    <i data-feather="x" class="align-middle mr-sm-25 mr-0"></i>
-                                                </button>
-                                                <button type="button" class="btn bg-gradient-success btn-submit">
-                                                    <span class="align-middle d-sm-inline-block d-none">Update</span>
-                                                    <i data-feather="check" class="align-middle mr-sm-25 mr-0"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </section>
-                                    <!-- /Horizontal Wizard -->
-
+                                        </div><!-- end card-body -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success btn-submit">Save changes</button>
             </div>
         </div>
     </div>
 </div>
+@push('scripts')
+    @include('components.select2')
+@endpush

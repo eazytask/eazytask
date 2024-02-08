@@ -1,7 +1,120 @@
 @extends('layouts.Admin.master')
 
+@section('admin_page_content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            Employee
+        @endslot
+        @slot('title')
+            Profiles
+        @endslot
+    @endcomponent
+    <style>
+        /* Custom styles for DataTables search and length menu alignment */
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
+        }
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
+        }
+        .dataTables_wrapper .dt-buttons{
+            margin-right: 20px;
+        }
+        .disablediv {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+    </style>
+    <div class="content-header row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <div class="flex-grow-1">
+                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addEmployee" id="add">
+                                <i class="ri-add-fill me-1 align-bottom"></i>Add Employee
+                            </button>
+                            @include('pages.Admin.employee.modals.employeeaddmodal')
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-9">
+            <div class="card" id="employee_list">
+                <div class="card-body">
+                    <div class="table-responsive mb-3">
+                        <table class="display table table-bordered dt-responsive mt-3" id="example">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Number</th>
+                                    <th>License No</th>
+                                    <th>First Aid</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list form-check-all" id="empBody">
 
-@section('admincontent')
+                            </tbody>
+                        </table>
+                        <div class="noresult" style="display: none">
+                            <div class="text-center">
+                                <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
+                                    colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px">
+                                </lord-icon>
+                                <h5 class="mt-2">Sorry! No Result Found</h5>
+                                <p class="text-muted mb-0">We've searched more than 150+ companies
+                                    We did not find any
+                                    companies for you search.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1"
+                        aria-labelledby="deleteRecordLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        id="btn-close deleteRecord-close"></button>
+                                </div>
+                                <div class="modal-body p-5 text-center">
+                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
+                                        colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px">
+                                    </lord-icon>
+                                    <div class="mt-4 text-center">
+                                        <h4 class="fs-semibold">You are about to delete a company ?</h4>
+                                        <p class="text-muted fs-14 mb-4 pt-1">Deleting your company will
+                                            remove all of your information from our database.</p>
+                                        <div class="hstack gap-2 justify-content-center remove">
+                                            <button class="btn btn-link link-success fw-medium text-decoration-none"
+                                                data-bs-dismiss="modal"><i class="ri-close-line me-1 align-middle"></i>
+                                                Close</button>
+                                            <button class="btn btn-danger" id="delete-record">Yes,
+                                                Delete It!!</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end delete modal -->
+
+                </div>
+            </div>
+            <!--end card-->
+        </div>
+    </div>
+    <!-- end page title -->
+@endsection
+
+@section('')
     @include('sweetalert::alert')
     <style>
         .img-fluid {
@@ -128,7 +241,76 @@
 @endsection
 
 @push('scripts')
+    @include('components.datatablescript')
+    @include('components.stepper')
+    <script src="{{asset('app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js')}}"></script>
+    <script src="{{ asset('app-assets/js/scripts/forms/pickers/form-pickers.js') }}"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/code.js"></script>
+    <script src="{{asset('app-assets/velzon/libs/moment/moment.js')}}"></script>
     <script>
+        const dataTableTitle = 'Employee Report';
+        const dataTableOptions = {
+            "drawCallback": function(settings) {
+                feather.replace({
+                    width: 14,
+                    height: 14
+                });
+            },
+            dom: 'Blfrtip', // Include 'l' for length menu
+            lengthMenu: [30, 50,
+                100, 200
+            ], // Set the options for the number of records to display
+            title: 'test',
+            buttons: [
+                {
+                    extend: 'colvis',
+                    fade: 0,
+                },
+                {
+                    extend: 'copy',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle,
+                    className: 'buttons-csv buttons-html5'
+                },
+                {
+                    extend: 'csv',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle
+                },
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle
+                },
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible',
+                    },
+                    title: dataTableTitle
+                }
+            ],
+            initComplete: function() {
+                let table = this.api();
+            
+                let search = `<div class="search-box">
+                                <input type="text" class="form-control form-control-sm search" placeholder="Search for Employee...">
+                                <i class="ri-search-line search-icon"></i>
+                            </div>`;
+                $('#example_filter').html(search);
+                $('.search').on('keyup', function(){
+                    table.search( this.value ).draw();
+                });
+                $('select[name="example_length"]').addClass('form-control select2');
+            },
+        }
         function handleStatusChange() {
             var status = $('#status_id').val();
             $.ajax({
@@ -143,49 +325,7 @@
                         $('#empBody').html(data.employees)
 
                         if (data.employees.length > 100) {
-                            $('#example').DataTable({
-                                "drawCallback": function(settings) {
-                                    feather.replace({
-                                        width: 14,
-                                        height: 14
-                                    });
-                                },
-                                dom: 'Blfrtip', // Include 'l' for length menu
-                                lengthMenu: [30, 50,
-                                    100, 200
-                                ], // Set the options for the number of records to display
-                                buttons: [{
-                                        extend: 'copy',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    },
-                                    {
-                                        extend: 'csv',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    },
-                                    {
-                                        extend: 'excel',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    },
-                                    {
-                                        extend: 'pdf',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    },
-                                    {
-                                        extend: 'print',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    }
-                                ]
-                            });
+                            $('#example').DataTable(dataTableOptions);
                         }
                     }
 
@@ -202,14 +342,11 @@
             var dataIsRequired = $('#_compliance option:selected').data('isrequired');
             console.log(dataIsRequired)
 
-            var documentUploadInput = document.querySelector('input#_document');
             var documentUploadInput2 = document.querySelector('input#document');
 
             if (dataIsRequired == "1") {
-                documentUploadInput.setAttribute("required", true);
                 documentUploadInput2.setAttribute("required", true);
             } else {
-                documentUploadInput.removeAttribute("required");
                 documentUploadInput2.removeAttribute("required");
             }
         }
@@ -232,11 +369,12 @@
                 var file = element.files[0];
                 var reader = new FileReader();
                 reader.onloadend = function() {
-                    $('#document').val(reader.result)
-                    //   console.log(reader.result)
+                    const image = element.nextElementSibling;
+                    image.value = reader.result;
                 }
                 reader.readAsDataURL(file);
             }
+
 
             $(document).on("change", "#email", function() {
                 setCompliance();
@@ -251,6 +389,7 @@
                             'email': $("#email").val(),
                         },
                         success: function(data) {
+                            
                             if (data.user) {
                                 $("#name").val(data.user.name);
                                 // $("#name").prop('readonly', true)
@@ -265,6 +404,8 @@
                             }
                             $('[data-repeater-list]').empty();
                             if (data.compliances.length) {
+                                $('#check_compliance').prop('checked', true);
+                                $('#compliance').removeClass('disablediv');
                                 jQuery.each(data.compliances, function(i, val) {
                                     $('[data-repeater-create]').click();
                                     $("select[name='Compliance[" + i + "][compliance]']")
@@ -273,9 +414,9 @@
                                         .val(val.certificate_no)
                                     $("input[name='Compliance[" + i + "][comment]']").val(
                                         val.comment)
-                                    $("input[name='Compliance[" + i + "][document]']").val(
-                                        val
-                                        .document)
+                                    // $("input[name='Compliance[" + i + "][document]']").val(
+                                    //     val
+                                    //     .document)
                                     $("input[name='Compliance[" + i + "][expire_date]']")
                                         .val(val.expire_date)
 
@@ -283,6 +424,7 @@
                                     // flatpickr.set('defaultDate', val.expire_date);
                                 })
                             } else {
+                                $('#check_compliance').prop('checked', false);
                                 $('[data-repeater-create]').click();
                                 var flatpickr = $("input[name='Compliance[0][expire_date]']")
                                     .flatpickr({});
@@ -295,7 +437,7 @@
                     });
 
                 } else {
-                    $('#checkCompliance').prop('checked', false)
+                    $('#check_compliance').prop('checked', false)
                     $('#compliance').addClass('disablediv')
                 }
             }
@@ -309,49 +451,7 @@
                             $('#example').DataTable().clear().destroy();
                             $('#empBody').html(data.employees)
 
-                            $('#example').DataTable({
-                                "drawCallback": function(settings) {
-                                    feather.replace({
-                                        width: 14,
-                                        height: 14
-                                    });
-                                },
-                                dom: 'Blfrtip', // Include 'l' for length menu
-                                lengthMenu: [30, 50,
-                                    100, 200
-                                ], // Set the options for the number of records to display
-                                buttons: [{
-                                        extend: 'copy',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    },
-                                    {
-                                        extend: 'csv',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    },
-                                    {
-                                        extend: 'excel',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    },
-                                    {
-                                        extend: 'pdf',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    },
-                                    {
-                                        extend: 'print',
-                                        exportOptions: {
-                                            columns: [0, 2, 3, 4, 5, 6]
-                                        }
-                                    }
-                                ]
-                            });
+                            $('#example').DataTable(dataTableOptions);
 
                         }
 
@@ -364,7 +464,7 @@
             }
             fetchEmployees()
 
-            $(document).on("click", "#checkCompliance", function() {
+            $(document).on("click", "#check_compliance", function() {
                 if ($(this).is(':checked')) {
                     $('#compliance').removeClass('disablediv')
                     $(".comp").prop('required', true)
@@ -432,28 +532,26 @@
                 $("#email").val(rowData.email)
                 $("#document").val(rowData.document)
                 // $("#email").prop('readonly', true)
-                $("#date_of_birth").val(setDate(rowData.date_of_birth))
                 $("#status").val(rowData.status).trigger('change')
                 $("#license_no").val(rowData.license_no)
-                $("#license_expire_date").val(setDate(rowData.license_expire_date))
                 $("#first_aid_license").val(rowData.first_aid_license)
-                $("#first_aid_expire_date").val(setDate(rowData.first_aid_expire_date))
                 $("#role").val(rowData.role).trigger('change')
+                $("#license_expire_date").val(setDate(rowData.license_expire_date))
+                $("#first_aid_expire_date").val(setDate(rowData.first_aid_expire_date))
+                $("#date_of_birth").val(setDate(rowData.date_of_birth))
                 // $('#pass_div').hide()
 
                 window.formAction = "{{ route('update-employee') }}"
                 // $("#savebtn").hide()
                 // $("#updatebtn").show()
                 setCompliance()
-                $("#buttom_bar").attr('style', 'display:flex !important')
+                $("#compliance_tab").attr('style', 'display:list-item !important')
                 $("#addEmployee").modal("show")
-                $("#button_add_submit").css({
-                    display: "none !important"
-                });
             })
 
             $(document).on("click", "#add", function() {
                 resetValue()
+                $("#compliance_tab").attr('style', 'display:none !important')
                 $("#addEmployee").modal("show")
             })
 
@@ -497,17 +595,13 @@
                 // $('#pass_div').show()
 
                 window.formAction = "{{ route('store-employee') }}"
-                window.StepperReset()
                 // $(".timekeer-btn").html('Submit')
                 // $("#updatebtn").prop('hidden','true')
                 // $("#savebtn").prop('hidden','false')
                 // $("#savebtn").show()
                 // $("#updatebtn").hide()
-                $('#checkCompliance').prop('checked', false)
+                $('#check_compliance').prop('checked', false)
                 $('#compliance').addClass('disablediv')
-                $("#button_add_submit").css({
-                    display: "flex !important"
-                });
             }
 
         })

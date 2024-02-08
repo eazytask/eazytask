@@ -438,11 +438,6 @@
 @endsection
 
 @push('scripts')
-    {{-- <script src="{{ asset('/app-assets/velzon/libs/list.js/list.min.js') }}"></script>
-    <script src="{{ asset('/app-assets/velzon/libs/list.pagination.js/list.pagination.min.js') }}"></script>
-    <script src="{{ asset('/app-assets/velzon/js/pages/crm-companies.init.js') }}"></script>
-    <script src="{{ asset('/app-assets/velzon/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script src="{{ asset('/app-assets/velzon/js/app.js') }}"></script> --}}
     @include('components.stepper')
     @include('components.datatablescript')
     <script src="{{ asset('backend') }}/lib/sweetalert/sweetalert.min.js"></script>
@@ -681,29 +676,6 @@
         }
         .dropdown-item.del{
             cursor: pointer;
-        }
-        .buttons-columnVisibility{
-            text-align: left;
-        }
-        .buttons-columnVisibility:after {
-            content: '\2714';
-            left: 15px;
-            top: 6px;
-            position: absolute;
-            font-size: 12px;
-            display: inline-block;
-        }
-        .buttons-columnVisibility:not(.active):after{
-            display: none;
-        }
-        .buttons-columnVisibility span{
-            vertical-align:top;
-        }
-        .buttons-columnVisibility:before {
-            content: '\25a2';
-            display: inline-block;
-            font-size: 20px;
-            margin-right: 5px;
         }
 
     </style>

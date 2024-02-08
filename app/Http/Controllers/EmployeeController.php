@@ -82,14 +82,12 @@ class EmployeeController extends Controller
                 <tr>
                                     <td>" . $numbering++ . "</td>
                                     <td>
-                                        <div class='avatar bg-light-primary'>
-                                            <div class='avatar-content'>
-                                                <img class='img-fluid' src='" . 'https://api.eazytask.au/' . $row->image . "' alt=''>
+                                        <div class='d-flex align-items-center'>
+                                            <div class='flex-shrink-0'>
+                                                <img src='https://api.eazytask.au/" . $row->image . "'class='avatar-xs rounded-circle'>
                                             </div>
+                                            <div class='flex-grow-1 ms-2 name'> $row->fname  $row->mname $row->lname </div>
                                         </div>
-                                    </td>
-                                    <td>
-                                         $row->fname  $row->mname $row->lname 
                                     </td>
                                     <td>$row->email
                                     </td>
@@ -105,8 +103,15 @@ class EmployeeController extends Controller
                                         <input type='hidden' name='id' value='$row->id'>
                                         <input type='hidden' name='user_id' value='$row->user_id'>
     
-                                        <button class='edit-btn btn btn-gradient-primary mb-25' data-row='$json'><i data-feather='edit'></i></button>
-                                        <a class='btn del btn-gradient-danger text-white' data-id='$row->id'><i data-feather='trash-2'></i></a>
+                                        <div class='dropdown'>
+                                            <button class='btn btn-soft-info btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                                                <i class='ri-more-2-fill'></i>
+                                            </button>
+                                            <ul class='dropdown-menu'>
+                                                <li><button data-row='$json'  data-bs-toggle='modal' data-bs-target='#addEmployee' class='edit-btn dropdown-item'>Edit</button></li>
+                                                <li><a class='dropdown-item del' data-id='$row->id'>Delete</a></li>
+                                            </ul>
+                                        </div>
                                     </td>
     
                                 </tr>
@@ -260,7 +265,8 @@ class EmployeeController extends Controller
         }
         // $GLOBALS['data']->notify(new UserCredential($email_data));
         if ($image) {
-            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+            // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+            $basePath = "home/delete/";
             $folderPath = "images/employees/";
             $image_parts = explode(";base64,", $image);
             $image_type_aux = explode("image/", $image_parts[0]);
@@ -375,7 +381,8 @@ class EmployeeController extends Controller
                     $filename = null;
             
                     if ($image) {
-                        $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+                        // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+                        $basePath = "home/delete/";
                         $folderPath = "images/compliance/";
                         $image_parts = explode(";base64,", $image);
                         $image_type_aux = explode("image/", $image_parts[0]);
@@ -900,7 +907,8 @@ class EmployeeController extends Controller
             $img = $request->file;
             $filename = null;
             if ($img) {
-                $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+                // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+                $basePath = "home/delete/";
                 $folderPath = "images/employees/";
                 $image_parts = explode(";base64,", $img);
                 $image_type_aux = explode("image/", $image_parts[0]);
@@ -1025,14 +1033,15 @@ class EmployeeController extends Controller
                         $filename = null;
                 
                         if ($image) {
-                            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+                            // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
+                            $basePath = "home/delete/";
                             // $basePath = "/Applications/MAMP/htdocs/eazytask/public/";
                             $folderPath = "images/compliance/";
                             $image_parts = explode(";base64,", $image);
                             $image_type_aux = explode("image/", $image_parts[0]);
                             $image_type = $image_type_aux[1];
                             $image_base64 = base64_decode($image_parts[1]);
-                            $img_name = date('sihdmy') .'.'. $image_type;
+                            $img_name = uniqid().'_'.date('sihdmy') .'.'. $image_type;
                             $filename = $folderPath . $img_name;
                             Image::make($image_base64)->save($basePath.$filename);
                         }

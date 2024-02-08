@@ -1,8 +1,8 @@
 <div class="modal fade text-left p-md-1 p-0" id="addClient" tabindex="-1" aria-labelledby="myModalLabel17" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-gradient-primary">
-                <h4 class="modal-title text-white" id="myModalLabel17">Add Client</h4>
+            <div class="modal-header bg-info-subtle py-3">
+                <h5 class="modal-title" id="myModalLabel17">Add Client</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -99,7 +99,7 @@
                                                             <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
                                                             <span class="align-middle d-sm-inline-block d-none">Previous</span>
                                                         </button>
-                                                        <button type="button" class="btn btn-gradient-primary btn-next">
+                                                        <button type="button" class="btn btn-success btn-next">
                                                             <span class="align-middle d-sm-inline-block d-none">Next</span>
                                                             <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
                                                         </button>
@@ -159,7 +159,7 @@
                                                     <span class="align-middle d-sm-inline-block d-none">Cancel</span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x align-middle mr-sm-25 mr-0"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                                 </button>
-                                                <button type="button" class="btn bg-gradient-success btn-submit waves-effect waves-float waves-light">
+                                                <button type="button" class="btn bg-success btn-submit waves-effect waves-float waves-light">
                                                     <span class="align-middle d-sm-inline-block d-none">Update</span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check align-middle mr-sm-25 mr-0"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                                 </button>

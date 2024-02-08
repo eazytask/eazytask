@@ -9,7 +9,6 @@
 
 $(function () {
   'use strict';
-
   var bsStepper = document.querySelectorAll('.bs-stepper'),
     select = $('.select2'),
     horizontalWizard = document.querySelector('.horizontal-wizard-example'),
@@ -104,8 +103,7 @@ $(function () {
           
         });
 
-        console.log($form.serialize());
-
+        console.log($form.serialize);
         if (isValid) {
           if (fullFormIsValid) {
             $.ajax({

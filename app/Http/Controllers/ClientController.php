@@ -67,15 +67,15 @@ class ClientController extends Controller
                   <td>$row->cemail</td>
                   <td>$no_of_sites</td>
                   <td>
-                  <div class='dropdown'>
-                    <button class='btn btn-soft-info btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
-                      <i class='ri-more-2-fill'></i>
-                    </button>
-                    <ul class='dropdown-menu'>
-                      <li><button data-row='$json'  data-bs-toggle='modal' data-bs-target='#showModal' class='edit-btn dropdown-item' href='#'>Edit</button></li>
-                      <li><a class='dropdown-item del' url='/admin/home/client/delete/$row->id' data-id='$row->id'>Delete</a></li>
-                    </ul>
-                  </div>
+                    <div class='dropdown'>
+                      <button class='btn btn-soft-info btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                        <i class='ri-more-2-fill'></i>
+                      </button>
+                      <ul class='dropdown-menu'>
+                        <li><button data-row='$json'  data-bs-toggle='modal' data-bs-target='#showModal' class='edit-btn dropdown-item' href='#'>Edit</button></li>
+                        <li><a class='dropdown-item del' url='/admin/home/client/delete/$row->id' data-id='$row->id'>Delete</a></li>
+                      </ul>
+                    </div>
                   </td>
               </tr>
               ";

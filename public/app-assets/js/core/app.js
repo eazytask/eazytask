@@ -6,6 +6,7 @@
   Author: Pixinvent
   Author URL: hhttp://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
+console.log('working');
 window.colors = {
   solid: {
     primary: '#7367F0',
