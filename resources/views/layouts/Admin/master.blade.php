@@ -38,6 +38,10 @@
         <!-- end main content-->
     </div>
     <!-- END layout-wrapper -->
+    
+    <div>
+        @yield('pdf_generator')
+    </div>
 
     <!-- JAVASCRIPT -->
     {{-- @include('layouts.Admin.partials.scripts') --}}

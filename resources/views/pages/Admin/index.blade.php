@@ -479,7 +479,7 @@
     <script>
         let task_ids = []
         let totalTaskId = []
-
+ 
         $(document).on("click", ".taskCheckID", function() {
             if ($(this).is(':checked')) {
                 task_ids.push($(this).val())
@@ -543,10 +543,10 @@
 
             function insertThis(data) {
                 let status = ''
-                if (data.status == 'completed') {
-                    status = 'text-success'
-                } else {
+                if (data.status == 'incomplete') {
                     status = 'text-secondary'
+                } else {
+                    status = 'text-success'
                 }
                 totalTaskId.push(data.id)
 
@@ -554,7 +554,7 @@
                 <tr>
                     <td><input type="checkbox" class="taskCheckID form-check-input ms-0" value="` + data.id + `"></td>
                     <td>` + data.description + `</td>
-                    <td class="` + status + `">` + data.status.toUpperCase() + `</td>
+                    <td class="` + status + `">` + (data.status ? data.status.toUpperCase() : 'COMPLETED') + `</td>
                     <td><button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-primary" data-id="` + data.id +
                     `" data-description="` + data.description + `" data-status="` + data.status + `"><i data-feather='edit'></i></button></td>
                     
@@ -596,7 +596,6 @@
         })
 
         $('#addBtn').on('click', function() {
-            console.log("#taskDescriptionForm")
             if ($("#taskDescriptionForm").valid()) {
                 $.ajax({
                     data: $('#taskDescriptionForm').serialize(),
@@ -646,7 +645,7 @@
                 type: 'GET',
                 success: function(data) {
                     taskDescription()
-                    toastr.success('👋 seleted successfully!', 'Success')
+                    toastr.success(`👋 ${$manage === 'delete' ? 'Deleted' : 'Updated'} Successfully!`, 'Success')
                 }
             })
 

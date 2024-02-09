@@ -16,11 +16,21 @@
 
                     <div class="row g-4">
                         <div class="col-xxl-12">
-                            <label for="taskDescriptionInput" class="form-label">
+                            <label for="description" class="form-label">
                                 Description <span class="text-danger">*</span> 
                             </label>
-
-                            <input id="taskDescriptionInput" type="text" class="form-control" name="description" required>
+                            <input id="description" type="text" class="form-control" name="description" required>
+                        </div>
+                        
+                        <div class="col-xxl-12">
+                            <label for="status" class="form-label">
+                                Status
+                            </label>
+    
+                            <select class="form-control" data-choices name="status" id="status">
+                                <option value="incomplete" selected>Incomplete</option>
+                                <option value="completed">Completed</option>
+                            </select>
                         </div>
 
                         <div class="col-xxl-12">
