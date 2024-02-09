@@ -1,12 +1,10 @@
 <div class="modal fade text-left p-md-1 p-0" id="addTimeKeeper" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel17" aria-hidden="true" style="overflow: scroll;">
+    aria-labelledby="myModalLabel17" aria-hidden="true" style="overflow-y: scroll;">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-gradient-primary">
-                <h4 class="modal-title text-light" id="myModalLabel17">Roster Entry</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header bg-info-subtle py-3">
+                <h5 class="modal-title" id="myModalLabel17">Roster Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">  </button>
             </div>
             <form method="POST" id="timekeeperAddForm" data-ajax="false">
                 <input type="text" id="timepeeper_id" name="timepeeper_id" value="" hidden>
@@ -31,11 +29,11 @@
                                                 </ul>
                                             </div>
                                         @endif
-                                        <div class="row" style="margin: 0 !important;">
+                                        <div class="row">
                                             <div class="col-6 pl-25 pr-25">
                                                 <label for="">Select Venue *</label>
-                                                <div class="form-group">
-                                                    <select class="form-control select2" name="project_id"
+                                                <div class="mb-3">
+                                                    <select class="form-select select2" name="project_id"
                                                         id="project-select" aria-label="Default select example"
                                                         required>
                                                         <option value="" disabled selected hidden>Please Choose...
@@ -50,15 +48,16 @@
                                             </div>
                                             <div class="col-6 pl-25 pr-25">
                                                 <label for="email-id-column">Roster Date *</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <input type="text" id="roaster_date" name="roaster_date" required
-                                                        class="form-control format-picker" placeholder="Roster Date" />
+                                                        class="form-control format-pickers" placeholder="Roster Date" />
+                                                        <div class="picker" id="roaster_date_root"></div>
                                                 </div>
                                             </div>
 
                                             <div class="col-6 pl-25 pr-25">
                                                 <label for="email-id-column">Shift Start *</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <input type="text" disabled id="shift_start" name="shift_start"
                                                         required class="form-control pickatime-format"
                                                         placeholder="Shift Start Time" />
@@ -68,7 +67,7 @@
                                             </div>
                                             <div class="col-6 pl-25 pr-25">
                                                 <label for="email-id-column">Shift End *</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <input type="text" disabled id="shift_end" name="shift_end"
                                                         required class="form-control pickatime-format"
                                                         placeholder="Shift End Time" />
@@ -78,7 +77,7 @@
 
                                             <div class="col-4 pl-25 pr-25">
                                                 <label for="email-id-column">Duration</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <input type="text" id="duration" name="duration"
                                                         class="form-control" placeholder="Duration" id="days"
                                                         readonly="readonly" required />
@@ -87,20 +86,19 @@
 
                                             <div class="col-4 pl-25 pr-25">
                                                 <label for="email-id-column">Rate*</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <input type="number" id="rate" name="ratePerHour"
                                                         class="form-control reactive" placeholder="0" required />
                                                 </div>
                                             </div>
                                             <div class="col-4 pl-25 pr-25">
                                                 <label for="email-id-column">Amount</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <input type="text" id="amount" name="amount"
                                                         class="form-control" placeholder="0" readonly="readonly"
                                                         required />
                                                 </div>
                                             </div>
-
                                             <div class="col-md-6 pl-25 pr-25" id="singleEmployee">
 
                                                 <label for="">Select Employee *</label>
@@ -132,7 +130,7 @@
                                             </div>
                                             <div class="col-6 pl-25 pr-25 mt-auto">
                                                 <label for="">Select Job Type *</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <select class="form-control select2" name="job_type_id"
                                                         id="job" aria-label="Default select example" required>
 
@@ -149,7 +147,7 @@
 
                                             {{-- <div class="col-6 pl-25 pr-25">
                                                 <label for="">Select Roster Status *</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <select class="form-control select2" name="roaster_status_id" id="roster" aria-label="Default select example">
 
                                                         @foreach ($roaster_status as $row)
@@ -162,7 +160,7 @@
                                             </div> --}}
                                             <div class="col-6 pl-25 pr-25">
                                                 <label for="email-id-column">Remarks</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <input type="text" name="remarks" id="remarks"
                                                         class="form-control" placeholder="remarks" />
                                                 </div>
@@ -173,7 +171,7 @@
                                             <div class="col-12 pl-25 pr-25">
                                                 <hr>
                                                 <label for="email-id-column">Select Employee</label>
-                                                <div class="form-group">
+                                                <div class="mb-3">
                                                     <select name="" id="filterStatus"
                                                         class="float-right form-control">
                                                         <option value="all" selected>All Employees</option>
@@ -183,12 +181,12 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-6 pl-25 pr-25">
+                                            <div class="col-12 pl-25 pr-25">
                                                 <hr>
                                             </div>
                                             {{-- <div class="col-6 pl-25 pr-25 sing_body">
                                                     <label for="email-id-column">Sign Out</label>
-                                                    <div class="form-group">
+                                                    <div class="mb-3">
                                                         <input type="text" id="sing_out" name="sing_out" class="form-control pickatime-format sing_body" placeholder="Sign Out Time" />
                                                     </div>
                                                 </div> --}}
@@ -229,12 +227,15 @@
                     </section>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success timekeer-btn" id="addTimekeeperSubmit" disabled><i
-                            data-feather='save'></i></button>
-                    <button type="button" class="btn btn-success timekeer-btn" id="editTimekeeperSubmit" hidden><i
-                            data-feather='check'></i></button>
-                    <button type="button" class="btn btn-outline-dark" data-dismiss="modal"><i
-                            data-feather='x'></i></button>
+                    <button type="button" class="btn btn-success timekeer-btn" id="addTimekeeperSubmit" disabled>
+                        Save Changes
+                    </button>
+                    <button type="button" class="btn btn-success timekeer-btn" id="editTimekeeperSubmit" hidden>
+                        <i data-feather='check'></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                        Close
+                    </button>
                 </div>
             </form>
         </div>

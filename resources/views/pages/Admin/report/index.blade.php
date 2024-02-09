@@ -1,11 +1,7 @@
 @extends('layouts.Admin.master')
-@section('admincontent')
+@section('admin_page_content')
     <style>
-        .dt-buttons {
-            display: none !important;
-        }
-
-        #myTable {
+        #example {
             /* width: 1000px !important; */
         }
 
@@ -22,66 +18,64 @@
             cursor: pointer;
             outline: inherit;
         }
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
+        }
+
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
+        }
+        div.dt-buttons {
+            padding-right:1rem;
+        }
+        .select2-container--classic .select2-selection--single, .select2-container--default .select2-selection--single {
+            min-height: 2.458rem;
+            padding: 5px;
+            border: 1px solid #D8D6DE;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            top: 70% !important;
+        }
     </style>
 
-    <div class="col-lg-12 col-md-12 p-0">
-        <div class="card p-0">
-            <div class="container p-0">
-                <div class="card-header text-primary border-top-0 border-left-0 border-right-0">
-                    <h3 class="card-title text-primary d-inline">
-                        Roster Entry
-                    </h3>
-                    <span class="float-right">
-                        <div class=" text-center">
-                            {{-- <button class="p-50 btn">
-                                <span class="bullet mr-50" style='background:#00cfe8 !important'></span>Unscheduled
-                            </button> --}}
-                            {{-- @foreach ($roaster_status as $row)
-                                <button class="p-50 btn">
-                                    <span class="bullet mr-50"
-                                        style='background: {{ $row->color }} !important'></span>{{ $row->name }}
-                                </button>
-                            @endforeach --}}
-                        </div>
-                    </span>
+    @component('components.breadcrumb')
+        @slot('li_1')
+            Client
+        @endslot
+        @slot('title')
+            Site / Venue
+            @endslot
+            @endcomponent
+    <div class="content-header row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <button class="btn btn-info add-btn" data-bs-toggle="modal" disabled data-bs-target="#addTimeKeeper" id="add_roster">
+                            <i class="ri-add-fill me-1 align-bottom"></i>Add Roster Entry
+                        </button>
+                            @include('pages.Admin.report.modals.timeKeeperAddModal')
+
+                    </div>
                 </div>
-                <div class="card-body pb-0">
-
-                </div>
-                <div class="card-body pt-0 pb-0">
-                    <div class="row row-xs">
-                        <div class="col-12 mb-1">
-                            <button class="btn btn-default float-left" id="info" title="Show Info"><img
-                                    src="{{ url('backend/img/info.png') }}" class="img-responsive"
-                                    style="width: 35px;"></button>
-                            <button class="btn btn-default float-left" id="download" title="Download Report" disabled><img
-                                    src="{{ url('backend/img/download_icon.png') }}" class="img-responsive"
-                                    style="width: 35px;"></button>
-                            <button class="btn btn-default float-left" id="addTimekeeperModal" title="Add Employee"><img
-                                    src="{{ url('backend/img/user_add.png') }}" class="img-responsive"
-                                    style="width: 35px;"></button>
-
-                            <input type="text" id="search_date" name="search_date"
-                                class="form-control format-pickers form-control-sm float-right text-center bg-light-info"
-                                placeholder="dd-mm-yyyy" style="width:135px">
-                            <span class="font-weight-bolder  mt-25 mr-25 text-capitalize float-right">Search a date:</span>
-                            <span class="float-right container-picker">
-
-                            </span>
-
-                        </div>
-                        <div class="col-12 text-center">
-
-                            <!-- <div id="editor"> -->
-
-                            <button type="button" class="btn bg-light-primary pt-50 pb-50 mt-25" id="prev"><i
-                                    data-feather='arrow-left'></i></button>
-                            <button type="button" class="btn bg-light-primary pt-50 pb-50 mt-25"
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <div class="flex-grow-1 text-center">
+                            <button type="button" class="btn bg-light-secondary pt-50 pb-50 mt-25" id="prev"><i
+                                data-feather='arrow-left'></i></button>
+                            <button type="button" class="btn bg-light-secondary pt-50 pb-50 mt-25"
                                 id="currentWeek">{{ \Carbon\Carbon::now()->startOfWeek()->format('d M, Y') }} -
                                 {{ \Carbon\Carbon::now()->endOfWeek()->format('d M, Y') }}</button>
-                            <button type="button" class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" id="next"><i
+                            <button type="button" class="btn bg-light-secondary  pt-50 pb-50 mr-50 mt-25" id="next"><i
                                     data-feather='arrow-right'></i></button>
-                            <button type="button" class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" id="publishAll"><i
+                            <button type="button" class="btn bg-light-secondary pt-50 pb-50 mr-50 mt-25" id="publishAll"><i
                                     data-feather='calendar' class="mr-50"></i>Publish All</button>
                             {{-- <button type="button" disabled class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" --}}
                             {{-- id="copyWeek"><i data-feather='copy' class="mr-50"></i>Copy All</button> --}}
@@ -109,87 +103,158 @@
                                     @endforeach
                                 </select>
                             </button>
-                            <!-- </div> -->
-
                         </div>
-
-                        @include('pages.Admin.report.modals.timeKeeperAddModal')
                     </div>
                 </div>
             </div>
-
-            <div class="row" id="table-hover-animation">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="container">
-
-                            <div class="table-responsive">
-
-                                <div class="mt-2 total-display p-25 pb-75 pt-75 bg-light-primary font-weight-bold border-primary rounded"
-                                    id="info_label" style="margin-bottom: -46px; width: 308px; display:none;">
-                                    <span class="mr-1" id="total_hours"></span>
-                                    <span class="" id="total_amount"></span>
-                                </div>
-                                <table id="myTable" class="myTable table table-bordered table-striped ">
-                                    <thead>
-                                        <tr>
-                                            <th>Employee Name</th>
-                                            <th>Monday</th>
-                                            <th>Tuesday</th>
-                                            <th>Wednesday</th>
-                                            <th>Thursday</th>
-                                            <th>Friday</th>
-                                            <th>Saturday</th>
-                                            <th>Sunday</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tBody">
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-
         </div>
+        <!--end col-->
+        <div class="col-xxl-9">
+            <div class="card" id="client_list">
+                <div class="card-body">
+                    <div>
+                        <div class="table-responsive mb-3">
+                            <table id="example" class="example table table-bordered table-striped ">
+                                <thead>
+                                    <tr>
+                                        <th>Employee Name</th>
+                                        <th>Monday</th>
+                                        <th>Tuesday</th>
+                                        <th>Wednesday</th>
+                                        <th>Thursday</th>
+                                        <th>Friday</th>
+                                        <th>Saturday</th>
+                                        <th>Sunday</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tBody">
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
 
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!--end card-->
+        </div>
     </div>
 
-    <!-- <script type="text/javascript">
-        $.ajaxSetup({
-            headers: {
-                'csrftoken': '{{ csrf_token() }}'
-            }
-        });
-    </script> -->
     @push('scripts')
+        @include('components.datatablescript')
+        @include('components.stepper')
+        @include('components.select2')
         <script type="text/javascript"></script>
         <script>
+        $(document).ready(function(){    
+            const dataTableTitle = 'Roster Entry Report';
+            const dataTableOptions = {
+                dom: 'Bfrtip',
+                paging: false,
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        fade: 0,
+                    },
+                    {
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle,
+                    },
+                    {
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle,
+                    },
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle,
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible',
+                        },
+                        title: dataTableTitle,
+                    }
+                ],
+                initComplete: function() {
+                    let table = this.api();
+                    let search = `
+                        <div class="btn bg-light-secondary btn-sm d-inline-block font-weight-bold rounded" id="info_label" >
+                            <span class="mr-1" id="total_hours"></span>
+                            <span class="" id="total_amount"></span>
+                        </div>
+                        <div class="search-box d-inline-block">                
+                            <input type="text" class="form-control form-control-sm search" placeholder="Search for company...">
+                            <i class="ri-search-line search-icon"></i>
+                        </div>`;
+                    $('#example_filter').html(search);
+
+                    $('.search').on('keyup', function(){
+                        table.search( this.value ).draw();
+                    });
+                },
+                autoWidth: false, //step 1
+                columnDefs: [
+                    // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
+                    {
+                        width: '125px',
+                        targets: 1
+                    }, //step 2, column 2 out of 4
+                    {
+                        width: '125px',
+                        targets: 2
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 3
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 4
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 5
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 6
+                    }, //step 2, column 3 out of 4
+                    {
+                        width: '125px',
+                        targets: 7
+                    }, //step 2, column 3 out of 4
+                ]
+                // "bDestroy": true
+            }
             let ids = []
             let info = null
             let reload;
 
-            var containerSelector = '.container-picker';
+
 
             // Initialize the date picker
-            var picker = $('.format-pickers').pickadate({
-                format: 'dd-mm-yyyy',
-                container: containerSelector,
-            }).pickadate('picker');
+
+
 
             $(document).on("click", "#checkAllID", function() {
                 let remainingCheckboxes = 9999999;
@@ -211,13 +276,12 @@
             //show imployee by status
             function showImployees(status, info) {
                 // eventToUpdate = info;
-
                 ids = []
                 totalId = []
                 $('#checkAllID').prop('checked', false)
                 // event_id = info.extendedProps.id
                 let employees = info.employees
-
+                
                 let rows = ''
                 $.each(employees, function(index, employee) {
                     if (status == 'available') {
@@ -242,15 +306,13 @@
                         employeeId = employee.id
                     }
 
-                    rows += `
-                        <tr>
+                    rows += `<tr>
                             <td><input type="checkbox" class="checkID" value="` + employeeId +
                         `" ` + checkbox_status + `></td>
                             <td>` + (employee.fname || '') + ' ' + (employee.mname || '') + ' ' + (employee.lname ||
                             '') + `</td>
                             <td>` + employee.contact_number + `</td>
-                        </tr>
-            `
+                        </tr>`;
                 }
                 if (totalId == 0) {
                     $("#checkAllID").prop('disabled', true)
@@ -367,9 +429,6 @@
                 ev.preventDefault();
                 var data = ev.dataTransfer.getData("text");
                 var timekeeper_id = ev.dataTransfer.getData("timekeeper_id");
-                // console.log(timekeeper_id)
-                // console.log(emp_id)
-                // console.log(date)
                 ev.currentTarget.appendChild(document.getElementById(data));
 
                 $.ajax({
@@ -516,7 +575,6 @@
             })
 
             $('#project-select').on('change', function() {
-                console.log('project')
                 filterEmployee()
                 if ($(this).val()) {
                     $('#inducted').prop('disabled', false)
@@ -526,11 +584,9 @@
             })
 
             $('#filterStatus').on('change', function() {
-
-                console.log('filter')
                 filterEmployee()
             })
-
+            filterEmployee();
             function filterEmployee() {
                 $.ajax({
                     url: '/admin/home/filter/employee',
@@ -544,7 +600,6 @@
                         'shift_end': $("#shift_end").val(),
                     },
                     success: function(data) {
-                        // console.log(data)
                         info = data;
                         showImployees($('#filterStatus').val(), info)
                         let html = '<option value="">please choose...</option>'
@@ -575,8 +630,8 @@
                 setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
                     .addClass('modal-stack'));
             });
-
-            $(document).on("click", "#addTimekeeperModal", function() {
+            $('#add_roster').removeAttr('disabled');
+            $(document).on("click", "#add_roster", function() {
                 resetData()
                 $("#project-select").val("").trigger('change');
                 $("#editTimekeeperSubmit").prop("hidden", true)
@@ -630,7 +685,6 @@
 
             function roasterEndTimeInit() {
                 $("#shift_end").change(function() {
-                    console.log('end')
                     filterEmployee()
                     allCalculation()
                 });
@@ -640,7 +694,6 @@
 
             function roasterStartTimeInit() {
                 $("#shift_start").change(function() {
-                    console.log('start')
                     filterEmployee()
                     if ($(this).val()) {
                         $("#shift_end").removeAttr("disabled")
@@ -652,10 +705,15 @@
                 });
             }
             roasterStartTimeInit()
+            
+            // var containerSelector = '#roaster_date_root';
+            var picker = $('.format-pickers').pickadate({
+                format: 'dd-mm-yyyy',
+                // container: containerSelector,
+            }).pickadate('picker');
 
             const initDatePicker = () => {
                 $("#roaster_date").change(function() {
-                    console.log('roster date')
                     filterEmployee()
                     if ($(this).val()) {
                         $("#shift_start").removeAttr("disabled")
@@ -770,14 +828,13 @@
                         'search_date': search_date,
                     },
                     success: function(data) {
-                        console.log(data);
-                        // $("#myTable").DataTable();
+                        // $("#example").DataTable();
                         if (data.search_date) {
                             $("#search_date").val(moment(data.search_date).format('DD-MM-YYYY'))
                         } else {
                             $("#search_date").val('')
                         }
-                        $('#myTable').DataTable().clear().destroy();
+                        $('#example').DataTable().clear().destroy();
                         $('#tBody').html(data.data);
                         $('#wrapper_print').empty();
 
@@ -786,36 +843,35 @@
                                 return;
 
                             $('#wrapper_print').append(`
-                        <div class="card-header bg-primary m-1 p-1">
-                            <h6 id="print_client" class="text-uppercase text-light">Client Name: ${data.client}</h6>
-                            <h6 id="print_project" class="text-uppercase text-light">Venue Name: ${element.pName}</h6>
-                            <h6 id="print_hours" class="text-light">Total Hours: ${data.final_hours[element.id]}</h6>
-                            <h6 id="print_amount" class="text-light">Total Amount: ${data.final_amount[element.id]}$</h6>
-                        </div>
-                        <div class="container">
-                            <div class="">
-                                <table class="table-bordered text-center" id="printTable" style='width:100%'>
-                                    <thead>
-                                        <tr>
-                                            <th style='width:10%'>Employee Name</th>
-                                            <th style='width:12%'>Monday</th>
-                                            <th style='width:12%'>Tuesday</th>
-                                            <th style='width:12%'>Wednesday</th>
-                                            <th style='width:12%'>Thursday</th>
-                                            <th style='width:12%'>Friday</th>
-                                            <th style='width:12%'>Saturday</th>
-                                            <th style='width:12%'>Sunday</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="print_tBody">
-                                        ${data.report[element.id]}
-                                    </tbody>
+                                <div class="card-header bg-primary m-1 p-1">
+                                    <h6 id="print_client" class="text-uppercase text-light">Client Name: ${data.client}</h6>
+                                    <h6 id="print_project" class="text-uppercase text-light">Venue Name: ${element.pName}</h6>
+                                    <h6 id="print_hours" class="text-light">Total Hours: ${data.final_hours[element.id]}</h6>
+                                    <h6 id="print_amount" class="text-light">Total Amount: ${data.final_amount[element.id]}$</h6>
+                                </div>
+                                <div class="container">
+                                    <div class="">
+                                        <table class="table-bordered text-center" id="printTable" style='width:100%'>
+                                            <thead>
+                                                <tr>
+                                                    <th style='width:10%'>Employee Name</th>
+                                                    <th style='width:12%'>Monday</th>
+                                                    <th style='width:12%'>Tuesday</th>
+                                                    <th style='width:12%'>Wednesday</th>
+                                                    <th style='width:12%'>Thursday</th>
+                                                    <th style='width:12%'>Friday</th>
+                                                    <th style='width:12%'>Saturday</th>
+                                                    <th style='width:12%'>Sunday</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="print_tBody">
+                                                ${data.report[element.id]}
+                                            </tbody>
 
-                                </table>
-                            </div>
-                        </div>
-                        `)
-                        });
+                                        </table>
+                                    </div>
+                                </div>
+                            `)});
 
                         // $('#print_tBody').html(data.report);
                         // $('#print_client').html('Client: ' + data.client);
@@ -823,50 +879,8 @@
                         // $('#print_hours').html('Total Hours: ' + data.hours);
                         // $('#print_amount').html('Total Amount: $' + data.amount);
                         $('#print_current_week').text('Date: ' + data.week_date)
-                        // $("#myTable").DataTable();
-                        $('#myTable').DataTable({
-                            dom: 'Bfrtip',
-                            paging: false,
-                            buttons: [
-                                'copyHtml5',
-                                'excelHtml5',
-                                'csvHtml5',
-                                'pdfHtml5'
-                            ],
-                            autoWidth: false, //step 1
-                            columnDefs: [
-                                // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
-                                {
-                                    width: '125px',
-                                    targets: 1
-                                }, //step 2, column 2 out of 4
-                                {
-                                    width: '125px',
-                                    targets: 2
-                                }, //step 2, column 3 out of 4
-                                {
-                                    width: '125px',
-                                    targets: 3
-                                }, //step 2, column 3 out of 4
-                                {
-                                    width: '125px',
-                                    targets: 4
-                                }, //step 2, column 3 out of 4
-                                {
-                                    width: '125px',
-                                    targets: 5
-                                }, //step 2, column 3 out of 4
-                                {
-                                    width: '125px',
-                                    targets: 6
-                                }, //step 2, column 3 out of 4
-                                {
-                                    width: '125px',
-                                    targets: 7
-                                }, //step 2, column 3 out of 4
-                            ]
-                            // "bDestroy": true
-                        });
+                        // $("#example").DataTable();
+                        $('#example').DataTable(dataTableOptions);
                         feather.replace({
                             width: 14,
                             height: 14
@@ -887,8 +901,6 @@
                         }, 300000);
                     },
                     error: function(err) {
-                        console.log(err)
-
                         clearInterval(reload)
                         reload = setInterval(() => {
                             searchNow('current')
@@ -940,6 +952,7 @@
                 });
 
             }
+        });
         </script>
     @endpush
 @endsection

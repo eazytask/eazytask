@@ -14,7 +14,8 @@
 <script src="{{asset('app-assets/vendors/js/pickers/pickadate/picker.date.js')}}"></script>
 <script src="{{asset('app-assets/vendors/js/pickers/pickadate/picker.time.js')}}"></script>
 <script src="{{asset('app-assets/vendors/js/pickers/pickadate/legacy.js')}}"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="{{asset('app-assets/js/scripts/forms/pickers/jquery.timepicker.min.js')}}"></script>
+<script src="{{ asset('app-assets/js/scripts/forms/pickers/form-pickers.js') }}"></script>
 {{-- toastr --}}
 <script type="text/javascript" src="{{ asset('backend') }}/lib/toastr/toastr.min.js"></script>
 <script>
