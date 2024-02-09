@@ -265,8 +265,7 @@ class EmployeeController extends Controller
         }
         // $GLOBALS['data']->notify(new UserCredential($email_data));
         if ($image) {
-            // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
-            $basePath = "home/delete/";
+            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
             $folderPath = "images/employees/";
             $image_parts = explode(";base64,", $image);
             $image_type_aux = explode("image/", $image_parts[0]);
@@ -381,8 +380,7 @@ class EmployeeController extends Controller
                     $filename = null;
             
                     if ($image) {
-                        // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
-                        $basePath = "home/delete/";
+                        $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                         $folderPath = "images/compliance/";
                         $image_parts = explode(";base64,", $image);
                         $image_type_aux = explode("image/", $image_parts[0]);
@@ -907,8 +905,7 @@ class EmployeeController extends Controller
             $img = $request->file;
             $filename = null;
             if ($img) {
-                // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
-                $basePath = "home/delete/";
+                $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                 $folderPath = "images/employees/";
                 $image_parts = explode(";base64,", $img);
                 $image_type_aux = explode("image/", $image_parts[0]);
@@ -1033,8 +1030,7 @@ class EmployeeController extends Controller
                         $filename = null;
                 
                         if ($image) {
-                            // $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
-                            $basePath = "home/delete/";
+                            $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                             // $basePath = "/Applications/MAMP/htdocs/eazytask/public/";
                             $folderPath = "images/compliance/";
                             $image_parts = explode(";base64,", $image);

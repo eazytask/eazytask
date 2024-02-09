@@ -42,12 +42,12 @@
 
     @component('components.breadcrumb')
         @slot('li_1')
-            Client
+            Roster
         @endslot
         @slot('title')
-            Site / Venue
-            @endslot
-            @endcomponent
+            Roster Entry
+        @endslot
+    @endcomponent
     <div class="content-header row">
         <div class="col-lg-12">
             <div class="card">
