@@ -2,6 +2,12 @@
 @section('title') Timesheet @endsection
 @section('css')
     <link rel="stylesheet" href="{{ URL::asset('app-assets/velzon/libs/gridjs/theme/mermaid.min.css') }}">
+
+    <style>
+        .gridjs-search {
+            float: right !important;
+        }
+    </style>
 @endsection
 
 @php
@@ -12,11 +18,11 @@
     $fromRoaster="Start Date";
     $toRoaster = "End Date";
     
-    if(Session::get('fromRoaster')) {
+    if (Session::get('fromRoaster')) {
         $fromRoaster = \Carbon\Carbon::parse(Session::get('fromRoaster'))->format('d-m-Y');
     }
 
-    if(Session::get('toRoaster')) {
+    if (Session::get('toRoaster')) {
         $toRoaster = \Carbon\Carbon::parse(Session::get('toRoaster'))->format('d-m-Y');
     }
 @endphp
@@ -28,43 +34,166 @@
     @endcomponent
 
     <div class="card">
-        <div class="card-body p-5">
+        <div class="card-body p-3">
             <div class="row g-4">
                 <div class="col-xxl-12">
                     <form action="{{ route('search-timekeeper') }}" method="POST" id="dates_form">
                         @csrf
-                        <div class="row g-4">
+                        <div class="row g-2">
                             <div class="col-xxl-5 col-md-5">
-                                <label class="form-label mb-0">Start Date:</label>
-                                <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-deafult-date="{{ $fromRoaster }}" required name="start_date">
+                                <input type="text" name="start_date" required class="form-control disable-picker" placeholder="{{$fromRoaster}}" />
                             </div>
             
                             <div class="col-xxl-5 col-md-5">
-                                <label class="form-label mb-0">End Date:</label>
-                                <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-deafult-date="{{ $toRoaster }}" required name="end_date">
+                                <input type="text" name="end_date" required class="form-control disable-picker" placeholder="{{$toRoaster}}" />
                             </div>
             
-                            <div class="col-xxl-2 col-md-2">
-                                <label class="form-label mb-0">Search:</label>
+                            <div class="col-xxl-1 col-md-1">
                                 <div>
                                     <button type="submit" class="btn btn-sm btn-primary w-100" id="btn_search"><i data-feather='search'></i></button>
                                 </div>
+                            </div>
+
+                            <div class="col-xxl-1 col-md-1">
+                                <button type="button" id="createShedule" class="btn btn-sm btn-primary w-100">
+                                    <i data-feather='plus'></i>
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
 
                 <div class="col-xxl-12">
-                    <div id="table-gridjs"></div>
+                    <div id="table-grid-wrapper"></div>
+                    <table id="table-grid" class="table table-borderless table-hover table-nowrap align-middle mb-0">
+                        <thead class="table-light">
+                            <tr class="text-muted">
+                                <th width='150px'>#</th>
+                                <th width='150px'>Employee</th>
+                                <!-- <th>Client</th> -->
+                                <th width='150px'>Venue</th>
+                                <th width='150px'>Roster Date</th>
+                                <th width='150px'>Shift Start</th>
+                                <th width='150px'>Shift End</th>
+                                <th width='150px'>Duration</th>
+                                <th width='150px'>Rate</th>
+                                <th width='150px'>Amount</th>
+                                <th width='150px'>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($timekeepers as $k => $row)
+                                @php
+                                    $json = json_encode($row->toArray(), false);
+                                @endphp
+                                <tr>
+                                    <td class="p-0 pl-50">
+                                        @if($row->is_approved)
+                                            <i data-feather="{{ $row->payment_status ? 'dollar-sign' : 'check-circle'}}" class="text-primary"></i>
+                                        @else
+                                            <span class="pl-1 ml-25"></span>
+                                        @endif
+                                        {{ $k + 1 }}
+                                    </td>
+
+                                    <td>
+                                        {{ $row->employee->fname }} {{ $row->employee->mname }} {{ $row->employee->lname }}
+                                    </td>
+
+                                    <td>
+                                        @if (isset($row->project->pName))
+                                            {{ $row->project->pName }}
+                                        @else
+                                            Null
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($row->roaster_date)->format('d-m-Y')}}
+                                    </td>
+
+                                    <td>{{ getTime($row->shift_start) }}</td>
+
+                                    <td>{{ getTime($row->shift_end) }}</td>
+
+                                    <td>{{ $row->duration }}</td>
+
+                                    <td>{{ $row->ratePerHour }}</td>
+
+                                    <td>{{ $row->amount }}</td>
+
+                                    <td>
+                                        <div class="d-flex justify-content-start align-items-center gap-2">
+                                            @if($row->is_approved == 0)
+                                            <button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-info" data-employee="{{$row->employee}}" data-row="{{ $json }}"><i data-feather='edit'></i></button>
+                                            
+                                            <button data-copy="true" class="edit-btn btn btn-sm btn-info" data-row="{{ $json }}">
+                                                <i data-feather='copy'></i>
+                                            </button>
+                                            
+                                            <button class="edit-btn btn btn-sm btn-danger text-white" >
+                                                <a class="del text-white" url="/admin/home/new/timekeeper/delete/{{ $row->id }}"><i data-feather='trash-2'></i></a>
+                                            </button>
+                                            
+                                            @else
+                                                <button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-primary" data-employee="{{$row->employee}}" data-row="{{ $json }}"><i data-feather='eye'></i></button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div>
+        @include('pages.Admin.timekeeper.modals.newtimeKeeperAddModal')
     </div>
 @endsection
 
 @push('scripts')
     <script src="{{ URL::asset('app-assets/velzon/libs/prismjs/prism.js') }}"></script>
     <script src="{{ URL::asset('app-assets/velzon/libs/gridjs/gridjs.umd.js') }}"></script>
+    <script src="{{ asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js') }}"></script>
+
+    <script>
+        $(document).on("click", "#emloyee_wise", function() {
+            const element = document.getElementById('employee_pdf').innerHTML;
+            var opt = {
+                filename: 'unschedule-employee.pdf',
+                html2canvas: {
+                    scale: 2
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'tabloid',
+                    orientation: 'portrait'
+                }
+            };
+    
+            html2pdf().set(opt).from(element).save();
+        })
+        $(document).on("click", "#client_wise", function() {
+            const element = document.getElementById('client_pdf').innerHTML;
+            var opt = {
+                filename: 'unschedule-client.pdf',
+                html2canvas: {
+                    scale: 2
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'tabloid',
+                    orientation: 'portrait'
+                }
+            };
+    
+            html2pdf().set(opt).from(element).save();
+        })
+    </script>
 
     <script>
         $(function() {
@@ -103,37 +232,49 @@
             })
 
             function filterEmployee() {
-                $.ajax({
-                    url: '/admin/home/filter/employee',
-                    type: 'get',
-                    dataType: 'json',
-                    data: {
-                        'filter': $('input[name="filter_employee"]:checked').val(),
-                        'project_id': $("#project-select").val(),
-                        'roster_date': $("#roaster_date").val(),
-                        'shift_start': $("#shift_start").val(),
-                        'shift_end': $("#shift_end").val(),
-                    },
-                    success: function(data) {
-                        // console.log(data)
-                        let html = '<option value="">please choose...</option>'
-                        if (emp = window.current_emp) {
-                            html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp.mname) ? emp.mname : '') + "" + emp.lname + "</option>"
-                        }
-                        jQuery.each(data.employees, function(i, val) {
-                            html += "<option value='" + val.id + "'>" + val.fname + " " + ((val.mname) ? val.mname : '') + "" + val.lname + "</option>"
-                        })
-                        // console.log(html)
-                        $('#employee_id').html(html)
-                        if (data.notification) {
-                            toastr.success(data.notification)
-                        }
-                    },
-                    error: function(err) {
-                        console.log(err)
+            $.ajax({
+                url: '/admin/home/filter/employee',
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    'filter': $('input[name="filter_employee"]:checked').val(),
+                    'project_id': $("#project-select").val(),
+                    'roster_date': $("#roaster_date").val(),
+                    'shift_start': $("#shift_start").val(),
+                    'shift_end': $("#shift_end").val(),
+                },
+                success: function(data) {
+                    // console.log(data)
+                    if (data.notification) {
+                        toastr.success(data.notification);
                     }
-                });
-            }
+
+                    // Destroy existing Choices instance
+                    let employeeSelect = $('#employee_id').get(0);
+                    if (employeeSelect && employeeSelect.choices) {
+                        employeeSelect.choices.destroy();
+                    }
+
+                    // Clear existing options
+                    $('#employee_id').empty();
+
+                    // Add new options without replacing existing ones
+                    jQuery.each(data.employees, function(i, val) {
+                        let optionHtml = "<option value='" + val.id + "'>" + val.fname + " " + ((val.mname) ? val.mname : '') + "" + val.lname + "</option>";
+                        $('#employee_id').append(optionHtml);
+                    });
+
+                    // Reinitialize Choices
+                    new Choices(employeeSelect);
+
+                    // You can also trigger the 'change' event if needed
+                    // $('#employee_id').trigger('change');
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
 
             $(document).on("click", ".del", function() {
                 swal({
@@ -284,6 +425,7 @@
                 $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
                 $("#shift_start").val($.time(rowData.shift_start))
                 $("#shift_end").val($.time(rowData.shift_end))
+                console.log(rowData.project_id);
                 $("#project-select").val(rowData.project_id).trigger('change');
 
                 // $("#shift_start").val($.time(rowData.shift_start))
@@ -353,70 +495,11 @@
     </script>
 
     <script>
-        const timeKeepers = '<?php echo $timekeepers; ?>';
-
-        console.log(timeKeepers)
-
-        if (document.getElementById("table-gridjs")) {
-                new gridjs.Grid({
-                columns: [{
-                        name: 'ID',
-                        width: '80px',
-                        formatter: (function (cell) {
-                            return gridjs.html('<span class="fw-semibold">' + cell + '</span>');
-                        })
-                    },
-                    {
-                        name: 'Name',
-                        width: '150px',
-                    },
-                    {
-                        name: 'Email',
-                        width: '220px',
-                        formatter: (function (cell) {
-                            return gridjs.html('<a href="">' + cell + '</a>');
-                        })
-                    },
-                    {
-                        name: 'Position',
-                        width: '250px',
-                    },
-                    {
-                        name: 'Company',
-                        width: '180px',
-                    },
-                    {
-                        name: 'Country',
-                        width: '180px',
-                    },
-                    {
-                        name: 'Actions',
-                        width: '150px',
-                        formatter: (function (cell) {
-                            return gridjs.html("<a href='#' class='text-reset text-decoration-underline'>" +
-                                "Details" +
-                                "</a>");
-                        })
-                    },
-                ],
-                pagination: {
-                    limit: 5
-                },
-                sort: true,
-                search: true,
-                data: [
-                    ["01", "Jonathan", "jonathan@example.com", "Senior Implementation Architect", "Hauck Inc", "Holy See"],
-                    ["02", "Harold", "harold@example.com", "Forward Creative Coordinator", "Metz Inc", "Iran"],
-                    ["03", "Shannon", "shannon@example.com", "Legacy Functionality Associate", "Zemlak Group", "South Georgia"],
-                    ["04", "Robert", "robert@example.com", "Product Accounts Technician", "Hoeger", "San Marino"],
-                    ["05", "Noel", "noel@example.com", "Customer Data Director", "Howell - Rippin", "Germany"],
-                    ["06", "Traci", "traci@example.com", "Corporate Identity Director", "Koelpin - Goldner", "Vanuatu"],
-                    ["07", "Kerry", "kerry@example.com", "Lead Applications Associate", "Feeney, Langworth and Tremblay", "Niger"],
-                    ["08", "Patsy", "patsy@example.com", "Dynamic Assurance Director", "Streich Group", "Niue"],
-                    ["09", "Cathy", "cathy@example.com", "Customer Data Director", "Ebert, Schamberger and Johnston", "Mexico"],
-                    ["10", "Tyrone", "tyrone@example.com", "Senior Response Liaison", "Raynor, Rolfson and Daugherty", "Qatar"],
-                ]
-            }).render(document.getElementById("table-gridjs"));
-        }
+        new gridjs.Grid({ 
+            from: document.getElementById('table-grid'),
+            pagination: { limit: 10 },
+            sort: true,
+            search: true,
+        }).render(document.getElementById('table-grid-wrapper'));
     </script>
 @endpush
