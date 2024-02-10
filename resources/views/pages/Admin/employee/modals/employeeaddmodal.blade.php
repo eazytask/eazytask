@@ -128,8 +128,8 @@
                                                             </div>
                                                             <div class="col-md-6 col-6">
                                                                 <label for="email-id-column">Select Role *</label>
-                                                                <div class="mb-3">
-                                                                    <select class="form-control select2"
+                                                                <div class="mb-3 select2-error-handle">
+                                                                    <select class="form-select select2"
                                                                         name="role" id="role"
                                                                         aria-label="Default select example" required>
                                                                         <option value="" disabled selected
@@ -159,7 +159,7 @@
 
                                                             <div class="col-md-6 col-6">
                                                                 <label for="email-id-column">Select Status *</label>
-                                                                <div class="mb-3">
+                                                                <div class="mb-3 select2-error-handle">
                                                                     <select class="form-control select2"
                                                                         name="status" id="status" required>
                                                                         <option value="" disabled selected

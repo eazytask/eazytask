@@ -334,7 +334,7 @@ class ReportController extends Controller
 
                     $unique_id = 'drag' . $timekeeper->id;
                     if (!$request->project) {
-                        $project_name = "<span class='font-small-2 font-weight-bolder'>" . $timekeeper->project->pName . "</span><br>";
+                        $project_name = "<span class='font-small-2 fw-bold'>" . $timekeeper->project->pName . "</span><br>";
                     } else {
                         $project_name = '';
                     }
@@ -350,10 +350,10 @@ class ReportController extends Controller
 
                     $has_app = $timekeeper->payment_status || $timekeeper->is_approved ? true : false;
                     //mb-50 dan border-radius
-                    $val = "<div id='$unique_id' $colors draggable='" . ($has_app ? 'false' : 'true') . "' ondragstart='drag(event,$timekeeper->id)' class='font-weight-bolder text-uppercase shadow p-50 roster mt-50'>
-                    <div class='dropdown-items-wrapper'>
-                    <i data-feather='more-vertical' id='dropdownMenuLink1' role='button' data-toggle='dropdown' aria-expanded='false' style='margin-left:-5px;' class='float-right' " . ($has_app ? 'hidden' : '') . "></i>
-                    <i data-feather='" . ($timekeeper->payment_status ? 'dollar-sign' : 'check-circle') . "' class='float-right' " . ($has_app ? '' : 'hidden') . "></i>
+                    $val = "<div id='$unique_id' $colors draggable='" . ($has_app ? 'false' : 'true') . "' ondragstart='drag(event,$timekeeper->id)' class='fw-bold text-uppercase shadow p-2 roster mt-3'>
+                    <div class='dropdown' $has_app>
+                    <i data-feather='more-vertical' id='dropdownMenuLink1' role='button' data-bs-toggle='dropdown' aria-expanded='false' style='margin-left:-5px;' class='float-end' " . ($has_app ? 'hidden' : '') . "></i>
+                    <i  data-feather='" . ($timekeeper->payment_status ? 'dollar-sign' : 'check-circle') . "' class='float-end ff' " . ($has_app ? '' : 'hidden') . "></i>
                     <div class='dropdown-menu dropdown-menu-right' aria-labelledby='dropdownMenuLink1'>
                         <a class='dropdown-item editBtn' href='javascript:void(0)' data-employee='" . $timekeeper->employee . "' data-copy='false' data-row='$json'>
                             <i data-feather='edit' class='mr-25'></i>
@@ -526,7 +526,7 @@ class ReportController extends Controller
     
                         $unique_id = 'drag' . $timekeeper->id;
                         if (!$request->project) {
-                            $project_name = "<span class='font-small-2 font-weight-bolder'>" . $timekeeper->project->pName . "</span><br>";
+                            $project_name = "<span class='font-small-2 fw-bold'>" . $timekeeper->project->pName . "</span><br>";
                         } else {
                             $project_name = '';
                         }
@@ -535,7 +535,7 @@ class ReportController extends Controller
                         
                     
                         //THIS IS FOR REPORT DOWNLOAD
-                        $val_r = "<div class='text-uppercase mt-50 p-50 roster' $colors>$project_name<span class='font-small-2 font-weight-bolder'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $timekeeper->job_type->name . "</span></div>
+                        $val_r = "<div class='text-uppercase mt-3 p-2 roster' $colors>$project_name<span class='font-small-2 fw-bold'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $timekeeper->job_type->name . "</span></div>
                         <br>
                         <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . $timekeeper->roaster_status->name . "</b></span>";
     

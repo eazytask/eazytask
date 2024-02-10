@@ -26,6 +26,19 @@
             pointer-events: none;
             opacity: 0.4;
         }
+        .select2-error-handle > div > div {
+            display: flex;
+            flex-direction: column;
+        }
+        .select2-error-handle > div > div > select {
+            order: 2;
+        }
+        .select2-error-handle > div > div > span {
+            order: 1;
+        }
+        .select2-error-handle label.error{
+            order: 3;
+        }
     </style>
     <div class="content-header row">
         <div class="col-lg-12">
@@ -112,132 +125,6 @@
         </div>
     </div>
     <!-- end page title -->
-@endsection
-
-@section('')
-    @include('sweetalert::alert')
-    <style>
-        .img-fluid {
-            height: 100% !important;
-        }
-
-        .dt-buttons .buttons-copy {
-            display: none;
-        }
-
-        .dt-buttons .buttons-csv {
-            display: none;
-        }
-
-        .dt-buttons .buttons-excel {
-            display: none;
-        }
-
-        .dt-buttons .buttons-pdf {
-            display: none;
-        }
-
-        .dt-buttons .buttons-print {
-            display: none;
-        }
-
-        /* Custom styles for DataTables search and length menu alignment */
-        .dataTables_wrapper .dataTables_filter {
-            float: right;
-            margin-left: 10px;
-        }
-
-        .dataTables_wrapper .dataTables_length {
-            float: left;
-            margin-right: 20px;
-        }
-    </style>
-    <div class="content-header row">
-        <div class="content-header-left col-md-9 col-12 mb-2">
-            <div class="row breadcrumbs-top">
-                <div class="col-12">
-                    <h2 class="content-header-title float-left mb-0">Employees</h2>
-                    <div class="breadcrumb-wrapper">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a
-                                    href="/admin/home/{{ Auth::user()->company_roles->first()->company->id }}">Home</a>
-                            </li>
-                            <li class="breadcrumb-item active">Employee Lists
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <!-- Basic Tables start -->
-    <!-- Table Hover Animation start -->
-    <div class="row" id="table-hover-animation">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                </div>
-                {{-- <center> --}}
-
-                <div class="card-body">
-                    <div class="container row row-xs">
-                        <div class="col mt-md-0">
-                            <button class="btn btn-default float-left" id="download" title="Download Report"><img
-                                    src="{{ url('backend/img/download_icon.png') }}" class="img-responsive"
-                                    style="width: 35px;"></button>
-                            <button class="btn btn-default float-left" id="add" title="Add Employee"><img
-                                    src="{{ url('backend/img/user_add.png') }}" class="img-responsive"
-                                    style="width: 35px;"></button>
-                            @include('pages.Admin.employee.modals.employeeaddmodal')
-                        </div>
-
-                        <div class="col-lg-2">
-                            <select class="form-control select2" name="status_id" id="status_id">
-                                <option>Select Status</option>
-                                <option value="0">All</option>
-                                <option value="1">Active</option>
-                                <option value="2">Inactive</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-1 col-lg-1">
-                            <button type="button" onclick="handleStatusChange(this)"
-                                class="btn btn btn-outline-primary btn-block" id="btn_search"><i
-                                    data-feather='search'></i></button>
-                        </div>
-                    </div>
-                </div>
-                {{-- </center> --}}
-
-                <div class="container">
-
-                    <div class="table-responsive">
-                        <table id="example" class="table table-hover-animation table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Image</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Number</th>
-                                    <th>License No</th>
-                                    <th>First Aid</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="empBody">
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- Table head options end -->
-    <!-- Basic Tables end -->
 @endsection
 
 @push('scripts')

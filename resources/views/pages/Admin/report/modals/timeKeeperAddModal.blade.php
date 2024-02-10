@@ -29,10 +29,10 @@
                                                 </ul>
                                             </div>
                                         @endif
-                                        <div class="row">
+                                        <div class="row mb-3">
                                             <div class="col-6 pl-25 pr-25">
-                                                <label for="">Select Venue *</label>
-                                                <div class="mb-3">
+                                                <div class="mt-0">
+                                                    <label for="">Select Venue *</label>
                                                     <select class="form-select select2" name="project_id"
                                                         id="project-select" aria-label="Default select example"
                                                         required>
@@ -47,8 +47,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-6 pl-25 pr-25">
-                                                <label for="email-id-column">Roster Date *</label>
-                                                <div class="mb-3">
+                                                <div class="mt-0">
+                                                    <label for="email-id-column">Roster Date *</label>
                                                     <input type="text" id="roaster_date" name="roaster_date" required
                                                         class="form-control format-pickers" placeholder="Roster Date" />
                                                         <div class="picker" id="roaster_date_root"></div>
@@ -56,8 +56,8 @@
                                             </div>
 
                                             <div class="col-6 pl-25 pr-25">
-                                                <label for="email-id-column">Shift Start *</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
+                                                    <label for="email-id-column">Shift Start *</label>
                                                     <input type="text" disabled id="shift_start" name="shift_start"
                                                         required class="form-control pickatime-format"
                                                         placeholder="Shift Start Time" />
@@ -66,8 +66,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-6 pl-25 pr-25">
-                                                <label for="email-id-column">Shift End *</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
+                                                    <label for="email-id-column">Shift End *</label>
                                                     <input type="text" disabled id="shift_end" name="shift_end"
                                                         required class="form-control pickatime-format"
                                                         placeholder="Shift End Time" />
@@ -76,8 +76,8 @@
                                             </div>
 
                                             <div class="col-4 pl-25 pr-25">
-                                                <label for="email-id-column">Duration</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
+                                                    <label for="email-id-column">Duration</label>
                                                     <input type="text" id="duration" name="duration"
                                                         class="form-control" placeholder="Duration" id="days"
                                                         readonly="readonly" required />
@@ -85,15 +85,15 @@
                                             </div>
 
                                             <div class="col-4 pl-25 pr-25">
-                                                <label for="email-id-column">Rate*</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
+                                                    <label for="email-id-column">Rate*</label>
                                                     <input type="number" id="rate" name="ratePerHour"
                                                         class="form-control reactive" placeholder="0" required />
                                                 </div>
                                             </div>
                                             <div class="col-4 pl-25 pr-25">
-                                                <label for="email-id-column">Amount</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
+                                                    <label for="email-id-column">Amount</label>
                                                     <input type="text" id="amount" name="amount"
                                                         class="form-control" placeholder="0" readonly="readonly"
                                                         required />
@@ -101,36 +101,36 @@
                                             </div>
                                             <div class="col-md-6 pl-25 pr-25" id="singleEmployee">
 
-                                                <label for="">Select Employee *</label>
-                                                <div class="demo-inline-spacing mb-1" style="margin-top: -16px;">
-                                                    <div class="custom-control custom-control-primary custom-radio">
-                                                        <input type="radio" id="available" name="filter_employee"
-                                                            class="custom-control-input" value="available" checked />
-                                                        <label class="custom-control-label"
-                                                            for="available">Available</label>
+                                                <div class="mt-3">
+                                                    <label for="">Select Employee *</label>
+                                                    <div class="demo-inline-spacing mb-1" style="margin-top: -16px;">
+                                                        <div class="custom-control custom-control-primary custom-radio">
+                                                            <input type="radio" id="available" name="filter_employee"
+                                                                class="custom-control-input" value="available" checked />
+                                                            <label class="custom-control-label"
+                                                                for="available">Available</label>
+                                                        </div>
+                                                        <div class="custom-control custom-control-success custom-radio">
+                                                            <input type="radio" id="inducted" name="filter_employee"
+                                                                class="custom-control-input" value="inducted" disabled />
+                                                            <label class="custom-control-label"
+                                                                for="inducted">Inducted</label>
+                                                        </div>
+                                                        <div class="custom-control custom-control-info custom-radio">
+                                                            <input type="radio" id="all" name="filter_employee"
+                                                                class="custom-control-input" value="all" />
+                                                            <label class="custom-control-label" for="all">All</label>
+                                                        </div>
                                                     </div>
-                                                    <div class="custom-control custom-control-success custom-radio">
-                                                        <input type="radio" id="inducted" name="filter_employee"
-                                                            class="custom-control-input" value="inducted" disabled />
-                                                        <label class="custom-control-label"
-                                                            for="inducted">Inducted</label>
-                                                    </div>
-                                                    <div class="custom-control custom-control-info custom-radio">
-                                                        <input type="radio" id="all" name="filter_employee"
-                                                            class="custom-control-input" value="all" />
-                                                        <label class="custom-control-label" for="all">All</label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
                                                     <select class="form-control select2" name="employee_ids[]"
-                                                        id="employee_id" aria-label="Default select example" required>
+                                                        id="employee_id" aria-label="Default select example" required >
 
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="col-6 pl-25 pr-25 mt-auto">
-                                                <label for="">Select Job Type *</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
+                                                    <label for="">Select Job Type *</label>
                                                     <select class="form-control select2" name="job_type_id"
                                                         id="job" aria-label="Default select example" required>
 
@@ -147,7 +147,7 @@
 
                                             {{-- <div class="col-6 pl-25 pr-25">
                                                 <label for="">Select Roster Status *</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
                                                     <select class="form-control select2" name="roaster_status_id" id="roster" aria-label="Default select example">
 
                                                         @foreach ($roaster_status as $row)
@@ -159,8 +159,8 @@
                                                 </div>
                                             </div> --}}
                                             <div class="col-6 pl-25 pr-25">
-                                                <label for="email-id-column">Remarks</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
+                                                    <label for="email-id-column">Remarks</label>
                                                     <input type="text" name="remarks" id="remarks"
                                                         class="form-control" placeholder="remarks" />
                                                 </div>
@@ -170,8 +170,8 @@
 
                                             <div class="col-12 pl-25 pr-25">
                                                 <hr>
-                                                <label for="email-id-column">Select Employee</label>
-                                                <div class="mb-3">
+                                                <div class="mt-3">
+                                                    <label for="email-id-column">Select Employee</label>
                                                     <select name="" id="filterStatus"
                                                         class="float-right form-control">
                                                         <option value="all" selected>All Employees</option>
@@ -186,7 +186,7 @@
                                             </div>
                                             {{-- <div class="col-6 pl-25 pr-25 sing_body">
                                                     <label for="email-id-column">Sign Out</label>
-                                                    <div class="mb-3">
+                                                    <div class="mt-3">
                                                         <input type="text" id="sing_out" name="sing_out" class="form-control pickatime-format sing_body" placeholder="Sign Out Time" />
                                                     </div>
                                                 </div> --}}
@@ -231,7 +231,7 @@
                         Save Changes
                     </button>
                     <button type="button" class="btn btn-success timekeer-btn" id="editTimekeeperSubmit" hidden>
-                        <i data-feather='check'></i>
+                        Update Entry
                     </button>
                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                         Close
