@@ -11,8 +11,88 @@
         $toRoaster = \Carbon\Carbon::parse(Session::get('toRoaster'))->format('d-m-Y');
     }
 @endphp
+@section('admin_page_content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            Settings
+        @endslot
+        @slot('title')
+            Activity Log
+        @endslot
+    @endcomponent
+    <div class="card">
+        <div class="card-header">
+            <div class=" pb-0">
+                <form action="{{ route('log.search') }}" method="POST" id="dates_form">
+                    @csrf
+                    <div class="row g-2">
+                        <div class="col-lg-4">
+                            <input type="text" name="start_date" required class="form-control format-picker" placeholder="From" value="{{ $fromRoaster }}" />
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="text" name="end_date" required class="form-control format-picker" placeholder="To" value="{{ $toRoaster }}" />
+                        </div>
+                        <div class="col-md-2 col-lg-3">
+                            <button type="submit" class="btn btn btn-info" id="btn_search">
+                                Search Activity Log
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="myTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <!-- <th>#</th> -->
+                            <th>Time</th>
+                            <th>Activity</th>
+                            <th>Details</th>
+                            <th>Action By</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tBody">
+                        @foreach ($activity as $k => $row)
+                            @php
+                                if ($row->event == 'deleted') {
+                                    $text_color = 'text-danger';
+                                } elseif ($row->event == 'created') {
+                                    $text_color = 'text-success';
+                                } else {
+                                    $text_color = 'text-primary';
+                                }
 
-@section('admincontent')
+                                $update = \Carbon\Carbon::parse($row->updated_at)->format('d,M,Y H:i');
+                            @endphp
+
+                            <tr class="{{ $text_color }}">
+                                <!-- <td>{{ $k + 1 }}</td> -->
+                                <td class="align-middle" data-sort="{{ $update }}">{{ $update }}</td>
+                                <td class="align-middle">{{ $row->description }}</td>
+                                <td class="align-middle">
+                                    <div style="width: 320px;" class="m-auto">
+                                        @if ($row->event == 'deleted')
+                                            {{ json_encode($row->properties['old']) }}
+                                        @else
+                                            {{ json_encode($row->properties['attributes']) }}
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="align-middle">{{ $row->causer->name ?? '' }} {{ $row->causer->mname ?? '' }}
+                                    {{ $row->causer->lname ?? '' }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('')
     <div class="col-lg-12 col-md-12">
         <div class="row" id="table-hover-animation">
             <div class="col-12">
@@ -94,16 +174,27 @@
 
         </div>
     </div>
-    </div>
-    </div>
-
-    </div>
-
+@endsection
+@push('scripts')
+    @include('components.datatablescript')
     <script>
         $(document).ready(function() {
             $('#myTable').DataTable({
                 pageLength: 50,
-                aaSorting: []
+                aaSorting: [],
+                initComplete: function() {
+                    let table = this.api();
+                    let search = `
+                        <div class="mb-1 search-box d-inline-block">                
+                            <input type="text" class="form-control form-control-sm search" placeholder="Search for Activity Log">
+                            <i class="ri-search-line search-icon"></i>
+                        </div>`;
+                    $('#myTable_filter').html(search);
+
+                    $('.search').on('keyup', function(){
+                        table.search( this.value ).draw();
+                    });
+                },
             });
 
             // $('#myTable').DataTable({
@@ -124,4 +215,4 @@
             // });
         })
     </script>
-@endsection
+@endpush

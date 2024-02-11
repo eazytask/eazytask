@@ -1,11 +1,9 @@
 <div class="modal fade text-left p-md-1 p-0" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-gradient-primary">
-                <h4 class="modal-title text-white" id="myModalLabel17">Add Job-Type</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header bg-info-subtle py-3">
+                <h5 class="modal-title" id="myModalLabel17">Add Job-Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <section id="multiple-column-form">
@@ -41,7 +39,7 @@
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="savebtn">Add</button>
                 <button type="submit" class="btn btn-primary" id="updatebtn">Update</button>
-                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Discard</button>
+                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Discard</button>
             </div>
               </form>
         </div>
