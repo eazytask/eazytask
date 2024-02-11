@@ -104,7 +104,7 @@
                             </div>
 
                             <div class="col-lg-4 col-6 mt-2">
-                                <select class="form-control select2" name="employee_id" id="employee_id">
+                                <select class="form-control select2 employee_id" name="employee_id" id="employee">
                                     <option value="">Select Employee</option>
                                     @foreach ($employees as $emp)
                                         <option value="{{ $emp->id }}"
