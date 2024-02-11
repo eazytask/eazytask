@@ -26,7 +26,7 @@
 @section('admin_page_content')
     @component('components.breadcrumb')
         @slot('li_1') Timesheet @endslot
-        @slot('title') Dashboard @endslot
+        @slot('title') Add Timesheet @endslot
     @endcomponent
 
     <div class="card">
@@ -35,10 +35,14 @@
                 <div class="col-xxl-12">
                     <form action="{{ route('search-timekeeper') }}" method="POST" id="dates_form">
                         @csrf
-                        <div class="d-flex justify-content-start align-items-start gap-2">
-                            <input type="text" name="start_date" required class="form-control disable-picker" placeholder="{{$fromRoaster}}" />
+                        <div class="d-flex flex-md-nowrap flex-wrap justify-content-start align-items-start gap-2">
+                            <div class="w-100">
+                                <input type="text" name="start_date" required class="form-control disable-picker" placeholder="{{$fromRoaster}}" />
+                            </div>
             
-                            <input type="text" name="end_date" required class="form-control disable-picker" placeholder="{{$toRoaster}}" />
+                            <div class="w-100">
+                                <input type="text" name="end_date" required class="form-control disable-picker" placeholder="{{$toRoaster}}" />
+                            </div>
             
                             <button type="submit" class="btn btn-sm btn-primary" id="btn_search"><i data-feather='search'></i></button>
         

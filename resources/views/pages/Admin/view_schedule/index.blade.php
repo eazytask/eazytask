@@ -66,15 +66,6 @@
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="card p-0">
-                <div class="card-header text-primary border-top-0 border-left-0 border-right-0">
-                    <h3 class="card-title text-primary d-inline">
-                        Select Roster Dates
-                    </h3>
-                    <span class="float-right">
-                        <i class="fa fa-chevron-up clickable"></i>
-                    </span>
-                </div>
-
                 <div class="card-body">
                     <form action="{{ route('view-search') }}" method="POST" id="dates_form">
                         @csrf
@@ -142,7 +133,7 @@
 
                             <div class="offset-md-10 offset-lg-9 offset-6 col-md-2 col-lg-3 col-6 mt-2">
                                 <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-info float-end" id="btn_search">
+                                    <button type="submit" class="btn btn-primary float-end" id="btn_search">
                                         {{-- <i data-feather='search'></i> --}}
                                         Search Timesheet
                                     </button>
@@ -181,11 +172,6 @@
                         <div class="col-sm-12">
                             <div id="accordionWrapa10" role="tablist" aria-multiselectable="true">
                                 <div class="card collapse-icon m-0">
-
-                                    <div class="card-header">
-
-
-                                    </div>
                                     <div class="card-body pl-0 pr-0 text-center">
 
                                         <div class="collapse-shadow" id="accordion">
