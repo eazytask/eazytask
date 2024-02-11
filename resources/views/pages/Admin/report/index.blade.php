@@ -220,7 +220,7 @@
                         <span class="" id="total_amount"></span>
                     </div>
                     <div class="search-box d-inline-block">                
-                        <input type="text" class="form-control form-control-sm search" placeholder="Search for company...">
+                        <input type="text" class="form-control form-control-sm search" placeholder="Search for Roster Entries">
                         <i class="ri-search-line search-icon"></i>
                     </div>`;
                 $('#example_filter').html(search);

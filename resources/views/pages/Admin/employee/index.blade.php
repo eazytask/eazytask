@@ -46,7 +46,7 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center flex-wrap gap-2">
                         <div class="flex-grow-1">
-                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addEmployee" id="add">
+                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addEmployee" id="add" disabled>
                                 <i class="ri-add-fill me-1 align-bottom"></i>Add Employee
                             </button>
                             @include('pages.Admin.employee.modals.employeeaddmodal')
@@ -241,7 +241,7 @@
 
     <script>
         $(document).ready(function() {
-
+            $('#add').removeAttr('disabled');
             encodeImageFileAsURL = function(element) {
                 var file = element.files[0];
                 var reader = new FileReader();

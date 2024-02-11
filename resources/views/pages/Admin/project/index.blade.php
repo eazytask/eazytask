@@ -15,7 +15,7 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center flex-wrap gap-2">
                         <div class="flex-grow-1">
-                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addProject" id="add">
+                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addProject" id="add" disabled>
                                 <i class="ri-add-fill me-1 align-bottom"></i>Add Client Site/Venue
                             </button>
                             @include('pages.Admin.project.modals.projectAddModal')
@@ -155,7 +155,7 @@
                 let table = this.api();
             
                 let search = `<div class="search-box">
-                                <input type="text" class="form-control form-control-sm search" placeholder="Search for company...">
+                                <input type="text" class="form-control form-control-sm search" placeholder="Search for Venue/Site">
                                 <i class="ri-search-line search-icon"></i>
                             </div>`;
                 $('#example_filter').html(search);
@@ -192,6 +192,7 @@
         }
 
         $(document).ready(function() {
+            $('#add').removeAttr('disabled');
             $('#clientName').wrap('<div class="position-relative"></div>').select2({
                 placeholder: 'Select Client',
                 dropdownParent: $('#clientName').parent(),

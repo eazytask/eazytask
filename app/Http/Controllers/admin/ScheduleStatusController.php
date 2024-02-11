@@ -204,15 +204,15 @@ class ScheduleStatusController extends Controller
                     // }
 
                     if (!$request->project) {
-                        $project_name = "<span class='font-small-2 font-weight-bolder'>" . $timekeeper->project->pName . "</span><br>";
+                        $project_name = "<span class='font-small-2 fw-bold'>" . $timekeeper->project->pName . "</span><br>";
                     } else {
                         $project_name = '';
                     }
 
                     $has_app = $timekeeper->payment_status || $timekeeper->is_approved ? true : false;
-                    $val = "<div $colors  class='text-uppercase shadow p-50 roster mt-50 editBtn font-weight-bolder " . $status . "' data-copy='false' data-row='$json'>
-                    <i data-feather='" . ($timekeeper->payment_status ? 'dollar-sign' : 'check-circle') . "' class='float-right' " . ($has_app ? '' : 'hidden') . "></i>
-                    <div>$project_name" . "<span class='font-small-2 font-weight-bold'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2'>" . $timekeeper->job_type->name . "<br>" . $symbol . "</span></div></div>
+                    $val = "<div $colors  class='text-uppercase shadow p-2 roster mt-3 editBtn fw-bold " . $status . "' data-copy='false' data-row='$json'>
+                    <i data-feather='" . ($timekeeper->payment_status ? 'dollar-sign' : 'check-circle') . "' class='float-end' " . ($has_app ? '' : 'hidden') . "></i>
+                    <div>$project_name" . "<span class='font-small-2 fw-bold'>" . Carbon::parse($timekeeper->shift_start)->format('H:i') . "-" . Carbon::parse($timekeeper->shift_end)->format('H:i') . " (" . round($timekeeper->duration, 2) . ")</span><br>" . "<span class='font-small-2'>" . $timekeeper->job_type->name . "<br>" . $symbol . "</span></div></div>
                     <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . $text . "</b></span>";
 
                     if ($roaster_day == 'Mon') {

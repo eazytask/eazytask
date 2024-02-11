@@ -29,12 +29,6 @@
                                                         <h5 class="nav-titl nav-tab-position m-0">Compliance</h5>
                                                     </a>
                                                 </li>
-                                                <li class="nav-item">
-                                                    <a href="#custom-hover-reviews" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
-                                                        <i class="ri-star-half-line nav-icon nav-tab-position"></i>
-                                                        <h5 class="nav-titl nav-tab-position m-0">Reviews</h5>
-                                                    </a>
-                                                </li>
                                             </ul>
                                         </div>
                                         <div class="card-body">
@@ -390,10 +384,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="tab-pane" id="custom-hover-reviews">
-                                                    <h6>Descirptions</h6>
-                                                    description
                                                 </div>
                                             </div>
                                         </div><!-- end card-body -->
