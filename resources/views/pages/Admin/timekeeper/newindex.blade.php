@@ -30,25 +30,25 @@
     @endcomponent
 
     <div class="card">
-        <div class="card-header">
-            <form action="{{ route('search-timekeeper') }}" method="POST" id="dates_form">
-                @csrf
-                <div class="d-flex justify-content-start align-items-start gap-2">
-                    <input type="text" name="start_date" required class="form-control disable-picker" placeholder="{{$fromRoaster}}" />
-    
-                    <input type="text" name="end_date" required class="form-control disable-picker" placeholder="{{$toRoaster}}" />
-    
-                    <button type="submit" class="btn btn-sm btn-primary" id="btn_search"><i data-feather='search'></i></button>
-
-                    <button type="button" id="createShedule" class="btn btn-sm btn-primary">
-                        <i data-feather='plus'></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-
         <div class="card-body p-3">
             <div class="row g-4">
+                <div class="col-xxl-12">
+                    <form action="{{ route('search-timekeeper') }}" method="POST" id="dates_form">
+                        @csrf
+                        <div class="d-flex justify-content-start align-items-start gap-2">
+                            <input type="text" name="start_date" required class="form-control disable-picker" placeholder="{{$fromRoaster}}" />
+            
+                            <input type="text" name="end_date" required class="form-control disable-picker" placeholder="{{$toRoaster}}" />
+            
+                            <button type="submit" class="btn btn-sm btn-primary" id="btn_search"><i data-feather='search'></i></button>
+        
+                            <button type="button" id="createShedule" class="btn btn-sm btn-primary">
+                                <i data-feather='plus'></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div class="col-xxl-12">
                     <div class="table-responsive">
                         <table id="data-table" class="table nowrap dt-responsive align-middle table-hover table-bordered" style="width:100%">
