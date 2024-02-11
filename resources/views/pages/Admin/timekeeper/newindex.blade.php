@@ -51,7 +51,7 @@
             <div class="row g-4">
                 <div class="col-xxl-12">
                     <div class="table-responsive">
-                        <table id="data-table" class="display table table-bordered" style="width:100%">
+                        <table id="data-table" class="table nowrap dt-responsive align-middle table-hover table-bordered" style="width:100%">
                             <thead class="table-light">
                                 <tr class="text-muted">
                                     <th width='150px'>#</th>
