@@ -1,8 +1,9 @@
 @extends('layouts.Admin.master')
 @push('styles')
+
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css') }}">
 @endpush
-<meta name="csrf-token" content="{{ csrf_token() }}">
+
 
 @php
 
@@ -22,10 +23,47 @@
     //pdf
     $all_roaster = [];
 @endphp
-@section('admincontent')
-
+@section('admin_page_content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            Timesheet
+        @endslot
+        @slot('title')
+            View Timesheet
+        @endslot
+    @endcomponent
+    <style>
+        .collapse-icon [data-bs-toggle='collapse']:after {
+            position: absolute;
+            top: 1em;
+            right: 1rem;
+            margin-top: -8px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 14px;
+            width: 14px;
+            height: 11px;
+            content: '';
+            transition: all 300ms linear 0s;
+        }
+        @media (max-width: 768px) {
+            .collapse-icon [data-bs-toggle='collapse']:after {
+                margin-left: -12px;
+            }
+        }
+        .collapse-icon [aria-expanded='false']:after {
+            transform: rotate(-180deg);
+        }
+        [class*='collapse-'] .card .card-header {
+            cursor: pointer;
+            padding: 1rem 2.8rem 1rem 1rem;
+        }
+        #accordion > .card{
+            margin: 0;
+        }
+    </style>
+    
     <div class="row">
-
         <div class="col-lg-12 col-md-12">
             <div class="card p-0">
                 <div class="card-header text-primary border-top-0 border-left-0 border-right-0">
@@ -38,21 +76,20 @@
                 </div>
 
                 <div class="card-body">
-
                     <form action="{{ route('view-search') }}" method="POST" id="dates_form">
                         @csrf
-                        <div class="row row-xs">
-                            <input type="hidden" name="type_print_excel" id="type_print_excel">
-                            <div class="col-lg-4 pl-25 pr-25 mt-1">
+                        <div class="row row-xs g-2">
+                            <div class="col-lg-4 mt-2">
+                                <input type="hidden" name="type_print_excel" id="type_print_excel">
                                 <input type="text" name="start_date" required class="form-control format-picker"
                                     placeholder="Start Date" value="{{ $start_date }}" />
                             </div>
-                            <div class="col-lg-4 pl-25 pr-25 mt-1">
+                            <div class="col-lg-4 mt-2">
                                 <input type="text" name="end_date" required class="form-control format-picker"
                                     placeholder="End Date" value="{{ $end_date }}" />
                             </div>
 
-                            <div class="col-lg-4 col-6 pl-25 pr-25 mt-1">
+                            <div class="col-lg-4 col-6 mt-2">
                                 <select class="form-control select2" name="schedule" id="roaster_type">
                                     <option value="">Select Schedule</option>
                                     <option value="All" {{ Session::get('schedule') == 'All' ? 'selected' : '' }}>All
@@ -66,7 +103,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-lg-4 col-6 pl-25 pr-25 mt-1">
+                            <div class="col-lg-4 col-6 mt-2">
                                 <select class="form-control select2" name="employee_id" id="employee_id">
                                     <option value="">Select Employee</option>
                                     @foreach ($employees as $emp)
@@ -77,7 +114,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-lg-4 col-6 pl-25 pr-25 mt-1">
+                            <div class="col-lg-4 col-6 mt-2">
                                 <select class="form-control select2" name="project_id" id="project_id">
                                     <option value="">Select Venue</option>
                                     @foreach ($projects as $project)
@@ -88,8 +125,8 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-lg-4 col-6 pl-25 pr-25 mt-1">
-                                <select class="form-control" name="sort_by" id="sort_by">
+                            <div class="col-lg-4 col-6 mt-2">
+                                <select class="form-control select2" name="sort_by" id="sort_by">
                                     <option value="">Group By</option>
                                     <option {{ Session::get('sort_by') == 'Employee' ? 'selected' : '' }} value="Employee">
                                         Employee</option>
@@ -103,25 +140,29 @@
                                 </select>
                             </div>
 
-                            <div class="offset-md-10 offset-lg-9 offset-6 col-md-2 col-lg-3 col-6 pl-25 pr-25 mt-1">
-                                <button type="submit" class="btn btn btn-outline-primary btn-block" id="btn_search"><i
-                                        data-feather='search'></i></button>
+                            <div class="offset-md-10 offset-lg-9 offset-6 col-md-2 col-lg-3 col-6 mt-2">
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-info float-end" id="btn_search">
+                                        {{-- <i data-feather='search'></i> --}}
+                                        Search Timesheet
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="col-lg-12">
 
                                 <h4>Download</h4>
                                 <div class="dt-buttons btn-group">
-                                    <button class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" type="button"
+                                    <button class="btn btn-outline-secondary buttons-pdf buttons-html5 me-1" type="button"
                                         onclick="pdf_preview('full_report')"><span>Full
                                             PDF</span></button>
-                                    <button class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" type="button"
+                                    <button class="btn btn-outline-secondary buttons-pdf buttons-html5 me-1" type="button"
                                         onclick="pdf_preview('summery_report')"><span>Summary
                                             PDF</span></button>
-                                    <a class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" href="#"
+                                    <a class="btn btn-outline-secondary buttons-pdf buttons-html5 me-1" href="#"
                                         onclick="fullExcelPrint();">
                                         Full Excel</a>
-                                    <a class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" href="#"
+                                    <a class="btn btn-outline-secondary buttons-pdf buttons-html5 me-1" href="#"
                                         onclick="summaryExcelPrint();">
                                         Summary Excel</a>
                                     <!-- <button class="btn btn-outline-secondary buttons-pdf buttons-html5 ml-25" type="button" onclick="email_modal()"><span>Send Mail</span></button> -->
@@ -141,7 +182,7 @@
                             <div id="accordionWrapa10" role="tablist" aria-multiselectable="true">
                                 <div class="card collapse-icon m-0">
 
-                                    <div class="card-header pl-75 pr-75">
+                                    <div class="card-header">
 
 
                                     </div>
@@ -155,21 +196,20 @@
 
 
                                             <div class="card">
-                                                <div id="heading11" class="bg-primary card-header text-white pb-0">
+                                                <div id="heading11" class="bg-primary text-white py-2">
                                                     <span class="lead collapse-title" style="width:100%">
                                                         <div class="row" style="width:100%; margin: 4px">
 
                                                             <div class="col-4">
-                                                                <p>{{ Session::get('sort_by') ? Session::get('sort_by') : 'Employee' }}
-                                                                </p>
+                                                                {{ Session::get('sort_by') ? Session::get('sort_by') : 'Employee' }}
                                                             </div>
 
                                                             <div class="col-4">
-                                                                <p>Total Hours</p>
+                                                                Total Hours
                                                             </div>
 
                                                             <div class="col-4">
-                                                                <p>Total Amount</p>
+                                                                Total Amount
                                                             </div>
                                                         </div>
                                                     </span>
@@ -231,12 +271,12 @@
                                                     $all_roaster[$i]['total_amount'] = $amount;
                                                 @endphp
 
-                                                <div class="card p-25">
+                                                <div class="card p-2">
                                                     <div id="heading11"
-                                                        class="card-header card-click pb-0 pl-0 pr-0 {{ $timekeeper->id == $curr_emp ? 'curr' : '' }}"
+                                                        class="card-click card-header p-0 position-relative {{ $timekeeper->id == $curr_emp ? 'curr' : '' }}"
                                                         totalIds="{{ $un_approved_ids->implode(',') }}"
-                                                        data-toggle="collapse" role="button"
-                                                        data-target="#accordion{{ $timekeeper->id }}"
+                                                        data-bs-toggle="collapse" role="button"
+                                                        data-bs-target="#accordion{{ $timekeeper->id }}"
                                                         aria-expanded="false" aria-controls="accordion10">
                                                         <span class="lead collapse-title" style="width:100%">
                                                             <div class="row" style="width:100%; margin: 4px">
@@ -258,41 +298,41 @@
                                                     </div>
 
                                                     <div id="accordion{{ $timekeeper->id }}" role="tabpanel"
-                                                        data-parent="#accordion" aria-labelledby="heading11"
+                                                        data-bs-parent="#accordion" aria-labelledby="heading11"
                                                         class="collapse">
                                                         <div class="card-body p-0">
 
                                                             <!-- <div> -->
                                                             <button
-                                                                class="btn btn-gradient-primary float-left m-50 taskBtn approve"
+                                                                class="btn btn-info float-start m-3 taskBtn approve"
                                                                 url="/admin/home/timekeeper/approve/" disabled>
                                                                 <i data-feather="check-circle" class=""></i>
                                                                 Approve
                                                             </button>
                                                             <!-- </div> -->
-                                                            <div class="col-12 pl-25 pr-25 table-responsive">
+                                                            <div class="col-12 table-responsive">
                                                                 <table class="table table-bordered table-striped"
                                                                     id="target_table">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th><input type="checkbox"
-                                                                                    class="mt-75 taskcheckAllID"
+                                                                            <th class="align-middle"><input type="checkbox"
+                                                                                    class="mt-4 taskcheckAllID"
                                                                                     onclick="taskcheckAllID()"></th>
-                                                                            <th>Employee Name</th>
-                                                                            <th>Venue</th>
-                                                                            <th>Roster Date</th>
-                                                                            <th>Shift Start</th>
-                                                                            <th>Shift End</th>
-                                                                            <th>Sign In</th>
-                                                                            <th>Sign Out</th>
-                                                                            <th>Rate</th>
-                                                                            <th>App. Start</th>
-                                                                            <th>App. End</th>
-                                                                            <th>App. Rate</th>
-                                                                            <th>App. Duration</th>
-                                                                            <th>App. Amount</th>
-                                                                            <th>Details</th>
-                                                                            <th>Action</th>
+                                                                            <th class="align-middle">Employee Name</th>
+                                                                            <th class="align-middle">Venue</th>
+                                                                            <th class="align-middle">Roster Date</th>
+                                                                            <th class="align-middle">Shift Start</th>
+                                                                            <th class="align-middle">Shift End</th>
+                                                                            <th class="align-middle">Sign In</th>
+                                                                            <th class="align-middle">Sign Out</th>
+                                                                            <th class="align-middle">Rate</th>
+                                                                            <th class="align-middle">App. Start</th>
+                                                                            <th class="align-middle">App. End</th>
+                                                                            <th class="align-middle">App. Rate</th>
+                                                                            <th class="align-middle">App. Duration</th>
+                                                                            <th class="align-middle">App. Amount</th>
+                                                                            <th class="align-middle">Details</th>
+                                                                            <th class="align-middle">Action</th>
                                                                         </tr>
                                                                     </thead>
 
@@ -304,7 +344,7 @@
                                                                             @endphp
                                                                             <tr
                                                                                 class="{{ $row->roaster_type == 'Unschedueled' ? 'bg-light-primary' : '' }} {{ $row->sing_in ? '' : 'bg-light-danger' }}">
-                                                                                <td class="p-0">
+                                                                                <td class="p-0 align-middle">
                                                                                     @if ($row->is_approved)
                                                                                         <i data-feather="{{ $row->payment_status ? 'dollar-sign' : 'check-circle' }}"
                                                                                             class="text-primary"></i>
@@ -315,62 +355,75 @@
                                                                                     @endif
                                                                                     {{ $k + 1 }}
                                                                                 </td>
-                                                                                <td>
+                                                                                <td class="align-middle">
                                                                                     {{ $row->employee->fname }}
                                                                                 </td>
-                                                                                <td>
+                                                                                <td class="align-middle">
                                                                                     @if (isset($row->project->pName))
                                                                                         {{ $row->project->pName }}
                                                                                     @else
                                                                                         Null
                                                                                     @endif
                                                                                 </td>
-                                                                                <td>
+                                                                                <td class="align-middle">
                                                                                     {{ \Carbon\Carbon::parse($row->roaster_date)->format('d-m-Y') }}
                                                                                 </td>
-                                                                                <td>
+                                                                                <td class="align-middle">
                                                                                     {{ getTime($row->shift_start) }}
                                                                                 </td>
-                                                                                <td>
+                                                                                <td class="align-middle">
                                                                                     {{ getTime($row->shift_end) }}
                                                                                 </td>
-                                                                                <td class="">
+                                                                                <td class="align-middle">
                                                                                     {{ $row->sing_in ? getTime($row->sing_in) : 'unspecified' }}
                                                                                 </td>
-                                                                                <td class="">
+                                                                                <td class="align-middle">
                                                                                     {{ $row->sing_out ? getTime($row->sing_out) : 'unspecified' }}
                                                                                 </td>
-                                                                                <td>
+                                                                                <td class="align-middle">
                                                                                     {{ $row->ratePerHour }}
                                                                                 </td>
-                                                                                <td class="">
+                                                                                <td class="align-middle">
                                                                                     {{ getTime($row->Approved_start_datetime) }}
                                                                                 </td>
-                                                                                <td class="">
+                                                                                <td class="align-middle">
                                                                                     {{ getTime($row->Approved_end_datetime) }}
                                                                                 </td>
-                                                                                <td>{{ $row->app_rate }}</td>
-                                                                                <td>{{ $row->app_duration }}</td>
-                                                                                <td>{{ $row->app_amount }}</td>
-                                                                                <td>
+                                                                                <td class="align-middle">{{ $row->app_rate }}</td>
+                                                                                <td class="align-middle">{{ $row->app_duration }}</td>
+                                                                                <td class="align-middle">{{ $row->app_amount }}</td>
+                                                                                <td class="align-middle">
                                                                                     {{ $row->remarks }}
                                                                                 </td>
 
-                                                                                <td>
+                                                                                <td class="align-middle">
                                                                                     <div class="p-50">
                                                                                         @if ($row->is_approved == 0)
-                                                                                            <button
-                                                                                                class="edit-btn btn btn-gradient-primary mb-25"
-                                                                                                data-row="{{ $json }}"><i
-                                                                                                    data-feather='edit'></i></button>
-                                                                                            <a class="btn btn-gradient-danger del text-white"
-                                                                                                url="/admin/home/view/schedule/delete/{{ $row->id }}"><i
-                                                                                                    data-feather='trash-2'></i></a>
+
+                                                                                            <div class="dropdown">
+                                                                                                <button class="btn btn-soft-info btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                                                    <i class="ri-more-2-fill"></i>
+                                                                                                </button>
+                                                                                                <ul class="dropdown-menu">
+                                                                                                    <li>
+                                                                                                        <button class="dropdown-item edit-btn" data-row="{{ $json }}">Edit</button>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <a class="dropdown-item del" url="/admin/home/view/schedule/delete/{{ $row->id }}">Delete</a>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            </div>
                                                                                         @else
-                                                                                            <button
-                                                                                                class="edit-btn btn btn-gradient-primary mb-25"
-                                                                                                data-row="{{ $json }}"><i
-                                                                                                    data-feather='eye'></i></button>
+                                                                                            <div class="dropdown">
+                                                                                                <button class="btn btn-soft-info btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                                                    <i class="ri-more-2-fill"></i>
+                                                                                                </button>
+                                                                                                <ul class="dropdown-menu">
+                                                                                                    <li>
+                                                                                                        <button class="dropdown-item edit-btn" data-row="{{ $json }}">View</button>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            </div>
                                                                                         @endif
                                                                                     </div>
 
@@ -425,34 +478,31 @@
                         </div>
                     </div>
                 </section>
+                @else
+                <div class="card">
+                    <div id="heading11" class="card-header text-center">
+                        <span class="lead collapse-title" style="width:100%">
+                            <h3>No data found!</h3>
+                        </span>
+                    </div>
+                </div>
+            @endif
         </div>
-    @else
-        <div class="card">
-            <div id="heading11" class="card-header text-center">
-                <span class="lead collapse-title" style="width:100%">
-                    <h3>No data found!</h3>
-                </span>
-            </div>
-        </div>
-        @endif
     </div>
 
     <!-- pdf preview -->
     <div class="modal fade left" id="pdf_preview_modal">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header bg-gradient-primary">
-                    <h3 class="pull-left no-margin text-light">PDF Preview</h3>
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header bg-info-subtle py-3">
+                    <h5 class="pull-left m-0">PDF Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <embed src="" id="pdf_viewer" type="application/pdf" width="100%" height="550px" />
                 </div>
                 <div class="modal-footer footer-fixed">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                     <a class="btn btn-success timekeer-btn generate_pdf" href="#">Download</a>
                     <button type="button" class="btn btn-primary" onclick="email_modal()">Send Mail</button>
                 </div>
@@ -462,23 +512,20 @@
 
     <div class="modal fade left" id="mail_modal">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-gradient-primary">
-                    <h3 class="pull-left no-margin text-light">Send Mail Form</h3>
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+            <form class="modal-content" role="form" id="mail_form" method="post"
+            action="javascript:void(0);">
+                <div class="modal-header bg-info-subtle py-3">
+                    <h5 class="pull-left m-0">Send Mail Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
                 </div>
                 <div class="modal-body">
                     <!--INSERT CONTACT FORM HERE-->
                     <!--NOTE: you will need to provide your own form processing script-->
                     <!--<form class="form-horizontal" role="form" method="post" action="">-->
 
-                    <form class="form-horizontal" role="form" id="mail_form" method="post"
-                        action="javascript:void(0);">
+                    <div>
                         @csrf
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="name" class="col-sm-3 control-label">
                                 <span class="required"></span>Name: </label>
                             <div class="col-12">
@@ -486,7 +533,7 @@
                                     placeholder="First & Last" required>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="email" class="col-sm-3 control-label">
                                 <span class="required"></span>Email: </label>
                             <div class="col-12">
@@ -494,7 +541,7 @@
                                     placeholder="you@domain.com" required>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="email" class="col-sm-3 control-label">
                                 <span class="required"></span>Subject: </label>
                             <div class="col-12">
@@ -502,34 +549,41 @@
                                     placeholder="email subject" required>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="File" class="col-12 control-label">
                                 File:
                                 <a class="required text-primary generate_pdf h6">Roster-report.pdf </a></label>
                         </div>
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label for="message" class="col-sm-3 control-label">
                                 <span class="required"></span>Message: </label>
                             <div class="col-12">
                                 <textarea name="message" rows="4" class="form-control" id="message" placeholder="Comments"></textarea>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <div class="d-flex col-sm-offset-3 col-sm-6 col-sm-offset-3">
-                                <button class="btn btn-danger mt-25 ml-25" type="button"
-                                    data-dismiss="modal">Close</button>
-                                <button type="submit" id="submit" name="submit"
-                                    class="btn btn-submit btn-primary mt-25 ml-25">Send</button>&nbsp;&nbsp;&nbsp;
-                            </div>
-                        </div>
-                        <!--end Form-->
-                    </form>
-                </div>
 
-            </div>
+                        <!--end Form-->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                        <button class="btn btn-danger mt-2 me-2" type="button"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="submit" name="submit"
+                            class="btn btn-submit btn-primary mt-2 me-2">Send</button>
+                </div>
+            </form>
         </div>
     </div>
 
+
+@endsection
+
+@push('scripts')
+    <script src="{{ asset('backend') }}/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/code.js"></script>
+    <script src="{{asset('app-assets/velzon/libs/moment/moment.js')}}"></script>
+    @include('components.select2')
+    <script src="{{asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
     <script>
         fullExcelPrint = function() {
             $("#type_print_excel").val('full');
@@ -660,305 +714,311 @@
             });
         });
     </script>
-    @push('scripts')
-        <script>
-            function modal_close(id) {
-                // alert(id);
-                if (id == 1) {
-                    window.location.reload();
-                    // $('.modal-backdrop').remove();  
+    <script>
+        function modal_close(id) {
+            // alert(id);
+            if (id == 1) {
+                window.location.reload();
+                // $('.modal-backdrop').remove();  
+            }
+
+        }
+        $(function() {
+
+            $("#newModalForm").validate({
+                rules: {
+                    pName: {
+                        required: true,
+                        minlength: 8
+                    },
+                    action: "required"
+                },
+                messages: {
+                    pName: {
+                        required: "Please enter some data",
+                        minlength: "Your data must be at least 8 characters"
+                    },
+                    action: "Please provide some data"
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#dates_form').validate()
+            let totalTaskId = []
+            let task_ids = []
+            // let event_id = null
+
+            resetTaskId = function() {
+                task_ids = []
+                $('.show .taskCheckID').prop('checked', false)
+                $('.show .taskcheckAllID').prop('checked', false)
+                $(".show .taskBtn").prop('disabled', true)
+            }
+            @if ($curr_emp)
+                $('.curr').click()
+                totalTaskId = $('.curr').first().attr("totalIds").split(",")
+                resetTaskId()
+            @endif
+            $(document).on("click", ".card-click", function() {
+                if(this.classList.contains('collapsed')) {
+                    console.log('not');
+                    $(this).removeClass('open');
+                }
+                else {
+                    console.log('yes');
+                    $(this).addClass('open');
+                }
+                totalTaskId = $(this).attr("totalIds").split(",")
+                resetTaskId()
+            })
+            $(document).on("click", ".show .taskCheckID", function() {
+                if ($(this).is(':checked')) {
+                    task_ids.push($(this).val())
+                } else {
+                    let id = $(this).val()
+                    task_ids = jQuery.grep(task_ids, function(value) {
+                        return value != id
+                    })
+                }
+
+                if (task_ids.length === 0) {
+                    $(".show .taskBtn").prop('disabled', true)
+                } else {
+                    $(".show .taskBtn").prop('disabled', false)
+                }
+
+                if (task_ids.length == totalTaskId.length) {
+                    $('.show .taskcheckAllID').prop('checked', true)
+                } else {
+                    $('.show .taskcheckAllID').prop('checked', false)
+                }
+            })
+            taskcheckAllID = function() {
+                if ($(".show .taskcheckAllID").is(':checked')) {
+                    task_ids = totalTaskId
+                    $('.show .taskCheckID').prop('checked', true)
+                } else {
+                    task_ids = []
+                    $('.show .taskCheckID').prop('checked', false)
+                }
+
+                if (task_ids.length === 0) {
+                    $(".show .taskBtn").prop('disabled', true)
+                } else {
+                    $(".show .taskBtn").prop('disabled', false)
                 }
 
             }
-            $(function() {
 
-                $("#newModalForm").validate({
-                    rules: {
-                        pName: {
-                            required: true,
-                            minlength: 8
-                        },
-                        action: "required"
-                    },
-                    messages: {
-                        pName: {
-                            required: "Please enter some data",
-                            minlength: "Your data must be at least 8 characters"
-                        },
-                        action: "Please provide some data"
-                    }
-                });
+            $('#employee-id').wrap('<div class="position-relative"></div>').select2({
+                placeholder: 'Select Employee',
+                dropdownParent: $('#employee-id').parent()
             });
-        </script>
 
-        <script>
-            $(document).ready(function() {
-                $('#dates_form').validate()
-                let totalTaskId = []
-                let task_ids = []
-                // let event_id = null
+            $(document).on("click", ".approve", function() {
+                window.location = $(this).attr('url') + task_ids
+                // console.log($(this).attr('url')+'['+task_ids+']')
+            })
+            $(document).on("click", ".del", function() {
+                swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            window.location = $(this).attr('url')
+                        }
+                    });
+            })
 
-                resetTaskId = function() {
-                    task_ids = []
-                    $('.open .taskCheckID').prop('checked', false)
-                    $('.open .taskcheckAllID').prop('checked', false)
-                    $(".open .taskBtn").prop('disabled', true)
+            // var roaster_date, roaster_end, shift_start, shift_end;
+            function timeToSeconds(time) {
+                time = time.split(/:/);
+                return time[0] * 3600 + time[1] * 60;
+            }
+            $.time = function(dateObject) {
+                var t = dateObject.split(/[- :]/);
+                // Apply each element to the Date function
+                var actiondate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
+                var d = new Date(actiondate);
+
+                // var d = new Date(dateObject);
+                var curr_hour = d.getHours();
+                var curr_min = d.getMinutes();
+                var date = curr_hour + ':' + curr_min;
+                return date;
+            };
+
+            function allCalculation() {
+                var start = $("#app_start").val();
+                var end = $("#app_end").val();
+                var rate = $("#app_rate").val();
+
+                if (start && end) {
+                    // calculate hours
+                    var diff = (timeToSeconds(end) - timeToSeconds(start)) / 3600
+                    if (diff < 0) {
+                        diff = 24 - Math.abs(diff)
+                    }
+                    if (diff) {
+                        $("#app_duration").val(diff);
+                        if (rate) {
+                            $("#app_amount").val(parseFloat(rate) * diff);
+                        }
+                    }
+
+                } else {
+                    $("#app_duration").val('');
+                    $("#app_amount").val('');
                 }
-                @if ($curr_emp)
-                    $('.curr').click()
-                    totalTaskId = $('.curr').first().attr("totalIds").split(",")
-                    resetTaskId()
-                @endif
+            }
 
-                $(document).on("click", ".card-click", function() {
-                    totalTaskId = $(this).attr("totalIds").split(",")
-                    resetTaskId()
-                })
-                $(document).on("click", ".open .taskCheckID", function() {
-                    if ($(this).is(':checked')) {
-                        task_ids.push($(this).val())
-                    } else {
-                        let id = $(this).val()
-                        task_ids = jQuery.grep(task_ids, function(value) {
-                            return value != id
-                        })
-                    }
+            var isValid = true;
+            var modalToTarget = document.getElementById("addTimeKeeper");
 
-                    if (task_ids.length === 0) {
-                        $(".open .taskBtn").prop('disabled', true)
-                    } else {
-                        $(".open .taskBtn").prop('disabled', false)
-                    }
-
-                    if (task_ids.length == totalTaskId.length) {
-                        $('.open .taskcheckAllID').prop('checked', true)
-                    } else {
-                        $('.open .taskcheckAllID').prop('checked', false)
-                    }
-                })
-                taskcheckAllID = function() {
-                    if ($(".open .taskcheckAllID").is(':checked')) {
-                        task_ids = totalTaskId
-                        $('.open .taskCheckID').prop('checked', true)
-                    } else {
-                        task_ids = []
-                        $('.open .taskCheckID').prop('checked', false)
-                    }
-
-                    if (task_ids.length === 0) {
-                        $(".open .taskBtn").prop('disabled', true)
-                    } else {
-                        $(".open .taskBtn").prop('disabled', false)
-                    }
-
-                }
-
-                $('#employee-id').wrap('<div class="position-relative"></div>').select2({
-                    placeholder: 'Select Employee',
-                    dropdownParent: $('#employee-id').parent()
+            function roasterEndTimeInit() {
+                $("#app_end").change(function() {
+                    allCalculation()
                 });
 
-                $(document).on("click", ".approve", function() {
-                    window.location = $(this).attr('url') + task_ids
-                    // console.log($(this).attr('url')+'['+task_ids+']')
-                })
-                $(document).on("click", ".del", function() {
-                    swal({
-                            title: "Are you sure?",
-                            text: "Once deleted, you will not be able to recover this!",
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
-                        })
-                        .then((willDelete) => {
-                            if (willDelete) {
-                                window.location = $(this).attr('url')
-                            }
-                        });
-                })
+            }
+            roasterEndTimeInit()
 
-                // var roaster_date, roaster_end, shift_start, shift_end;
-                function timeToSeconds(time) {
-                    time = time.split(/:/);
-                    return time[0] * 3600 + time[1] * 60;
-                }
-                $.time = function(dateObject) {
-                    var t = dateObject.split(/[- :]/);
-                    // Apply each element to the Date function
-                    var actiondate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-                    var d = new Date(actiondate);
-
-                    // var d = new Date(dateObject);
-                    var curr_hour = d.getHours();
-                    var curr_min = d.getMinutes();
-                    var date = curr_hour + ':' + curr_min;
-                    return date;
-                };
-
-                function allCalculation() {
-                    var start = $("#app_start").val();
-                    var end = $("#app_end").val();
-                    var rate = $("#app_rate").val();
-
-                    if (start && end) {
-                        // calculate hours
-                        var diff = (timeToSeconds(end) - timeToSeconds(start)) / 3600
-                        if (diff < 0) {
-                            diff = 24 - Math.abs(diff)
-                        }
-                        if (diff) {
-                            $("#app_duration").val(diff);
-                            if (rate) {
-                                $("#app_amount").val(parseFloat(rate) * diff);
-                            }
-                        }
-
+            function roasterStartTimeInit() {
+                $("#app_start").change(function() {
+                    if ($(this).val()) {
+                        $("#app_end").removeAttr("disabled")
                     } else {
-                        $("#app_duration").val('');
-                        $("#app_amount").val('');
+                        $("#app_end").prop('disabled', true);
                     }
-                }
 
-                var isValid = true;
-                var modalToTarget = document.getElementById("addTimeKeeper");
+                    allCalculation()
+                });
 
-                function roasterEndTimeInit() {
-                    $("#app_end").change(function() {
+            }
+            roasterStartTimeInit()
+
+            const initDatePicker = () => {
+                $("#roaster_date").change(function() {
+                    if ($(this).val()) {
+                        $("#app_start").removeAttr("disabled")
+                    } else {
+                        $(".picker__button--clear").removeAttr("disabled")
+
+                        $(".picker__button--clear")[1].click()
+                        $(".picker__button--clear")[2].click()
+
+                        $("#app_start").prop('disabled', true)
+
+                        $("#app_end").prop('disabled', true);
                         allCalculation()
-                    });
+                    }
+                });
+            }
 
-                }
-                roasterEndTimeInit()
-
-                function roasterStartTimeInit() {
-                    $("#app_start").change(function() {
-                        if ($(this).val()) {
-                            $("#app_end").removeAttr("disabled")
-                        } else {
-                            $("#app_end").prop('disabled', true);
-                        }
-
-                        allCalculation()
-                    });
-
-                }
-                roasterStartTimeInit()
-
-                const initDatePicker = () => {
-                    $("#roaster_date").change(function() {
-                        if ($(this).val()) {
-                            $("#app_start").removeAttr("disabled")
-                        } else {
-                            $(".picker__button--clear").removeAttr("disabled")
-
-                            $(".picker__button--clear")[1].click()
-                            $(".picker__button--clear")[2].click()
-
-                            $("#app_start").prop('disabled', true)
-
-                            $("#app_end").prop('disabled', true);
-                            allCalculation()
-                        }
-                    });
-                }
-
+            initDatePicker();
+            const initAllDatePicker = () => {
                 initDatePicker();
-                const initAllDatePicker = () => {
-                    initDatePicker();
-                    roasterStartTimeInit();
-                    roasterEndTimeInit();
-                }
+                roasterStartTimeInit();
+                roasterEndTimeInit();
+            }
 
-                // Change modal to false to see that it doesn't happen there
-                $("#dialog").modal({
-                    autoOpen: true,
-                    modal: true,
-                });
+            // Change modal to false to see that it doesn't happen there
+            $("#dialog").modal({
+                autoOpen: true,
+                modal: true,
+            });
 
-                $(document).on("click", ".timekeer-btn", function() {
-                    if (isValid) {
-                        console.log($(this).closest("form").submit())
-                    }
-                })
-
-                $(document).on("click", ".edit-btn", function() {
-                    resetValue()
-                    var rowData = $(this).data("row");
-
-                    $("#timepeeper_id").val(rowData.id);
-                    $("#employee_id").val(rowData.employee_id).trigger('change');
-                    $(".employee_id").val(rowData.employee_id);
-                    $("#project-select").val(rowData.project_id).trigger('change');
-                    $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
-                    $("#shift_start").val($.time(rowData.shift_start))
-                    $("#shift_end").val($.time(rowData.shift_end))
-                    if (rowData.sing_in) {
-                        $("#sign_in").val($.time(rowData.sing_in))
-                    } else {
-                        $("#sign_in").val('unspecified')
-                    }
-                    if (rowData.sing_out) {
-                        $("#sign_out").val($.time(rowData.sing_out))
-                    } else {
-                        $("#sign_out").val('unspecified')
-                    }
-
-                    if (rowData.is_approved == 1) {
-                        $('.timekeer-btn').prop('hidden', true);
-                    } else {
-                        $('.timekeer-btn').prop('hidden', false);
-                    }
-                    $("#app_start").val($.time(rowData.Approved_start_datetime))
-                    $("#app_end").val($.time(rowData.Approved_end_datetime))
-
-                    $("#app_rate").val(rowData.app_rate)
-                    $("#app_duration").val(rowData.app_duration)
-                    $("#app_amount").val(rowData.app_amount)
-                    // $("#job").val(rowData.job_type_id)
-                    // $("#roster").val(rowData.roaster_status_id)
-
-                    $("#remarks").val(rowData.remarks)
-
-                    $("#editTimeKeeper").modal("show")
-
-
-                    initAllDatePicker();
-                    allCalculation()
-
-                })
-
-                $(document).on("input", ".reactive", function() {
-                    allCalculation()
-                })
-
-                function resetValue() {
-                    $("#timepeeper_id").val();
-                    $('#timepeeper_id').attr('value', '');
-                    $("#employee_id").val('');
-                    // $("#client-select").val('').trigger('change');
-
-                    $("#roaster_date").val('')
-                    $("#shift_start").val('')
-                    $("#shift_end").val('')
-                    $("#sign_in").val('')
-                    $("#sign_out").val('')
-                    $("#app_start").val('')
-                    $("#app_end").val('')
-
-                    $("#app_rate").val('')
-                    $("#app_duration").val('')
-                    $("#app_amount").val('')
-                    // $("#job").val('')
-                    // $("#roster").val('')
-
-                    $("#remarks").val('')
-                    $("#project-select").val('');
+            $(document).on("click", ".timekeer-btn", function() {
+                if (isValid) {
+                    console.log($(this).closest("form").submit())
                 }
             })
-        </script>
-    @endpush
 
-@endsection
+            $(document).on("click", ".edit-btn", function() {
+                resetValue()
+                var rowData = $(this).data("row");
+
+                $("#timepeeper_id").val(rowData.id);
+                $("#employee_id").val(rowData.employee_id).trigger('change');
+                $(".employee_id").val(rowData.employee_id);
+                $("#project-select").val(rowData.project_id).trigger('change');
+                $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
+                $("#shift_start").val($.time(rowData.shift_start))
+                $("#shift_end").val($.time(rowData.shift_end))
+                if (rowData.sing_in) {
+                    $("#sign_in").val($.time(rowData.sing_in))
+                } else {
+                    $("#sign_in").val('unspecified')
+                }
+                if (rowData.sing_out) {
+                    $("#sign_out").val($.time(rowData.sing_out))
+                } else {
+                    $("#sign_out").val('unspecified')
+                }
+
+                if (rowData.is_approved == 1) {
+                    $('.timekeer-btn').prop('hidden', true);
+                } else {
+                    $('.timekeer-btn').prop('hidden', false);
+                }
+                $("#app_start").val($.time(rowData.Approved_start_datetime))
+                $("#app_end").val($.time(rowData.Approved_end_datetime))
+
+                $("#app_rate").val(rowData.app_rate)
+                $("#app_duration").val(rowData.app_duration)
+                $("#app_amount").val(rowData.app_amount)
+                // $("#job").val(rowData.job_type_id)
+                // $("#roster").val(rowData.roaster_status_id)
+
+                $("#remarks").val(rowData.remarks)
+
+                $("#editTimeKeeper").modal("show")
+
+
+                initAllDatePicker();
+                allCalculation()
+
+            })
+
+            $(document).on("input", ".reactive", function() {
+                allCalculation()
+            })
+
+            function resetValue() {
+                $("#timepeeper_id").val();
+                $('#timepeeper_id').attr('value', '');
+                $("#employee_id").val('');
+                // $("#client-select").val('').trigger('change');
+
+                $("#roaster_date").val('')
+                $("#shift_start").val('')
+                $("#shift_end").val('')
+                $("#sign_in").val('')
+                $("#sign_out").val('')
+                $("#app_start").val('')
+                $("#app_end").val('')
+
+                $("#app_rate").val('')
+                $("#app_duration").val('')
+                $("#app_amount").val('')
+                // $("#job").val('')
+                // $("#roster").val('')
+
+                $("#remarks").val('')
+                $("#project-select").val('');
+            }
+        })
+    </script>
+@endpush
+
 
 @section('pdf_generator')
     <div class="d-none d-print-block" id="full_report">

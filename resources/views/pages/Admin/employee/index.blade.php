@@ -60,7 +60,7 @@
             <div class="card" id="employee_list">
                 <div class="card-body">
                     <div class="table-responsive mb-3">
-                        <table class="display table table-bordered dt-responsive mt-3" id="example">
+                        <table class="display table table-bordered mt-3" id="example">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>

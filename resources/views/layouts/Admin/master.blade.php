@@ -8,6 +8,7 @@
     <meta name="description" content="Easytask/roster, a personalized and simple way to get more done. All projects and lists customized to you.">
     <meta name="keywords" content="Easytask.au Scheduler roster">
     <meta name="author" content="Ahsan">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Online Scheduler </title>
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/images/ico/favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/plugins/forms/form-validation.css')}}">

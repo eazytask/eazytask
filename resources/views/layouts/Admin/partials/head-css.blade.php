@@ -29,12 +29,20 @@
         font-size: 1.4rem !important;
         color: #7367f0 !important;
     }
-    .collapse-icon [data-toggle='collapse']:after {
-        left: 1rem;
+    .collapse-icon [data-bs-toggle='collapse']:after {
+        display: inline;
+        content: '';        
+        position: absolute;
+        top: 1em;
+        left: 10px;
+        padding: 12px;
         background-image:url("{{asset('images/app/minus.svg')}}");
     }
     .collapse-icon [aria-expanded='false']:after {
-        background-image:url("{{asset('images/app/plus.svg')}}");
+        display: inline;
+        content: '';
+        top: 35%;
+        background-image: url("http://localhost:8000/images/app/plus.svg");
     }
     .collapse-shadow .card.open {
         border: 2px solid #7367f0 !important;
