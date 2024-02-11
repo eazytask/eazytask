@@ -1,13 +1,9 @@
 @extends('layouts.Admin.master')
 @section('title') Timesheet @endsection
 @section('css')
-    <link rel="stylesheet" href="{{ URL::asset('app-assets/velzon/libs/gridjs/theme/mermaid.min.css') }}">
-
-    <style>
-        .gridjs-search {
-            float: right !important;
-        }
-    </style>
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
 @endsection
 
 @php
@@ -34,117 +30,109 @@
     @endcomponent
 
     <div class="card">
+        <div class="card-header">
+            <form action="{{ route('search-timekeeper') }}" method="POST" id="dates_form">
+                @csrf
+                <div class="d-flex justify-content-start align-items-start gap-2">
+                    <input type="text" name="start_date" required class="form-control disable-picker" placeholder="{{$fromRoaster}}" />
+    
+                    <input type="text" name="end_date" required class="form-control disable-picker" placeholder="{{$toRoaster}}" />
+    
+                    <button type="submit" class="btn btn-sm btn-primary" id="btn_search"><i data-feather='search'></i></button>
+
+                    <button type="button" id="createShedule" class="btn btn-sm btn-primary">
+                        <i data-feather='plus'></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <div class="card-body p-3">
             <div class="row g-4">
                 <div class="col-xxl-12">
-                    <form action="{{ route('search-timekeeper') }}" method="POST" id="dates_form">
-                        @csrf
-                        <div class="row g-2">
-                            <div class="col-xxl-5 col-md-5">
-                                <input type="text" name="start_date" required class="form-control disable-picker" placeholder="{{$fromRoaster}}" />
-                            </div>
-            
-                            <div class="col-xxl-5 col-md-5">
-                                <input type="text" name="end_date" required class="form-control disable-picker" placeholder="{{$toRoaster}}" />
-                            </div>
-            
-                            <div class="col-xxl-1 col-md-1">
-                                <div>
-                                    <button type="submit" class="btn btn-sm btn-primary w-100" id="btn_search"><i data-feather='search'></i></button>
-                                </div>
-                            </div>
-
-                            <div class="col-xxl-1 col-md-1">
-                                <button type="button" id="createShedule" class="btn btn-sm btn-primary w-100">
-                                    <i data-feather='plus'></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="col-xxl-12">
-                    <div id="table-grid-wrapper"></div>
-                    <table id="table-grid" class="table table-borderless table-hover table-nowrap align-middle mb-0">
-                        <thead class="table-light">
-                            <tr class="text-muted">
-                                <th width='150px'>#</th>
-                                <th width='150px'>Employee</th>
-                                <!-- <th>Client</th> -->
-                                <th width='150px'>Venue</th>
-                                <th width='150px'>Roster Date</th>
-                                <th width='150px'>Shift Start</th>
-                                <th width='150px'>Shift End</th>
-                                <th width='150px'>Duration</th>
-                                <th width='150px'>Rate</th>
-                                <th width='150px'>Amount</th>
-                                <th width='150px'>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach ($timekeepers as $k => $row)
-                                @php
-                                    $json = json_encode($row->toArray(), false);
-                                @endphp
-                                <tr>
-                                    <td class="p-0 pl-50">
-                                        @if($row->is_approved)
-                                            <i data-feather="{{ $row->payment_status ? 'dollar-sign' : 'check-circle'}}" class="text-primary"></i>
-                                        @else
-                                            <span class="pl-1 ml-25"></span>
-                                        @endif
-                                        {{ $k + 1 }}
-                                    </td>
-
-                                    <td>
-                                        {{ $row->employee->fname }} {{ $row->employee->mname }} {{ $row->employee->lname }}
-                                    </td>
-
-                                    <td>
-                                        @if (isset($row->project->pName))
-                                            {{ $row->project->pName }}
-                                        @else
-                                            Null
-                                        @endif
-                                    </td>
-
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($row->roaster_date)->format('d-m-Y')}}
-                                    </td>
-
-                                    <td>{{ getTime($row->shift_start) }}</td>
-
-                                    <td>{{ getTime($row->shift_end) }}</td>
-
-                                    <td>{{ $row->duration }}</td>
-
-                                    <td>{{ $row->ratePerHour }}</td>
-
-                                    <td>{{ $row->amount }}</td>
-
-                                    <td>
-                                        <div class="d-flex justify-content-start align-items-center gap-2">
-                                            @if($row->is_approved == 0)
-                                            <button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-info" data-employee="{{$row->employee}}" data-row="{{ $json }}"><i data-feather='edit'></i></button>
-                                            
-                                            <button data-copy="true" class="edit-btn btn btn-sm btn-info" data-row="{{ $json }}">
-                                                <i data-feather='copy'></i>
-                                            </button>
-                                            
-                                            <button class="edit-btn btn btn-sm btn-danger text-white" >
-                                                <a class="del text-white" url="/admin/home/new/timekeeper/delete/{{ $row->id }}"><i data-feather='trash-2'></i></a>
-                                            </button>
-                                            
-                                            @else
-                                                <button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-primary" data-employee="{{$row->employee}}" data-row="{{ $json }}"><i data-feather='eye'></i></button>
-                                            @endif
-                                        </div>
-                                    </td>
+                    <div class="table-responsive">
+                        <table id="data-table" class="display table table-bordered" style="width:100%">
+                            <thead class="table-light">
+                                <tr class="text-muted">
+                                    <th width='150px'>#</th>
+                                    <th width='150px'>Employee</th>
+                                    <!-- <th>Client</th> -->
+                                    <th width='150px'>Venue</th>
+                                    <th width='150px'>Roster Date</th>
+                                    <th width='150px'>Shift Start</th>
+                                    <th width='150px'>Shift End</th>
+                                    <th width='150px'>Duration</th>
+                                    <th width='150px'>Rate</th>
+                                    <th width='150px'>Amount</th>
+                                    <th width='150px'>Action</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+    
+                            <tbody>
+                                @foreach ($timekeepers as $k => $row)
+                                    @php
+                                        $json = json_encode($row->toArray(), false);
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            @if ($row->is_approved)
+                                                <i class="{{ $row->payment_status ? 'mdi mdi-currency-usd' : 'mdi mdi-checkbox-marked-circle-outline'}} text-primary fs-5"></i>
+                                            @else
+                                                <span class="pl-1 ml-25"></span>
+                                            @endif
+
+                                            <span>{{ $k + 1 }}</span>
+                                        </td>
+    
+                                        <td>
+                                            {{ $row->employee->fname }} {{ $row->employee->mname }} {{ $row->employee->lname }}
+                                        </td>
+    
+                                        <td>
+                                            @if (isset($row->project->pName))
+                                                {{ $row->project->pName }}
+                                            @else
+                                                Null
+                                            @endif
+                                        </td>
+    
+                                        <td>
+                                            {{ \Carbon\Carbon::parse($row->roaster_date)->format('d-m-Y')}}
+                                        </td>
+    
+                                        <td>{{ getTime($row->shift_start) }}</td>
+    
+                                        <td>{{ getTime($row->shift_end) }}</td>
+    
+                                        <td>{{ $row->duration }}</td>
+    
+                                        <td>{{ $row->ratePerHour }}</td>
+    
+                                        <td>{{ $row->amount }}</td>
+    
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-center gap-2">
+                                                @if($row->is_approved == 0)
+                                                <button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-info" data-employee="{{$row->employee}}" data-row="{{ $json }}"><i data-feather='edit'></i></button>
+                                                
+                                                <button data-copy="true" class="edit-btn btn btn-sm btn-info" data-row="{{ $json }}">
+                                                    <i data-feather='copy'></i>
+                                                </button>
+                                                
+                                                <button class="edit-btn btn btn-sm btn-danger text-white" >
+                                                    <a class="del text-white" url="/admin/home/new/timekeeper/delete/{{ $row->id }}"><i data-feather='trash-2'></i></a>
+                                                </button>
+                                                
+                                                @else
+                                                    <button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-primary" data-employee="{{$row->employee}}" data-row="{{ $json }}"><i data-feather='eye'></i></button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,10 +144,6 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ URL::asset('app-assets/velzon/libs/prismjs/prism.js') }}"></script>
-    <script src="{{ URL::asset('app-assets/velzon/libs/gridjs/gridjs.umd.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js') }}"></script>
-
     <script>
         $(document).on("click", "#emloyee_wise", function() {
             const element = document.getElementById('employee_pdf').innerHTML;
@@ -492,14 +476,5 @@
             }
 
         })
-    </script>
-
-    <script>
-        new gridjs.Grid({ 
-            from: document.getElementById('table-grid'),
-            pagination: { limit: 10 },
-            sort: true,
-            search: true,
-        }).render(document.getElementById('table-grid-wrapper'));
     </script>
 @endpush

@@ -7,8 +7,6 @@
 <script src="{{ URL::asset('app-assets/velzon/js/app.js') }}"></script>
 <script src="{{asset('assets/js/jquery-3.6.0.min.js')}}"></script>
 <script src="{{asset('app-assets/velzon/js/html2pdf.bundle.min.js')}}" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-{{-- start external --}}
 <script src="{{asset('app-assets/vendors/js/forms/repeater/jquery.repeater.min.js')}}"></script>
 <script src="{{asset('app-assets/vendors/js/pickers/pickadate/picker.js')}}"></script>
 <script src="{{asset('app-assets/vendors/js/pickers/pickadate/picker.date.js')}}"></script>
@@ -19,8 +17,29 @@
 <script src="{{asset('app-assets/vendors/js/extensions/moment.min.js')}}"></script>
 <script src="{{ asset('backend') }}/lib/sweetalert/sweetalert.min.js"></script>
 <script src="{{ asset('backend') }}/lib/sweetalert/code.js"></script>
-{{-- toastr --}}
 <script type="text/javascript" src="{{ asset('backend') }}/lib/toastr/toastr.min.js"></script>
+<script src="{{ asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js') }}"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#data-table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'print', 'pdf'
+            ],
+        });
+    });
+</script>
+
 <script>
     @if(Session::has('message'))
     var type = "{{Session::get('alert-type','info')}}"

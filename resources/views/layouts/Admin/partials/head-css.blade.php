@@ -75,7 +75,7 @@
             -webkit-print-color-adjust: exact;
         } */
     body {
-        font-family: Helvetica, Arial, serif;
+        font-family: Poppins, sans-serif;
     }
 
     .border-t {

@@ -81,11 +81,11 @@
                         <div class="row row-xs g-2">
                             <div class="col-lg-4 mt-2">
                                 <input type="hidden" name="type_print_excel" id="type_print_excel">
-                                <input type="text" name="start_date" required class="form-control format-picker"
+                                <input type="text" name="start_date" required class="form-control disable-picker"
                                     placeholder="Start Date" value="{{ $start_date }}" />
                             </div>
                             <div class="col-lg-4 mt-2">
-                                <input type="text" name="end_date" required class="form-control format-picker"
+                                <input type="text" name="end_date" required class="form-control disable-picker"
                                     placeholder="End Date" value="{{ $end_date }}" />
                             </div>
 
