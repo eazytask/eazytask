@@ -25,7 +25,7 @@
             </div>
         </div>
         <!--end col-->
-        <div class="col-xxl-9">
+        <div class="col-xxl-12">
             <div class="card" id="client_list">
                 <div class="card-body">
                     <div>

@@ -1,223 +1,284 @@
 @extends('layouts.Admin.master')
-@section('title') Timesheet @endsection
-@section('css')
-    <link rel="stylesheet" href="{{ URL::asset('app-assets/velzon/libs/gridjs/theme/mermaid.min.css') }}">
 
-    <style>
-        .gridjs-search {
-            float: right !important;
-        }
-    </style>
-@endsection
+@push('styles')
+<link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css') }}">
+@endpush
 
 @php
-    function getTime($date) {
+    function getTime($date){
         return \Carbon\Carbon::parse($date)->format('H:i');
     }
 
     $fromRoaster="Start Date";
     $toRoaster = "End Date";
-    
-    if (Session::get('fromRoaster')) {
+    if(Session::get('fromRoaster')){
         $fromRoaster = \Carbon\Carbon::parse(Session::get('fromRoaster'))->format('d-m-Y');
     }
-
-    if (Session::get('toRoaster')) {
+    if(Session::get('toRoaster')){
         $toRoaster = \Carbon\Carbon::parse(Session::get('toRoaster'))->format('d-m-Y');
     }
 @endphp
-
 @section('admin_page_content')
+<style>
+    .demo-inline-spacing {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .demo-inline-spacing>* {
+        margin-right: 1.5rem;
+        margin-top: 1.5rem;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/vendors.min.css')}}">
     @component('components.breadcrumb')
-        @slot('li_1') Timesheet @endslot
-        @slot('title') Dashboard @endslot
+        @slot('li_1')
+            Timesheet
+        @endslot
+        @slot('title')
+            Add Timesheet
+        @endslot
     @endcomponent
-
-    <div class="card">
-        <div class="card-body p-3">
-            <div class="row g-4">
-                <div class="col-xxl-12">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <button class="btn btn-info" id="createShedule" disabled>
+                        Add Timesheet
+                    </button>
+                    @include('pages.Admin.timekeeper.modals.newtimeKeeperAddModal')
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
                     <form action="{{ route('search-timekeeper') }}" method="POST" id="dates_form">
                         @csrf
                         <div class="row g-2">
-                            <div class="col-xxl-5 col-md-5">
+                            <div class="col-lg-4">
                                 <input type="text" name="start_date" required class="form-control disable-picker" placeholder="{{$fromRoaster}}" />
                             </div>
-            
-                            <div class="col-xxl-5 col-md-5">
+                            <div class="col-lg-4">
                                 <input type="text" name="end_date" required class="form-control disable-picker" placeholder="{{$toRoaster}}" />
                             </div>
-            
-                            <div class="col-xxl-1 col-md-1">
-                                <div>
-                                    <button type="submit" class="btn btn-sm btn-primary w-100" id="btn_search"><i data-feather='search'></i></button>
-                                </div>
-                            </div>
-
-                            <div class="col-xxl-1 col-md-1">
-                                <button type="button" id="createShedule" class="btn btn-sm btn-primary w-100">
-                                    <i data-feather='plus'></i>
+                            <div class="col-md-2 col-lg-3">
+                                <button type="submit" class="btn btn-primary btn-block" id="btn_search">
+                                    Search Timesheet
                                 </button>
                             </div>
                         </div>
                     </form>
                 </div>
-
-                <div class="col-xxl-12">
-                    <div id="table-grid-wrapper"></div>
-                    <table id="table-grid" class="table table-borderless table-hover table-nowrap align-middle mb-0">
-                        <thead class="table-light">
-                            <tr class="text-muted">
-                                <th width='150px'>#</th>
-                                <th width='150px'>Employee</th>
-                                <!-- <th>Client</th> -->
-                                <th width='150px'>Venue</th>
-                                <th width='150px'>Roster Date</th>
-                                <th width='150px'>Shift Start</th>
-                                <th width='150px'>Shift End</th>
-                                <th width='150px'>Duration</th>
-                                <th width='150px'>Rate</th>
-                                <th width='150px'>Amount</th>
-                                <th width='150px'>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach ($timekeepers as $k => $row)
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="mytable" class="table table-hover-animation table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Employee</th>
+                                    <!-- <th>Client</th> -->
+                                    <th>Venue</th>
+                                    <th>Roster Date</th>
+                                    <th>Shift Start</th>
+                                    <th>Shift End</th>
+                                    <th>Duration</th>
+                                    <th>Rate</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($timekeepers as $k => $row)
                                 @php
-                                    $json = json_encode($row->toArray(), false);
+                                $json = json_encode($row->toArray(), false);
+        
                                 @endphp
                                 <tr>
-                                    <td class="p-0 pl-50">
+                                    <td>
                                         @if($row->is_approved)
-                                            <i data-feather="{{ $row->payment_status ? 'dollar-sign' : 'check-circle'}}" class="text-primary"></i>
+                                        <i data-feather="{{$row->payment_status?'dollar-sign':'check-circle'}}" class="text-primary"></i>
                                         @else
-                                            <span class="pl-1 ml-25"></span>
+                                        <span class="pl-1 ml-25"></span>
                                         @endif
                                         {{ $k + 1 }}
                                     </td>
-
                                     <td>
                                         {{ $row->employee->fname }} {{ $row->employee->mname }} {{ $row->employee->lname }}
+        
                                     </td>
-
+                                    <!-- <td>
+                                            @if (isset($row->client->cname))
+                                            {{ $row->client->cname }}
+                                            @else
+                                            Null
+                                            @endif
+                                        </td> -->
                                     <td>
                                         @if (isset($row->project->pName))
-                                            {{ $row->project->pName }}
+                                        {{ $row->project->pName }}
                                         @else
-                                            Null
+                                        Null
                                         @endif
                                     </td>
-
                                     <td>
                                         {{ \Carbon\Carbon::parse($row->roaster_date)->format('d-m-Y')}}
                                     </td>
-
                                     <td>{{ getTime($row->shift_start) }}</td>
-
                                     <td>{{ getTime($row->shift_end) }}</td>
-
                                     <td>{{ $row->duration }}</td>
-
                                     <td>{{ $row->ratePerHour }}</td>
-
                                     <td>{{ $row->amount }}</td>
-
                                     <td>
-                                        <div class="d-flex justify-content-start align-items-center gap-2">
+                                        <div class="row">
+                                            <!--<a href="#" data-toggle="modal" data-target="#editTimeKeeper{{$row->id}}"><i data-feather='edit'></i></a>-->
                                             @if($row->is_approved == 0)
-                                            <button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-info" data-employee="{{$row->employee}}" data-row="{{ $json }}"><i data-feather='edit'></i></button>
-                                            
-                                            <button data-copy="true" class="edit-btn btn btn-sm btn-info" data-row="{{ $json }}">
-                                                <i data-feather='copy'></i>
-                                            </button>
-                                            
-                                            <button class="edit-btn btn btn-sm btn-danger text-white" >
-                                                <a class="del text-white" url="/admin/home/new/timekeeper/delete/{{ $row->id }}"><i data-feather='trash-2'></i></a>
-                                            </button>
-                                            
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn btn-soft-info btn-sm" data-bs-toggle="dropdown">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <button data-copy="true" edit-it="true" class="edit-btn btn-link btn dropdown-item" data-employee="{{$row->employee}}" data-row="{{ $json }}">
+                                                                Edit
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button data-copy="true" class="edit-btn btn-link btn dropdown-item" data-row="{{ $json }}">
+                                                                Copy
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <a class="del dropdown-item" url="/admin/home/new/timekeeper/delete/{{ $row->id }}">
+                                                                Delete
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             @else
-                                                <button data-copy="true" edit-it="true" class="edit-btn btn btn-sm btn-primary" data-employee="{{$row->employee}}" data-row="{{ $json }}"><i data-feather='eye'></i></button>
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn btn-soft-info btn-sm" data-bs-toggle="dropdown">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <button data-copy="true" edit-it="true" class="edit-btn dropdown-item" data-employee="{{$row->employee}}" data-row="{{ $json }}">View</button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             @endif
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                @endforeach
+        
+        
+                            </tbody>
+                        </table>
+        
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div>
-        @include('pages.Admin.timekeeper.modals.newtimeKeeperAddModal')
-    </div>
 @endsection
 
 @push('scripts')
-    <script src="{{ URL::asset('app-assets/velzon/libs/prismjs/prism.js') }}"></script>
-    <script src="{{ URL::asset('app-assets/velzon/libs/gridjs/gridjs.umd.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js') }}"></script>
-
-    <script>
-        $(document).on("click", "#emloyee_wise", function() {
-            const element = document.getElementById('employee_pdf').innerHTML;
-            var opt = {
-                filename: 'unschedule-employee.pdf',
-                html2canvas: {
-                    scale: 2
-                },
-                jsPDF: {
-                    unit: 'in',
-                    format: 'tabloid',
-                    orientation: 'portrait'
-                }
-            };
-    
-            html2pdf().set(opt).from(element).save();
-        })
-        $(document).on("click", "#client_wise", function() {
-            const element = document.getElementById('client_pdf').innerHTML;
-            var opt = {
-                filename: 'unschedule-client.pdf',
-                html2canvas: {
-                    scale: 2
-                },
-                jsPDF: {
-                    unit: 'in',
-                    format: 'tabloid',
-                    orientation: 'portrait'
-                }
-            };
-    
-            html2pdf().set(opt).from(element).save();
-        })
-    </script>
-
-    <script>
-        $(function() {
-            $("#newModalForm").validate({
-                rules: {
-                    pName: {
-                        required: true,
-                        minlength: 8
-                    },
-                    action: "required"
-                },
-                messages: {
-                    pName: {
-                        required: "Please enter some data",
-                        minlength: "Your data must be at least 8 characters"
-                    },
-                    action: "Please provide some data"
-                }
-            });
-        });
-    </script>
-
+    @include('components.datatablescript')
+    @include('components.select2')
+    <script src="{{asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
     <script>
         $(document).ready(function() {
+            $('#createShedule').removeAttr('disabled');
+
+            const dataTableTitle = 'Add Timesheet Report';
+            const dataTableOptions = {
+                dom: 'Bfrtip',
+                paging: false,
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        fade: 0,
+                    },
+                    {
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle,
+                    },
+                    {
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle,
+                    },
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle,
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible',
+                        },
+                        title: dataTableTitle,
+                    }
+                ],
+                initComplete: function() {
+                    let table = this.api();
+                    let search = `
+                        <div class="search-box d-inline-block">                
+                            <input type="text" class="form-control form-control-sm search" placeholder="Search for Timesheet">
+                            <i class="ri-search-line search-icon"></i>
+                        </div>`;
+                    $('#mytable_filter').html(search);
+
+                    $('.search').on('keyup', function(){
+                        table.search( this.value ).draw();
+                    });
+                }
+            }
+            $('#mytable').DataTable(dataTableOptions);
+            $(function() {
+                $("#newModalForm").validate({
+                    rules: {
+                        pName: {
+                            required: true,
+                            minlength: 8
+                        },
+                        action: "required"
+                    },
+                    messages: {
+                        pName: {
+                            required: "Please enter some data",
+                            minlength: "Your data must be at least 8 characters"
+                        },
+                        action: "Please provide some data"
+                    },
+                    errorPlacement: function (error, element) {
+                        if(element.hasClass('select2') && element.next('.select2-container').length) {
+                            error.insertAfter(element.next('.select2-container'));
+                        } else if (element.parent('.input-group').length) {
+                            error.insertAfter(element.parent());
+                        }
+                        else if (element.prop('type') === 'radio' && element.parent('.radio-inline').length) {
+                            error.insertAfter(element.parent().parent());
+                        }
+                        else if (element.prop('type') === 'checkbox' || element.prop('type') === 'radio') {
+                            error.appendTo(element.parent().parent());
+                        }
+                        else {
+                            error.insertAfter(element);
+                        }
+                    }
+                });
+            });
             $('#project-select').on('change', function() {
                 filterEmployee()
                 if ($(this).val()) {
@@ -232,49 +293,37 @@
             })
 
             function filterEmployee() {
-            $.ajax({
-                url: '/admin/home/filter/employee',
-                type: 'get',
-                dataType: 'json',
-                data: {
-                    'filter': $('input[name="filter_employee"]:checked').val(),
-                    'project_id': $("#project-select").val(),
-                    'roster_date': $("#roaster_date").val(),
-                    'shift_start': $("#shift_start").val(),
-                    'shift_end': $("#shift_end").val(),
-                },
-                success: function(data) {
-                    // console.log(data)
-                    if (data.notification) {
-                        toastr.success(data.notification);
+                $.ajax({
+                    url: '/admin/home/filter/employee',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        'filter': $('input[name="filter_employee"]:checked').val(),
+                        'project_id': $("#project-select").val(),
+                        'roster_date': $("#roaster_date").val(),
+                        'shift_start': $("#shift_start").val(),
+                        'shift_end': $("#shift_end").val(),
+                    },
+                    success: function(data) {
+                        // console.log(data)
+                        let html = '<option value="">please choose...</option>'
+                        if (emp = window.current_emp) {
+                            html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp.mname) ? emp.mname : '') + "" + emp.lname + "</option>"
+                        }
+                        jQuery.each(data.employees, function(i, val) {
+                            html += "<option value='" + val.id + "'>" + val.fname + " " + ((val.mname) ? val.mname : '') + "" + val.lname + "</option>"
+                        })
+                        // console.log(html)
+                        $('#employee_id').html(html)
+                        if (data.notification) {
+                            toastr.success(data.notification)
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err)
                     }
-
-                    // Destroy existing Choices instance
-                    let employeeSelect = $('#employee_id').get(0);
-                    if (employeeSelect && employeeSelect.choices) {
-                        employeeSelect.choices.destroy();
-                    }
-
-                    // Clear existing options
-                    $('#employee_id').empty();
-
-                    // Add new options without replacing existing ones
-                    jQuery.each(data.employees, function(i, val) {
-                        let optionHtml = "<option value='" + val.id + "'>" + val.fname + " " + ((val.mname) ? val.mname : '') + "" + val.lname + "</option>";
-                        $('#employee_id').append(optionHtml);
-                    });
-
-                    // Reinitialize Choices
-                    new Choices(employeeSelect);
-
-                    // You can also trigger the 'change' event if needed
-                    // $('#employee_id').trigger('change');
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-            });
-        }
+                });
+            }
 
             $(document).on("click", ".del", function() {
                 swal({
@@ -425,7 +474,6 @@
                 $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
                 $("#shift_start").val($.time(rowData.shift_start))
                 $("#shift_end").val($.time(rowData.shift_end))
-                console.log(rowData.project_id);
                 $("#project-select").val(rowData.project_id).trigger('change');
 
                 // $("#shift_start").val($.time(rowData.shift_start))
@@ -493,13 +541,20 @@
 
         })
     </script>
-
-    <script>
-        new gridjs.Grid({ 
-            from: document.getElementById('table-grid'),
-            pagination: { limit: 10 },
-            sort: true,
-            search: true,
-        }).render(document.getElementById('table-grid-wrapper'));
-    </script>
 @endpush
+
+<!-- @section('pdf_generator')
+<div class="d-none d-print-block" id="employee_pdf">
+    @php
+    $all_roaster= Session::get('employee_wise_report') ? Session::get('employee_wise_report'): [];
+    @endphp
+    @include('pages.Admin.pdf.employee_wise_html')
+</div>
+
+<div class="d-none d-print-block" id="client_pdf">
+    @php
+    $all_roaster= Session::get('client_wise_report') ? Session::get('client_wise_report'): [];
+    @endphp
+    @include('pages.Admin.pdf.client_wise_html')
+</div>
+@endsection -->

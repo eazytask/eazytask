@@ -56,7 +56,7 @@
             </div>
         </div>
         <!--end col-->
-        <div class="col-xxl-9">
+        <div class="col-xxl-12">
             <div class="card" id="employee_list">
                 <div class="card-body">
                     <div class="table-responsive mb-3">
