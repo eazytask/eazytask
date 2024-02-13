@@ -144,62 +144,11 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestLeave || $isRequestInductedSite ? 'active' : '' }}" 
-                            href="#employee" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
-                            aria-controls="employee"
-                        >
+                        <a  class="nav-link menu-link {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestInductedSite ? 'active' : '' }}" 
+                            href="/admin/home/employee/{{ $companyId }}" >
                             <i data-feather='user-check'></i> 
                             <span>Employee</span>
                         </a>
-
-                        <div class="collapse menu-dropdown {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestLeave || $isRequestInductedSite ? 'show' : '' }}" id="employee">
-                            <ul class="nav nav-sm flex-column">
-                                <li class="nav-item">
-                                    <a href="/admin/home/employee/{{ $companyId }}" class="nav-link {{ $isRequestEmployee ? 'active' : '' }}">
-                                        Profile
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a 
-                                        href="#timeOff" 
-                                        class="nav-link" 
-                                        data-bs-toggle="collapse" 
-                                        role="button" 
-                                        aria-expanded="false" 
-                                        aria-controls="timeOff"
-                                    >
-                                        Time Off
-                                    </a>
-        
-                                    <div class="collapse menu-dropdown {{ $isRequestMyAvailability || $isRequestLeave ? 'show' : '' }}" id="timeOff">
-                                        <ul class="nav nav-sm flex-column">
-                                            <li class="nav-item">
-                                                <a href="/admin/home/myavailability/go" class="nav-link {{ $isRequestMyAvailability ? 'active' : '' }}">
-                                                    Unavailability
-                                                </a>
-                                            </li>
-
-                                            <li class="nav-item">
-                                                <a href="/admin/home/leave/go" class="nav-link {{ $isRequestLeave ? 'active' : '' }}">
-                                                    Leave
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/admin/home/inducted/site/{{ $companyId }}" class="nav-link {{ $isRequestInductedSite ? 'active' : '' }}">
-                                        Inducted Site
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
                     </li>
 
                     <li class="nav-item">

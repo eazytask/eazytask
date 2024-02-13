@@ -51,7 +51,7 @@ class MyavailabilityController extends Controller
                 ['myavailabilities.start_date', '>=', $start_date],
                 // ['myavailabilities.end_date', '<=', $end_date],
                 ['myavailabilities.start_date', '<=', $end_date],
-                ['myavailabilities.is_leave', 0]
+                // ['myavailabilities.is_leave', 0]
             ])
             ->groupBy("e.id")
             ->orderBy('fname','asc')
@@ -60,7 +60,7 @@ class MyavailabilityController extends Controller
         $data = Myavailability::where([
             ['company_code', Auth::user()->company_roles->first()->company->id],
             ['end_date', '>=', Carbon::now()->toDateString()],
-            ['is_leave', 0]
+            // ['is_leave', 0]
         ])
             ->orderBy('start_date', 'asc')
             ->get();
@@ -71,8 +71,9 @@ class MyavailabilityController extends Controller
             ['status', 1]
         ])->orderBy('fname', 'asc')->get();
         $leave_types = LeaveType::all();
-
-        return view("pages.Admin.myavailability.index", compact('data', 'employees', 'leave_types', 'total_employee'));
+        // return $data;
+        // return view("pages.Admin.myavailability.index", compact('data', 'employees', 'leave_types', 'total_employee'));
+        return view("pages.Admin.time_off.index", compact('data', 'employees', 'leave_types', 'total_employee'));
     }
 
     public function admin_store(Request $request)
@@ -87,6 +88,7 @@ class MyavailabilityController extends Controller
         $single->leave_type_id = $request->leave_type_id;
         $single->total = $single->start_date->floatDiffInRealDays($single->end_date) + 1;
         $single->status = $request->status;
+        $single->is_leave = $request->is_leave;
         $single->save();
 
         if ($single->status == 'approved') {

@@ -9,6 +9,9 @@
             Profiles
         @endslot
     @endcomponent
+    @component('components.employeeTab')
+        @slot('active') employee @endslot
+    @endcomponent
     <style>
         /* Custom styles for DataTables search and length menu alignment */
         .dataTables_wrapper .dataTables_filter {
@@ -40,89 +43,86 @@
             order: 3;
         }
     </style>
-    <div class="content-header row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center flex-wrap gap-2">
-                        <div class="flex-grow-1">
-                            <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addEmployee" id="add" disabled>
-                                <i class="ri-add-fill me-1 align-bottom"></i>Add Employee
-                            </button>
-                            @include('pages.Admin.employee.modals.employeeaddmodal')
-                        </div>
+    <div class="">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <div class="flex-grow-1">
+                        <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#addEmployee" id="add" disabled>
+                            <i class="ri-add-fill me-1 align-bottom"></i>Add Employee
+                        </button>
+                        @include('pages.Admin.employee.modals.employeeaddmodal')
                     </div>
                 </div>
             </div>
         </div>
-        <!--end col-->
-        <div class="col-xxl-12">
-            <div class="card" id="employee_list">
-                <div class="card-body">
-                    <div class="table-responsive mb-3">
-                        <table class="display table table-bordered mt-3" id="example">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Number</th>
-                                    <th>License No</th>
-                                    <th>First Aid</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="list form-check-all" id="empBody">
+    
+            <!--end col-->
+        <div class="card mb-0" id="employee_list">
+            <div class="card-body">
+                <div class="table-responsive mb-3">
+                    <table class="display table table-bordered mt-3" id="example">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Number</th>
+                                <th>License No</th>
+                                <th>First Aid</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list form-check-all" id="empBody">
 
-                            </tbody>
-                        </table>
-                        <div class="noresult" style="display: none">
-                            <div class="text-center">
-                                <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
-                                    colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px">
-                                </lord-icon>
-                                <h5 class="mt-2">Sorry! No Result Found</h5>
-                                <p class="text-muted mb-0">We've searched more than 150+ companies
-                                    We did not find any
-                                    companies for you search.</p>
-                            </div>
+                        </tbody>
+                    </table>
+                    <div class="noresult" style="display: none">
+                        <div class="text-center">
+                            <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
+                                colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px">
+                            </lord-icon>
+                            <h5 class="mt-2">Sorry! No Result Found</h5>
+                            <p class="text-muted mb-0">We've searched more than 150+ companies
+                                We did not find any
+                                companies for you search.</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1"
-                        aria-labelledby="deleteRecordLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                                        id="btn-close deleteRecord-close"></button>
-                                </div>
-                                <div class="modal-body p-5 text-center">
-                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
-                                        colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px">
-                                    </lord-icon>
-                                    <div class="mt-4 text-center">
-                                        <h4 class="fs-semibold">You are about to delete a company ?</h4>
-                                        <p class="text-muted fs-14 mb-4 pt-1">Deleting your company will
-                                            remove all of your information from our database.</p>
-                                        <div class="hstack gap-2 justify-content-center remove">
-                                            <button class="btn btn-link link-success fw-medium text-decoration-none"
-                                                data-bs-dismiss="modal"><i class="ri-close-line me-1 align-middle"></i>
-                                                Close</button>
-                                            <button class="btn btn-danger" id="delete-record">Yes,
-                                                Delete It!!</button>
-                                        </div>
+                <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1"
+                    aria-labelledby="deleteRecordLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                    id="btn-close deleteRecord-close"></button>
+                            </div>
+                            <div class="modal-body p-5 text-center">
+                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
+                                    colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px">
+                                </lord-icon>
+                                <div class="mt-4 text-center">
+                                    <h4 class="fs-semibold">You are about to delete a company ?</h4>
+                                    <p class="text-muted fs-14 mb-4 pt-1">Deleting your company will
+                                        remove all of your information from our database.</p>
+                                    <div class="hstack gap-2 justify-content-center remove">
+                                        <button class="btn btn-link link-success fw-medium text-decoration-none"
+                                            data-bs-dismiss="modal"><i class="ri-close-line me-1 align-middle"></i>
+                                            Close</button>
+                                        <button class="btn btn-danger" id="delete-record">Yes,
+                                            Delete It!!</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!--end delete modal -->
-
                 </div>
+                <!--end delete modal -->
+
             </div>
-            <!--end card-->
         </div>
+        <!--end card-->
     </div>
     <!-- end page title -->
 @endsection

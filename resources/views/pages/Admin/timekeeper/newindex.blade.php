@@ -188,6 +188,9 @@
     @include('components.datatablescript')
     @include('components.select2')
     <script src="{{asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/code.js"></script>
+    <script src="{{asset('app-assets/velzon/libs/moment/moment.js')}}"></script>
     <script>
         $(document).ready(function() {
             $('#createShedule').removeAttr('disabled');
