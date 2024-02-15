@@ -38,14 +38,38 @@ class AdminEventRequestController extends Controller
     return view('pages.Admin.event_request.index', compact('projects','job_types'));
   }
 
-  public function dataget(Request $request)
+  public function dataget(Request $request){
+    Session::put('current_week', 0);
+    return $this->search($request);
+  }
+
+  public function search(Request $request)
   {
+    if($request->goto == 'previous'){
+      $current_week = Session::get('current_week');
+      Session::put('current_week', $current_week - 1);
+
+      $week = Carbon::now()->addWeek(Session::get('current_week'));
+    }elseif($request->goto == 'next'){
+      $current_week = Session::get('current_week');
+      Session::put('current_week', $current_week + 1);
+
+      $week = Carbon::now()->addWeek(Session::get('current_week'));
+    }else{
+      $week = Carbon::now();
+    }
+
+    $start_date = Carbon::parse($week)->startOfWeek();
+    $end_date = Carbon::parse($week)->endOfWeek();
+
+
     $filter_project = $request->projectFilter ? ['project_name', $request->projectFilter] : ['project_name', '>', 0];
     $data = Upcomingevent::where([
       ['user_id', Auth::id()],
       $filter_project,
     ])
-      ->get();
+    ->whereBetween('event_date', [$start_date, $end_date])
+    ->get();
     $result['events'] = [];
     $i = 0;
 
@@ -117,7 +141,6 @@ class AdminEventRequestController extends Controller
       $result['events'][$i]['extendedProps'] = $value;
       $result['events'][$i]['employees'] = $employees;
       $result['events'][$i]['start'] = $value->event_date;
-      $result['events'][$i]['end'] = $value->event_date;
       // $result['events'][$i]['start'] = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse(date('Y-m-d',strtotime($value->shift_start)),'UTC'));          
       // $result['events'][$i]['end'] = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse(date('Y-m-d',strtotime($value->shift_end)),'UTC'));
 
@@ -128,7 +151,8 @@ class AdminEventRequestController extends Controller
       $result['events'][$i]['description'] = "event desctiption";
       $i++;
     }
-    return $result;
+    $result['date_between'] = $start_date->format('d M, Y').' - '.$end_date->format('d M, Y');
+    return response()->json($result);
   }
 
   public function publish(Request $request)

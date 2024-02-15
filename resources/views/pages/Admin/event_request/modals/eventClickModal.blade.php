@@ -2,11 +2,9 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-gradient-primary">
-                <h4 class="modal-title text-white" id="myModalLabel17">Employee List</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header bg-info-subtle py-3">
+                <h5 class="modal-title" id="myModalLabel17">Employee List</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="card plan-card p-2">
@@ -16,21 +14,14 @@
                             <p class="m-0" id="eventShift">Shift-Time: 11-11-22 to 12-11-22</p>
                             <p class="m-0" id="eventRemarks"></p>
                         </div>
-                        <div class="col-6">
-                            <button class="btn btn-gradient-danger text-center border-primary float-right p-0 ml-25"
-                                style="height: 45px; width:45px" id="deleteEvent"><i
-                                    data-feather='trash-2'></i></button>
-                            <button class="btn btn-gradient-primary text-center border-primary float-right p-0 ml-25"
-                                style="height: 45px; width:45px" id="editEvent"><i data-feather='edit'></i></button>
-                        </div>
                     </div>
                 </div>
                 <div class="card plan-card p-2" id="hasData">
                     <div class="row">
                         <div class="col-6">
-                            <button class="btn btn-gradient-success text-center border-primary" disabled
+                            <button class="btn btn-gradient-success text-center border-primary mb-1" disabled
                                 id="addToRoaster">Add To Roster</button>
-                            <button class="btn btn-gradient-primary text-center border-primary"
+                            <button class="btn btn-gradient-primary text-center border-primary mb-1"
                                 id="sendNotification">Send Notification</button>
                         </div>
                         <div class="col-6">

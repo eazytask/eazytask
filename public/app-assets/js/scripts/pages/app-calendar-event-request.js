@@ -20,13 +20,6 @@ if ($('body').attr('data-framework') === 'laravel') {
   assetPath = $('body').attr('data-asset-path');
 }
 
-$(document).on('click', '.fc-sidebarToggle-button', function (e) {
-  $('.app-calendar-sidebar, .body-content-overlay').addClass('show');
-});
-
-$(document).on('click', '.body-content-overlay', function (e) {
-  $('.app-calendar-sidebar, .body-content-overlay').removeClass('show');
-});
 
 $.time = function (dateObject) {
   var t = dateObject.split(/[- :]/);
@@ -42,31 +35,21 @@ $.time = function (dateObject) {
 };
 // calender event start
 document.addEventListener('DOMContentLoaded', function () {
-  var calendarEl = document.getElementById('calendar_event_request');
-  var eventToUpdate;
-  var sidebar = $('.event-sidebar');
-  var eventForm = $('.event-form');
   var publish = $('#addToRoaster');
   var sendNotif = $('#sendNotification');
   var addEventBtn = $('#addEventBtn');
   var editEventBtn = $('#editEventBtn');
-  var eventTitle = $('#title');
   var eventLabel = $('#select-label');
-
+  var eventTitle = $('#title');
   var projectFilter = $('#projectFilter');
   //form id declar end
 
 
 
-  var eventUrl = $('#event-url');
   var eventGuests = $('#event-guests');
-  var eventLocation = $('#event-location');
-  var allDaySwitch = $('.allDay-switch');
   var selectAll = $('.select-all');
   var calEventFilter = $('.calendar-events-filter');
   var filterInput = $('.input-filter');
-  var btnDeleteEvent = $('.btn-delete-event');
-  var calendarEditor = $('#event-description-editor');
 
   let ids = []
   let totalId = []
@@ -116,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   }
   $(document).on('change', '#projectFilter', function () {
-    calendar.refetchEvents();
+      fetchEvents();
   });
   // Label  select
   if (eventLabel.length) {
@@ -182,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //add event modal
   $('#addEvent').on('click', function () {
+    console.log('working');
     resetValues()
     $('.event-modal-title').html('Add Event')
     $('#editEventBtn').prop('hidden', true)
@@ -190,13 +174,14 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#addEventModal').modal('show')
   });
   //event update modal
-  $('#editEvent').on('click', function () {
+  $(document).on("click", ".editEvent", function(){
     $('.event-modal-title').html('Update Event')
     $('#editEventBtn').prop('hidden', false)
     $('#addEventBtn').prop('hidden', true)
-
-    $("#eventClick").modal("hide")
     $('#addEventModal').modal('show')
+    const info = $(this).data('row');
+    eventClick(info);
+    $("#eventClick").modal("hide")
   });
 
   $('#filterStatus').on('change', function () {
@@ -205,13 +190,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //show imployee by status
   function showImployees(status) {
-    eventToUpdate = window.info.event;
+    eventToUpdate = window.info;
 
     ids = []
     totalId = []
     $('#checkAllID').prop('checked', false)
-    event_id = window.info.event.extendedProps.id
-    let employees = window.info.event.extendedProps.employees
+    event_id = window.info.extendedProps.id;
+    let employees = window.info.extendedProps.employees;
 
     let rows = ''
     $.each(employees, function (index, employee) {
@@ -238,21 +223,20 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       rows += `
-                <tr>
-                    <td><input type="checkbox" class="checkID" value="` + employeeId + `" ` + checkbox_status + `></td>
-                    <td>` + employee.fname + `</td>
-                    <td>` + employee.contact_number + `</td>
-                    <td>` + employee.email + `</td>
-                    <td class="` + status + `">` + employee.status + `</td>
-                </tr>
-                `
+        <tr>
+          <td><input type="checkbox" class="checkID" value="` + employeeId + `" ` + checkbox_status + `></td>
+          <td>` + employee.fname + `</td>
+          <td>` + employee.contact_number + `</td>
+          <td>` + employee.email + `</td>
+          <td class="` + status + `">` + employee.status + `</td>
+        </tr>
+      `;
     }
     if (totalId == 0) {
       $("#checkAllID").prop('disabled', true)
     } else {
       $("#checkAllID").prop('disabled', false)
     }
-    console.log(current_ids)
     // if(current_ids.length > 0) {
     //   $("#sendNotification").prop('disabled', false)
     // }else{
@@ -262,32 +246,34 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#eventClickTbody').html(rows);
     $('#eventClickTable').DataTable();
   }
+
+
   // Event click function
-  function eventClick(info) {
+  function eventClick(info, all={}) {
     // edit event value set
     // console.log(info.event.extendedProps.all_employees)
     resetValues()
-    $('#event_id').val(info.event.extendedProps.id);
-    $('#project_name').val(info.event.extendedProps.project_name).trigger('change');
-    $('#event_date').val(info.event.extendedProps.event_date);
-    $('#shift_start').val($.time(info.event.extendedProps.shift_start));
-    $('#shift_end').val($.time(info.event.extendedProps.shift_end));
-    $('#rate').val(info.event.extendedProps.rate);
-    $('#remarks').val(info.event.extendedProps.remarks);
-    $('#no_employee_required').val(info.event.extendedProps.no_employee_required);
-    $('#job_type_name').val(info.event.extendedProps.job_type_name).trigger('change');
+    $('#event_id').val(info.extendedProps.id);
+    $('#project_name').val(info.extendedProps.project_name).trigger('change');
+    $('#event_date').val(info.extendedProps.event_date);
+    $('#shift_start').val($.time(info.extendedProps.shift_start));
+    $('#shift_end').val($.time(info.extendedProps.shift_end));
+    $('#rate').val(info.extendedProps.rate);
+    $('#remarks').val(info.extendedProps.remarks);
+    $('#no_employee_required').val(info.extendedProps.no_employee_required);
+    $('#job_type_name').val(info.extendedProps.job_type_name).trigger('change');
 
     //event click modal
-    $('#eventName').html(info.event.extendedProps.project.pName).trigger('change');
-    $('#eventShift').html("Shift-Time: " + $.time(info.event.extendedProps.shift_start) + " to " + $.time(info.event.extendedProps.shift_end));
-    $('#eventRemarks').html(info.event.extendedProps.remarks);
+    $('#eventName').html(info.extendedProps.project.pName).trigger('change');
+    $('#eventShift').html("Shift-Time: " + $.time(info.extendedProps.shift_start) + " to " + $.time(info.extendedProps.shift_end));
+    $('#eventRemarks').html(info.extendedProps.remarks);
 
     //add to roaster
-    window.info = info
+    window.info = all;
     $('#filterStatus').val('all')
     showImployees('all')
 
-    $("#eventClick").modal("show")
+    // $("#eventClick").modal("show")
 
     if (eventToUpdate.url) {
       info.jsEvent.preventDefault();
@@ -297,190 +283,172 @@ document.addEventListener('DOMContentLoaded', function () {
     //  Delete Event
   }
 
-  // Modify sidebar toggler
-  function modifyToggler() {
-    $('.fc-sidebarToggle-button')
-      .empty()
-      .append(feather.icons['menu'].toSvg({ class: 'ficon' }));
-  }
+  $(document).on('click', '.add_employee', function(){
+    let event = $(this).data('row');
+    console.log('working');
+    eventClick(event);
+    $("#eventClick").modal("show")
+  });
+    
 
-  // Selected Checkboxes
-  function selectedCalendars() {
-    var selected = [];
-    $('.calendar-events-filter input:checked').each(function () {
-      selected.push($(this).attr('data-value'));
-    });
-    return selected;
-  }
+
+  $('#prev').on('click', ()=>{
+    fetchEvents('previous', '/admin/home/event/weekly');
+  });
+
+  $('#next').on('click', ()=>{
+    fetchEvents('next', '/admin/home/event/weekly');
+  })
 
   // --------------------------------------------------------------------------------------------------
   // AXIOS: fetchEvents
   // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
   // --------------------------------------------------------------------------------------------------
-  function fetchEvents(info, successCallback) {
+  function fetchEvents(goto='', address = '/admin/home/event/search') {
     // Fetch Events from API endpoint reference
-    $.ajax(
-      {
-        url: '/admin/home/event/search',
-        data: {
-          'projectFilter': projectFilter.val(),
-        },
-        type: 'GET',
-        success: function (result) {
-          // Get requested calendars as Array
-          var calendars = selectedCalendars();
-          // selectedEvents = result.events.filter(function (event) {
-          //   console.log(event.extendedProps.calendar.toLowerCase());
-          //   return calendars.includes(event.extendedProps.calendar.toLowerCase());
-          // });   
-          // console.log("selectedEvents=",selectedEvents);       
-          successCallback(result.events);
-        },
-        error: function (error) {
-          console.log(error);
-        }
+    $.ajax({
+      url: address,
+      data: {
+        'goto': goto,
+        'projectFilter': projectFilter.val(),
+      },
+      type: 'GET',
+      success: function (results) {
+        console.log(results);
+        $('#currentWeek').html(results.date_between);
+        const events = results.events;
+        dataEntries(events);
+      },
+      error: function (error) {
+        console.log(error);
       }
-    );
-
-    // var calendars = selectedCalendars();
-    // // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
-    // // You should make an API call, look into above commented API call for reference
-    // selectedEvents = events.filter(function (event) {
-    //   // console.log(event.extendedProps.calendar.toLowerCase());
-    //   return calendars.includes(event.extendedProps.calendar.toLowerCase());
-    // });
-    // // if (selectedEvents.length > 0) {
-    // successCallback(selectedEvents);
-    // }
+    });
   }
+  fetchEvents();
 
-  // Calendar plugins
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'listMonth',
-    firstDay: 1,
-    eventDisplay: 'block',
-    displayEventTime: false,
-    eventDidMount: function (info) {
-      $(info.el).tooltip({
-        title: "<b>Start time: "+ info.event.extendedProps.shift_start +"</b><br><b>End time: "+ info.event.extendedProps.shift_end +"</b><br><b>Rate: $"+ info.event.extendedProps.rate +"</b><br><b>Employee required: "+ info.event.extendedProps.no_employee_required +"</b><br><br><div class='text-left'>" + info.event.extendedProps.description + "</div>",
-        // title: info.event.extendedProps.calendar,                
-        html: true,
-        placement: 'top',
-        trigger: 'hover',
-        container: 'body'
+  function dataEntries(events){
+    let html = '';
+    const url = $('meta[name="site_url"]').attr('content')
+    if(events.length){
+      events.forEach(function(event){
+        var profile = '';
+        var employee_length = 0;
+        event.employees.forEach(function(employee){
+          if(employee.status == 'Added'){
+            var image = '';
+            if(employee.image){
+              image = `<img src="${url+employee.image}" alt="" class="rounded-circle img-fluid">`;
+            }else{
+              image = `<img src="${url}images/app/no-image.png" alt="" class="rounded-circle img-fluid">`;
+            }
+            profile +=`
+              <a href="javascript: void(0);" class="avatar-group-item material-shadow" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" aria-label="${employee.fname} ${employee.mname} ${employee.lname}" data-bs-original-title="${employee.fname} ${employee.mname} ${employee.lname}">
+                <div class="avatar-xxs">
+                  ${image}
+                </div>
+              </a>`;
+            employee_length++
+          }
+        });
+
+        var menu = '<span class="text-danger">Expired</span>';
+        console.log(event.extendedProps);
+        const props = event.extendedProps;
+        const { employees, ...otherProps } = props;
+        var raw_data = {id: event.id, title: event.title, extendedProps: otherProps}
+
+        if(event.extendedProps.latest){
+          menu = `
+            <div class="dropdown">
+              <button class="btn btn-link text-muted p-1 mt-n2 py-0 text-decoration-none fs-15 material-shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal icon-sm"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+              </button>
+
+              <div class="dropdown-menu dropdown-menu-end">
+                <button class='dropdown-item editEvent' data-row='${JSON.stringify(raw_data)}'>
+                  <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+                </button>
+                <button class="dropdown-item deleteEvent" data-id="${event.id}">
+                  <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+                </button>
+              </div>
+            </div>`;
+        };
+
+        html += `
+        <div class="col-xxl-3 col-sm-6 project-card">
+          <div class="card card-height-100">
+            <div class="card-body">
+              <div class="d-flex flex-column h-100">
+                <div class="d-flex">
+                  <div class="flex-grow-1">
+                    <p class="text-muted mb-4">Updated ${moment(event.extendedProps.updated_at).fromNow()}</p>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div class="d-flex gap-1 align-items-center">
+                      ${menu}
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex mb-2">
+                  <div class="flex-grow-1">
+                    <h5 class="mb-1 fs-15">${event.title}</h5>
+                    <p class="text-muted text-truncate-two-lines mb-3">
+                      ${event.extendedProps.remarks ? event.extendedProps.remarks : ''}
+                    </p>
+                  </div>
+                </div>
+                <div class="mt-auto">
+                  <div class="d-flex mb-2">
+                    <div class="flex-grow-1">
+                      <div>Employees</div>
+                    </div>
+                    <div class="flex-shrink-0">
+                      <div><i class="ri-list-check align-bottom me-1 text-muted"></i> ${employee_length}/${event.extendedProps.no_employee_required}</div>
+                    </div>
+                  </div>
+                  <div class="progress progress-sm animated-progress">
+                    <div class="progress-bar bg-success" role="progressbar" aria-valuenow="${employee_length}" aria-valuemin="0" aria-valuemax="${event.extendedProps.no_employee_required}" style="width: ${(employee_length/event.extendedProps.no_employee_required)*100}%;"></div><!-- /.progress-bar -->
+                  </div><!-- /.progress -->
+                </div>
+              </div>
+
+            </div>
+            <!-- end card body -->
+            <div class="card-footer bg-transparent border-top-dashed py-2">
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <div class="avatar-group">
+                    ${profile}
+                    <a href="javascript: void(0);" data-row='${JSON.stringify(event)}' class="avatar-group-item material-shadow add_employee" data-bs-toggle="tooltip"  data-bs-trigger="hover" data-bs-placement="top" data-bs-original-title="Add Members">
+                      <div class="avatar-xxs">
+                        <div class="avatar-title fs-16 rounded-circle bg-light border-dashed border text-primary">
+                            +
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="flex-shrink-0">
+                  <div class="text-muted">
+                    <i class="ri-calendar-event-fill me-1 align-bottom"></i> ${moment(event.start).format('ll')}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end card footer -->
+          </div>
+          <!-- end card -->
+        </div>`;
       });
-    },
-    nextDayThreshold: '00:00:00',
-    events: fetchEvents,
-    editable: true,
-    dragScroll: true,
-    dayMaxEvents: 5,
-    eventResizableFromStart: true,
-    eventStartEditable: false,
-    customButtons: {
-      sidebarToggle: {
-        text: 'Sidebar'
-      }
-    },
-    headerToolbar: {
-      start: 'sidebarToggle, prev,next, title',
-      // end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-      end: 'dayGridMonth,dayGridWeek,dayGridDay,listMonth'
-    },
-    direction: direction,
-    initialDate: new Date(),
-    navLinks: true, // can click day/week names to navigate views
-    eventClassNames: function ({ event: calendarEvent }) {
-      // const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar];
-      return [
-        // Background Color
-        // 'bg-light-primary'
-        calendarEvent.extendedProps.calendar
-      ];
-    },
-    dateClick: function (info) {
-
-    },
-    eventClick: function (info) {
-      if (info.event.extendedProps.latest) {
-        eventClick(info);
-      }
-    },
-    datesSet: function () {
-      modifyToggler();
-    },
-    viewDidMount: function () {
-      modifyToggler();
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    }else{
+      html += '<h4 class="text-center text-muted">Event Not Found!</h4>';
     }
-  });
-
-  // Render calendar
-  calendar.render();
-  // Modify sidebar toggler
-  modifyToggler();
-  // updateEventClass();
-
-  // Validate add new and update form
-
-  // ------------------------------------------------
-  // addEvent
-  // ------------------------------------------------
-  function addEvent(eventData) {
-    calendar.addEvent(eventData);
-    calendar.refetchEvents();
+    $('#events').html(html);
   }
 
-  // ------------------------------------------------
-  // updateEvent
-  // ------------------------------------------------
-  function updateEvent(eventData) {
-    var propsToUpdate = ['id', 'title', 'url'];
-    var extendedPropsToUpdate = ['calendar', 'guests', 'location', 'description'];
-
-    updateEventInCalendar(eventData, propsToUpdate, extendedPropsToUpdate);
-  }
-
-  // ------------------------------------------------
-  // removeEvent
-  // ------------------------------------------------
-  function removeEvent(eventId) {
-    removeEventInCalendar(eventId);
-  }
-
-  // ------------------------------------------------
-  // (UI) updateEventInCalendar
-  // ------------------------------------------------
-  const updateEventInCalendar = (updatedEventData, propsToUpdate, extendedPropsToUpdate) => {
-    const existingEvent = calendar.getEventById(updatedEventData.id);
-
-    // --- Set event properties except date related ----- //
-    // ? Docs: https://fullcalendar.io/docs/Event-setProp
-    // dateRelatedProps => ['start', 'end', 'allDay']
-    // eslint-disable-next-line no-plusplus
-    for (var index = 0; index < propsToUpdate.length; index++) {
-      var propName = propsToUpdate[index];
-      existingEvent.setProp(propName, updatedEventData[propName]);
-    }
-
-    // --- Set date related props ----- //
-    // ? Docs: https://fullcalendar.io/docs/Event-setDates
-    existingEvent.setDates(updatedEventData.start, updatedEventData.end, { allDay: updatedEventData.allDay });
-
-    // --- Set event's extendedProps ----- //
-    // ? Docs: https://fullcalendar.io/docs/Event-setExtendedProp
-    // eslint-disable-next-line no-plusplus
-    for (var index = 0; index < extendedPropsToUpdate.length; index++) {
-      var propName = extendedPropsToUpdate[index];
-      existingEvent.setExtendedProp(propName, updatedEventData.extendedProps[propName]);
-    }
-  };
-
-  // ------------------------------------------------
-  // (UI) removeEventInCalendar
-  // ------------------------------------------------
-  function removeEventInCalendar(eventId) {
-    calendar.getEventById(eventId).remove();
-  }
 
 
   // publish employee request
@@ -495,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       type: 'GET',
       success: function (data) {
-        calendar.refetchEvents();
+        fetchEvents();
         toastr['success']('👋 Added Successfully', 'Success!', {
           closeButton: true,
           tapToDismiss: false,
@@ -520,7 +488,7 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       type: 'GET',
       success: function (data) {
-        calendar.refetchEvents();
+        fetchEvents();
         toastr['success']('👋 Notif Sent Succesfully', 'Success!', {
           closeButton: true,
           tapToDismiss: false,
@@ -545,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function () {
         type: "POST",
         dataType: 'json',
         success: function (data) {
-          calendar.refetchEvents();
+          fetchEvents();
           if (data.status) {
             toastr.success(data.msg)
           } else {
@@ -572,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function () {
         type: "POST",
         dataType: 'json',
         success: function (data) {
-          calendar.refetchEvents();
+          fetchEvents();
           if (data.status) {
             toastr.success(data.msg)
           } else {
@@ -592,20 +560,19 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   //delete event
-  $('#deleteEvent').on('click', function () {
-    event_id = $('#event_id').val()
+  $('.deleteEvent').on('click', function () {
+    const event_id = $(this).data("id")
     $.ajax({
       url: '/admin/home/upcomingevent/delete/' + event_id,
       type: 'GET',
       success: function (data) {
-        calendar.refetchEvents();
+        fetchEvents();
         toastr['success']('👋 delete Successfully', 'Success!', {
           closeButton: true,
           tapToDismiss: false,
         });
       }
     })
-    $("#eventClick").modal("hide")
   });
 
 
@@ -633,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         calEventFilter.find('input').prop('checked', false);
       }
-      calendar.refetchEvents();
+      fetchEvents();
     });
   }
 
@@ -642,7 +609,7 @@ document.addEventListener('DOMContentLoaded', function () {
       $('.input-filter:checked').length < calEventFilter.find('input').length
         ? selectAll.prop('checked', false)
         : selectAll.prop('checked', true);
-      calendar.refetchEvents();
+      fetchEvents();
     });
   }
 });

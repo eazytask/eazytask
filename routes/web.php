@@ -445,6 +445,7 @@ Route::group(['middleware' => ['company_status']], function () {
 
     Route::get('admin/home/event/request', [AdminEventRequestController::class, 'index'])->middleware('is_admin');
     Route::get('admin/home/event/search', [AdminEventRequestController::class, 'dataget'])->middleware('is_admin');
+    Route::get('admin/home/event/weekly', [AdminEventRequestController::class, 'search'])->middleware('is_admin');
     Route::get('admin/home/event/publish', [AdminEventRequestController::class, 'publish'])->middleware('is_admin');
     Route::get('admin/home/event/complete', [AdminEventRequestController::class, 'complete'])->middleware('is_admin');
     Route::get('admin/home/event/send-notif', [AdminEventRequestController::class, 'sendNotif'])->middleware('is_admin');
