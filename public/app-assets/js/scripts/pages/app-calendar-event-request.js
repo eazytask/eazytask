@@ -191,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
   //show imployee by status
   function showImployees(status) {
     eventToUpdate = window.info;
-
     ids = []
     totalId = []
     $('#checkAllID').prop('checked', false)
@@ -283,11 +282,17 @@ document.addEventListener('DOMContentLoaded', function () {
     //  Delete Event
   }
 
+  
   $(document).on('click', '.add_employee', function(){
-    let event = $(this).data('row');
-    console.log('working');
-    eventClick(event);
+    let id = $(this).data('id');
+    let events = window.events;
+    let event = getOnlyArray(id);
+    window.info = event[0];
+    showImployees('all');
     $("#eventClick").modal("show")
+    function getOnlyArray(id) {
+      return events.filter((s) => s.id === id)
+    }
   });
     
 
@@ -314,9 +319,9 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       type: 'GET',
       success: function (results) {
-        console.log(results);
         $('#currentWeek').html(results.date_between);
         const events = results.events;
+        window.events = results.events;
         dataEntries(events);
       },
       error: function (error) {
@@ -352,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         var menu = '<span class="text-danger">Expired</span>';
-        console.log(event.extendedProps);
+        var add_employee = '';
         const props = event.extendedProps;
         const { employees, ...otherProps } = props;
         var raw_data = {id: event.id, title: event.title, extendedProps: otherProps}
@@ -373,6 +378,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 </button>
               </div>
             </div>`;
+          add_employee = `
+            <a href="javascript: void(0);" data-id='${event.id}' class="avatar-group-item material-shadow add_employee" data-bs-toggle="tooltip"  data-bs-trigger="hover" data-bs-placement="top" data-bs-original-title="Add Members">
+              <div class="avatar-xxs">
+                <div class="avatar-title fs-16 rounded-circle bg-light border-dashed border text-primary">
+                    +
+                </div>
+              </div>
+            </a>
+          `;
         };
 
         html += `
@@ -420,13 +434,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="flex-grow-1">
                   <div class="avatar-group">
                     ${profile}
-                    <a href="javascript: void(0);" data-row='${JSON.stringify(event)}' class="avatar-group-item material-shadow add_employee" data-bs-toggle="tooltip"  data-bs-trigger="hover" data-bs-placement="top" data-bs-original-title="Add Members">
-                      <div class="avatar-xxs">
-                        <div class="avatar-title fs-16 rounded-circle bg-light border-dashed border text-primary">
-                            +
-                        </div>
-                      </div>
-                    </a>
+                    ${add_employee}
                   </div>
                 </div>
                 <div class="flex-shrink-0">
@@ -441,12 +449,12 @@ document.addEventListener('DOMContentLoaded', function () {
           <!-- end card -->
         </div>`;
       });
-      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
     }else{
       html += '<h4 class="text-center text-muted">Event Not Found!</h4>';
     }
     $('#events').html(html);
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   }
 
 
