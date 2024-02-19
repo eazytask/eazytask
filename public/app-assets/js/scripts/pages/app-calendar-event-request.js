@@ -390,13 +390,13 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         html += `
-        <div class="col-xxl-3 col-sm-6 project-card">
+        <div class="col-xxl-3 col-sm-6 project-card ${(moment(event.start).format('dddd').substring(0,3)).toLowerCase()}">
           <div class="card card-height-100">
             <div class="card-body">
               <div class="d-flex flex-column h-100">
                 <div class="d-flex">
                   <div class="flex-grow-1">
-                    <p class="text-muted mb-4">Updated ${moment(event.extendedProps.updated_at).fromNow()}</p>
+                    <p class="text-muted mb-4">${event.cname}</p>
                   </div>
                   <div class="flex-shrink-0">
                     <div class="d-flex gap-1 align-items-center">
@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <div class="flex-grow-1">
                     <h5 class="mb-1 fs-15">${event.title}</h5>
                     <p class="text-muted text-truncate-two-lines mb-3">
-                      ${event.extendedProps.remarks ? event.extendedProps.remarks : ''}
+                      ${event.project_address}
                     </p>
                   </div>
                 </div>
@@ -416,6 +416,9 @@ document.addEventListener('DOMContentLoaded', function () {
                   <div class="d-flex mb-2">
                     <div class="flex-grow-1">
                       <div>Employees</div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <div>${moment(event.start).format('ll')} (${moment(event.extendedProps.shift_start).format('HH:mm')} to ${moment(event.extendedProps.shift_end).format('HH:mm')})</div>
                     </div>
                     <div class="flex-shrink-0">
                       <div><i class="ri-list-check align-bottom me-1 text-muted"></i> ${employee_length}/${event.extendedProps.no_employee_required}</div>
@@ -439,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="flex-shrink-0">
                   <div class="text-muted">
-                    <i class="ri-calendar-event-fill me-1 align-bottom"></i> ${moment(event.start).format('ll')}
+                    <i class="ri-calendar-event-fill me-1 align-bottom"></i> ${moment(event.start).format('dddd')}
                   </div>
                 </div>
               </div>
@@ -471,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       type: 'GET',
       success: function (data) {
-        fetchEvents();
+        fetchEvents('current', '/admin/home/event/weekly');
         toastr['success']('👋 Added Successfully', 'Success!', {
           closeButton: true,
           tapToDismiss: false,
@@ -521,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
         type: "POST",
         dataType: 'json',
         success: function (data) {
-          fetchEvents();
+          fetchEvents('current', '/admin/home/event/weekly');
           if (data.status) {
             toastr.success(data.msg)
           } else {
@@ -548,7 +551,7 @@ document.addEventListener('DOMContentLoaded', function () {
         type: "POST",
         dataType: 'json',
         success: function (data) {
-          fetchEvents();
+          fetchEvents('current', '/admin/home/event/weekly');
           if (data.status) {
             toastr.success(data.msg)
           } else {
@@ -574,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function () {
       url: '/admin/home/upcomingevent/delete/' + event_id,
       type: 'GET',
       success: function (data) {
-        fetchEvents();
+        fetchEvents('current', '/admin/home/event/weekly');
         toastr['success']('👋 delete Successfully', 'Success!', {
           closeButton: true,
           tapToDismiss: false,

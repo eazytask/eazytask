@@ -55,6 +55,9 @@ class AdminEventRequestController extends Controller
       Session::put('current_week', $current_week + 1);
 
       $week = Carbon::now()->addWeek(Session::get('current_week'));
+    }elseif($request->goto == 'current'){
+      $current_week = Session::get('current_week');
+      $week = Carbon::now()->addWeek($current_week);
     }else{
       $week = Carbon::now();
     }
@@ -135,9 +138,12 @@ class AdminEventRequestController extends Controller
       }
       $value['calendar'] = $status;
       $value['employees'] = $employees;
-
+      
       $result['events'][$i]['id'] = $value->id;
       $result['events'][$i]['title'] = $value->project->pName;
+      $result['events'][$i]['cname'] = $value->project->cName;
+      $result['events'][$i]['project'] = $value->project;
+      $result['events'][$i]['project_address'] = $value->project->project_address.', '.$value->project->suburb.', '.$value->project->project_state.', '.$value->project->postal_code;
       $result['events'][$i]['extendedProps'] = $value;
       $result['events'][$i]['employees'] = $employees;
       $result['events'][$i]['start'] = $value->event_date;
