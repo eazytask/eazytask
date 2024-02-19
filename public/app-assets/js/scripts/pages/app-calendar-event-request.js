@@ -262,17 +262,17 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#no_employee_required').val(info.extendedProps.no_employee_required);
     $('#job_type_name').val(info.extendedProps.job_type_name).trigger('change');
 
-    //event click modal
-    $('#eventName').html(info.extendedProps.project.pName).trigger('change');
-    $('#eventShift').html("Shift-Time: " + $.time(info.extendedProps.shift_start) + " to " + $.time(info.extendedProps.shift_end));
-    $('#eventRemarks').html(info.extendedProps.remarks);
+    // //event click modal
+    // $('#eventName').html(info.extendedProps.project.pName).trigger('change');
+    // $('#eventShift').html("Shift-Time: " + $.time(info.extendedProps.shift_start) + " to " + $.time(info.extendedProps.shift_end));
+    // $('#eventRemarks').html(info.extendedProps.remarks);
 
-    //add to roaster
-    window.info = all;
-    $('#filterStatus').val('all')
-    showImployees('all')
+    // //add to roaster
+    // window.info = all;
+    // $('#filterStatus').val('all')
+    // showImployees('all')
 
-    // $("#eventClick").modal("show")
+    // // $("#eventClick").modal("show")
 
     if (eventToUpdate.url) {
       info.jsEvent.preventDefault();
@@ -288,7 +288,16 @@ document.addEventListener('DOMContentLoaded', function () {
     let events = window.events;
     let event = getOnlyArray(id);
     window.info = event[0];
-    showImployees('all');
+
+    //event click modal
+    $('#eventName').html(info.extendedProps.project.pName).trigger('change');
+    $('#eventShift').html("Shift-Time: " + $.time(info.extendedProps.shift_start) + " to " + $.time(info.extendedProps.shift_end));
+    $('#eventRemarks').html(info.extendedProps.remarks);
+
+    //add to roaster
+    $('#filterStatus').val('all')
+    showImployees('all')
+
     $("#eventClick").modal("show")
     function getOnlyArray(id) {
       return events.filter((s) => s.id === id)
@@ -390,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         html += `
-        <div class="col-xxl-3 col-sm-6 project-card ${(moment(event.start).format('dddd').substring(0,3)).toLowerCase()}">
+        <div class="col-xxl-3 col-lg-3 col-md-4 col-sm-6 project-card ${(moment(event.start).format('dddd').substring(0,3)).toLowerCase()}">
           <div class="card card-height-100">
             <div class="card-body">
               <div class="d-flex flex-column h-100">
@@ -413,12 +422,10 @@ document.addEventListener('DOMContentLoaded', function () {
                   </div>
                 </div>
                 <div class="mt-auto">
+
                   <div class="d-flex mb-2">
                     <div class="flex-grow-1">
                       <div>Employees</div>
-                    </div>
-                    <div class="flex-grow-1">
-                      <div>${moment(event.start).format('ll')} (${moment(event.extendedProps.shift_start).format('HH:mm')} to ${moment(event.extendedProps.shift_end).format('HH:mm')})</div>
                     </div>
                     <div class="flex-shrink-0">
                       <div><i class="ri-list-check align-bottom me-1 text-muted"></i> ${employee_length}/${event.extendedProps.no_employee_required}</div>
@@ -427,6 +434,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <div class="progress progress-sm animated-progress">
                     <div class="progress-bar bg-success" role="progressbar" aria-valuenow="${employee_length}" aria-valuemin="0" aria-valuemax="${event.extendedProps.no_employee_required}" style="width: ${(employee_length/event.extendedProps.no_employee_required)*100}%;"></div><!-- /.progress-bar -->
                   </div><!-- /.progress -->
+                  <div class="pt-2">${moment(event.start).format('ll')} (${moment(event.extendedProps.shift_start).format('HH:mm')} to ${moment(event.extendedProps.shift_end).format('HH:mm')})</div>
                 </div>
               </div>
 

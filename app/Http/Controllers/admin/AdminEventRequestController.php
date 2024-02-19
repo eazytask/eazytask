@@ -72,6 +72,7 @@ class AdminEventRequestController extends Controller
       $filter_project,
     ])
     ->whereBetween('event_date', [$start_date, $end_date])
+    ->orderBy('event_date', 'ASC')
     ->get();
     $result['events'] = [];
     $i = 0;
