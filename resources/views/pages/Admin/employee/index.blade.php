@@ -12,37 +12,7 @@
     @component('components.employeeTab')
         @slot('active') employee @endslot
     @endcomponent
-    <style>
-        /* Custom styles for DataTables search and length menu alignment */
-        .dataTables_wrapper .dataTables_filter {
-            float: right;
-            margin-left: 10px;
-        }
-        .dataTables_wrapper .dataTables_length {
-            float: left;
-            margin-right: 20px;
-        }
-        .dataTables_wrapper .dt-buttons{
-            margin-right: 20px;
-        }
-        .disablediv {
-            pointer-events: none;
-            opacity: 0.4;
-        }
-        .select2-error-handle > div > div {
-            display: flex;
-            flex-direction: column;
-        }
-        .select2-error-handle > div > div > select {
-            order: 2;
-        }
-        .select2-error-handle > div > div > span {
-            order: 1;
-        }
-        .select2-error-handle label.error{
-            order: 3;
-        }
-    </style>
+
     <div class="">
         <div class="card">
             <div class="card-header">
@@ -126,6 +96,40 @@
     </div>
     <!-- end page title -->
 @endsection
+
+@push('styles')
+    <style>
+        /* Custom styles for DataTables search and length menu alignment */
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
+        }
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
+        }
+        .dataTables_wrapper .dt-buttons{
+            margin-right: 20px;
+        }
+        .disablediv {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .select2-error-handle > div > div {
+            display: flex;
+            flex-direction: column;
+        }
+        .select2-error-handle > div > div > select {
+            order: 2;
+        }
+        .select2-error-handle > div > div > span {
+            order: 1;
+        }
+        .select2-error-handle label.error{
+            order: 3;
+        }
+    </style>
+@endpush
 
 @push('scripts')
     @include('components.datatablescript')
@@ -276,7 +280,7 @@
                             'email': $("#email").val(),
                         },
                         success: function(data) {
-                            
+                            console.log(data);
                             if (data.user) {
                                 $("#name").val(data.user.name);
                                 // $("#name").prop('readonly', true)

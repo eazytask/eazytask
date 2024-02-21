@@ -1,7 +1,20 @@
 @extends('layouts.Admin.master')
 
 @push('styles')
-<link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css') }}">
+    <style>
+        .demo-inline-spacing {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .demo-inline-spacing>* {
+            margin-right: 1.5rem;
+            margin-top: 1.5rem;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/vendors.min.css')}}">
 @endpush
 
 @php
@@ -19,19 +32,7 @@
     }
 @endphp
 @section('admin_page_content')
-<style>
-    .demo-inline-spacing {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: center;
-    }
-    .demo-inline-spacing>* {
-        margin-right: 1.5rem;
-        margin-top: 1.5rem;
-    }
-</style>
-<link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/vendors.min.css')}}">
+
     @component('components.breadcrumb')
         @slot('li_1')
             Timesheet

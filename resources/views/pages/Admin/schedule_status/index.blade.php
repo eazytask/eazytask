@@ -6,26 +6,7 @@
         @slot('li_1') Dashboard @endslot
         @slot('title') Schedule @endslot
     @endcomponent
-    <style>
 
-        #myTable {
-            /* width: 1000px !important; */
-        }
-
-        .font-small-2 {
-            font-size: 0.7rem !important;
-        }
-
-        .button-unstyled {
-            background: none;
-            color: inherit;
-            border: none;
-            padding: 0;
-            font: inherit;
-            cursor: pointer;
-            outline: inherit;
-        }
-    </style>
     <div class="row">
         <div class="col-lg-12 col-md-12">
             <div class="card">
@@ -108,6 +89,28 @@
     @include('pages.Admin.schedule_status.modals.timeKeeperAddModal')
 @endsection
 
+@push('styles')
+    <style>
+
+        #myTable {
+            /* width: 1000px !important; */
+        }
+
+        .font-small-2 {
+            font-size: 0.7rem !important;
+        }
+
+        .button-unstyled {
+            background: none;
+            color: inherit;
+            border: none;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+            outline: inherit;
+        }
+    </style>
+@endpush
 
 @push('scripts')
     @include('components.datatablescript')

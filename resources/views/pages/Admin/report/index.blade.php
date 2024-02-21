@@ -1,58 +1,6 @@
 @extends('layouts.Admin.master')
 @section('admin_page_content')
 
-    <style>
-        #example {
-            /* width: 1000px !important; */
-        }
-
-        .demo-inline-spacing {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            align-items: center;
-        }
-
-        .demo-inline-spacing>* {
-            margin-right: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .font-small-2 {
-            font-size: 0.6rem !important;
-        }
-
-        .button-unstyled {
-            background: none;
-            color: inherit;
-            border: none;
-            padding: 0;
-            font: inherit;
-            cursor: pointer;
-            outline: inherit;
-        }
-        .dataTables_wrapper .dataTables_filter {
-            float: right;
-            margin-left: 10px;
-        }
-
-        .dataTables_wrapper .dataTables_length {
-            float: left;
-            margin-right: 20px;
-        }
-        div.dt-buttons {
-            padding-right:1rem;
-        }
-        .select2-container--classic .select2-selection--single, .select2-container--default .select2-selection--single {
-            min-height: 2.458rem;
-            padding: 5px;
-            border: 1px solid #D8D6DE;
-        }
-        #roaster_date.form-control[readonly] {
-            background-color: #fff !important;
-            opacity: 1;
-        }
-    </style>
 
     @component('components.breadcrumb')
         @slot('li_1')
@@ -165,6 +113,62 @@
     </div>
 
 @endsection
+
+@push('styles')
+    <style>
+        #example {
+            /* width: 1000px !important; */
+        }
+
+        .demo-inline-spacing {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .demo-inline-spacing>* {
+            margin-right: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .font-small-2 {
+            font-size: 0.6rem !important;
+        }
+
+        .button-unstyled {
+            background: none;
+            color: inherit;
+            border: none;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+            outline: inherit;
+        }
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
+        }
+
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
+        }
+        div.dt-buttons {
+            padding-right:1rem;
+        }
+        .select2-container--classic .select2-selection--single, .select2-container--default .select2-selection--single {
+            min-height: 2.458rem;
+            padding: 5px;
+            border: 1px solid #D8D6DE;
+        }
+        #roaster_date.form-control[readonly] {
+            background-color: #fff !important;
+            opacity: 1;
+        }
+    </style>
+
+@endpush
 
 @push('scripts')
     <script src="{{asset('app-assets/velzon/libs/moment/moment.js')}}"></script>

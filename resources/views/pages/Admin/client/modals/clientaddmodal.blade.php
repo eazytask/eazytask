@@ -179,6 +179,8 @@
 </div>
 @push('scripts')
     @include('components.select2')
+@endpush
+@push('styles')
     <style>
         .horizontal-wizard{
             margin-bottom: 0px !important;

@@ -25,7 +25,2544 @@
     $total_amount = 0;
 
 @endphp
-@section('admincontent')
+
+@section('admin_page_content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            User
+        @endslot
+        @slot('title')
+            Dashboard
+        @endslot
+    @endcomponent
+    <div class="profile-foreground position-relative mx-n4 mt-n4">
+        <div class="profile-wid-bg">
+            <img src="{{ URL::asset('app-assets/velzon/images/profile-bg.jpg') }}" alt="" class="profile-wid-img" />
+        </div>
+    </div>
+    <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
+        <div class="row g-4">
+            <div class="col-auto">
+                <div class="avatar-lg">
+                    <img src="@if (Auth::user()->image != ''){{ 'https://api.eazytask.au/' . Auth::user()->image }}@else{{ URL::asset('app-assets/velzon/images/users/avatar-1.jpg') }}@endif"
+                        alt="user-img" class="img-thumbnail rounded-circle" />
+                </div>
+            </div>
+            <!--end col-->
+            <div class="col">
+                <div class="p-2">
+                    <h3 class="text-white mb-1">{{ Auth::user()->name }} {{ Auth::user()->mname }} {{ Auth::user()->lname }}</h3>
+                    <p class="text-white text-opacity-75">
+                        @if (auth()->user()->company_roles->contains('role', 2))
+                            Admin
+                        @elseif(auth()->user()->company_roles->contains('role', 4))
+                            Supervisor
+                        @elseif(auth()->user()->company_roles->contains('role', 5))
+                            Operation
+                        @elseif(auth()->user()->company_roles->contains('role', 6))
+                            Manager
+                        @elseif(auth()->user()->company_roles->contains('role', 7))
+                            Account
+                        @else
+                            User
+                        @endif
+                    </p>
+                </div>
+            </div>
+            <!--end col-->
+            {{-- <div class="col-12 col-lg-auto order-last order-lg-0">
+                <div class="row text text-white-50 text-center">
+                    <div class="col-lg-6 col-4">
+                        <div class="p-2">
+                            <h4 class="text-white mb-1">24.3K</h4>
+                            <p class="fs-14 mb-0">Followers</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-4">
+                        <div class="p-2">
+                            <h4 class="text-white mb-1">1.3K</h4>
+                            <p class="fs-14 mb-0">Following</p>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+            <!--end col-->
+
+        </div>
+        <!--end row-->
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="d-flex profile-wrapper">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link fs-14 active" data-bs-toggle="tab" href="#overview-tab" role="tab">
+                                <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span
+                                    class="d-none d-md-inline-block">Overview</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#compliances" role="tab">
+                                <i class="ri-list-unordered d-inline-block d-md-none"></i> <span
+                                    class="d-none d-md-inline-block">Compliances</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#projects" role="tab">
+                                <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span
+                                    class="d-none d-md-inline-block">Projects</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#documents" role="tab">
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span
+                                    class="d-none d-md-inline-block">Documents</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="flex-shrink-0">
+                        <a href="pages-profile-settings" class="btn btn-success"><i
+                                class="ri-edit-box-line align-bottom"></i> Edit Profile</a>
+                    </div>
+                </div>
+                <!-- Tab panes -->
+                <div class="tab-content pt-4 text-muted">
+                    <div class="tab-pane active" id="overview-tab" role="tabpanel">
+                        <div class="row">
+                            <div class="col-xxl-3">
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Info</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless mb-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th class="ps-0" scope="row">Full Name :</th>
+                                                        <td class="text-muted">
+                                                            {{ Auth::user()->name }} {{ Auth::user()->mname }} {{ Auth::user()->lname }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-0" scope="row">E-mail :</th>
+                                                        <td class="text-muted">{{Auth::user()->email}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-0" scope="row">Joining Date</th>
+                                                        <td class="text-muted">{{\Carbon\Carbon::parse(Auth::user()->created_at)->format('d M Y')}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Portfolio</h5>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <div>
+                                                <a href="javascript:void(0);" class="avatar-xs d-block">
+                                                    <span class="avatar-title rounded-circle fs-16 bg-body text-light">
+                                                        <i class="ri-github-fill"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);" class="avatar-xs d-block">
+                                                    <span class="avatar-title rounded-circle fs-16 bg-primary">
+                                                        <i class="ri-global-fill"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);" class="avatar-xs d-block">
+                                                    <span class="avatar-title rounded-circle fs-16 bg-success">
+                                                        <i class="ri-dribbble-fill"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);" class="avatar-xs d-block">
+                                                    <span class="avatar-title rounded-circle fs-16 bg-danger">
+                                                        <i class="ri-pinterest-fill"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Skills</h5>
+                                        <div class="d-flex flex-wrap gap-2 fs-15">
+                                            <a href="javascript:void(0);"
+                                                class="badge bg-primary-subtle text-primary">Photoshop</a>
+                                            <a href="javascript:void(0);"
+                                                class="badge bg-primary-subtle text-primary">illustrator</a>
+                                            <a href="javascript:void(0);"
+                                                class="badge bg-primary-subtle text-primary">HTML</a>
+                                            <a href="javascript:void(0);"
+                                                class="badge bg-primary-subtle text-primary">CSS</a>
+                                            <a href="javascript:void(0);"
+                                                class="badge bg-primary-subtle text-primary">Javascript</a>
+                                            <a href="javascript:void(0);"
+                                                class="badge bg-primary-subtle text-primary">Php</a>
+                                            <a href="javascript:void(0);"
+                                                class="badge bg-primary-subtle text-primary">Python</a>
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div><!-- end card -->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4">
+                                            <div class="flex-grow-1">
+                                                <h5 class="card-title mb-0">Upcoming Events</h5>
+                                            </div>
+                                            {{-- div.flex-shrink-0>.dropdown --}}
+                                        </div>
+                                        <div>
+                                            @foreach($upcomingevents as $upcomingevent)
+                                            <div class="d-flex align-items-center py-3">
+                                                <div class="avatar-xs flex-shrink-0 me-3">
+                                                    <img src="@if($upcomingevent->cimage) https://api.eazytask.au/{{$upcomingevent->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                        alt="" class="img-fluid rounded-circle" />
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div>
+                                                        <h5 class="fs-14 mb-1">{{$upcomingevent->project->pName}}</h5>
+                                                        <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$upcomingevent->rate}}</p>
+                                                        @if($upcomingevent->remarks)
+                                                        <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$upcomingevent->remarks}}</p>
+                                                        @endif
+                                                        <p class="fs-13 text-muted mb-0">
+                                                            <i class="ri-calendar-line ms-2"></i>
+                                                            {{\Carbon\Carbon::parse($upcomingevent->event_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($upcomingevent->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($upcomingevent->shift_end)->format('H:m')}})
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-shrink-0 ms-2">
+
+                                                    <form action="{{ route('store-event') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="event_id"
+                                                            value="{{ $upcomingevent->id }}">
+                                                        @if (App\Models\Eventrequest::where('event_id', $upcomingevent->id)->where('user_id', Auth::id())->count())
+                                                            <button class="btn btn-outline-success btn-sm" disabled>
+                                                                <i class="ri-star-fill"></i>
+                                                            </button>
+                                                        @else
+                                                            <button class="btn btn-sm btn-outline-success">
+                                                                <i class="ri-star-line align-middle"></i>
+                                                            </button>
+                                                        @endif
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                            @if(!count($upcomingevents))
+                                            <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                            @endif
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div>
+                                <!--end card-->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4">
+                                            <div class="flex-grow-1">
+                                                <h5 class="card-title mb-0">Upcoming shifts</h5>
+                                            </div>
+                                            {{-- div.flex-shrink-0>.dropdown --}}
+                                        </div>
+                                        <div>
+                                            @foreach($upcoming_roasters as $upcoming_roaster)
+                                            <div class="d-flex align-items-center py-3">
+                                                <div class="avatar-xs flex-shrink-0 me-3">
+                                                    <img src="@if($upcoming_roaster->cimage) https://api.eazytask.au/{{$upcoming_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                        alt="" class="img-fluid rounded-circle" />
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div>
+                                                        <h5 class="fs-14 mb-1">{{$upcoming_roaster->project->pName}}</h5>
+                                                        <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$upcoming_roaster->amount}} ({{$upcoming_roaster->ratePerHour}})</p>
+                                                        @if($upcoming_roaster->remarks)
+                                                        <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$upcoming_roaster->roaster_type}}</p>
+                                                        @endif
+                                                        <p class="fs-13 text-muted mb-0">
+                                                            <i class="ri-calendar-line ms-2"></i>
+                                                            {{\Carbon\Carbon::parse($upcoming_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($upcoming_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($upcoming_roaster->shift_end)->format('H:m')}})
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                            @if(!count($upcoming_roasters))
+                                            <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                            @endif
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div>
+                                <!--end card-->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4">
+                                            <div class="flex-grow-1">
+                                                <h5 class="card-title mb-0">Assigned shifts</h5>
+                                            </div>
+                                            {{-- div.flex-shrink-0>.dropdown --}}
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <button class="btn pl-2 pr-2 border-primary" onclick="checkAllID()">
+                                                <input type="checkbox" class="mr-50" id="checkAllID" onclick="checkAllID()">
+                                                <span>Check All</span>
+                                            </button>
+                                            <button class="btn btn-danger text-center mx-1 reject" disabled
+                                                onclick="multipleShift('reject')">
+                                                <span class="desktop-view">Reject</span>
+                                                <i data-feather='x-circle'></i>
+                                            </button>
+                                            <button class="btn btn-success text-center accept" disabled
+                                                onclick="multipleShift('accept')">
+                                                <span class="desktop-view">Accept</span>
+                                                <i data-feather='check-circle'></i>
+                                            </button>
+                                        </div>
+                                        <div>
+                                            @foreach($unconfirm_roasters as $unconfirm_roaster)
+                                            <div class="d-flex align-items-center py-3">
+                                                <div class="avatar-xs flex-shrink-0 me-3">
+                                                    <img src="@if($unconfirm_roaster->cimage) https://api.eazytask.au/{{$unconfirm_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                        alt="" class="img-fluid rounded-circle" />
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div>
+                                                        <h5 class="fs-14 mb-1">{{$unconfirm_roaster->project->pName}}</h5>
+                                                        <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$unconfirm_roaster->amount}} ({{$unconfirm_roaster->ratePerHour}})</p>
+                                                        @if($unconfirm_roaster->roaster_type)
+                                                        <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$unconfirm_roaster->roaster_type}}</p>
+                                                        @endif
+                                                        <p class="fs-13 text-muted mb-0">
+                                                            <i class="ri-calendar-line ms-2"></i>
+                                                            {{\Carbon\Carbon::parse($unconfirm_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($unconfirm_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($unconfirm_roaster->shift_end)->format('H:m')}})
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                            @if(!count($unconfirm_roasters))
+                                            <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                            @endif
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div>
+                                <!--end card-->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4">
+                                            <div class="flex-grow-1">
+                                                <h5 class="card-title mb-0">Past shifts</h5>
+                                            </div>
+                                            {{-- div.flex-shrink-0>.dropdown --}}
+                                        </div>
+                                        <div>
+                                            @foreach($past_roasters as $past_roaster)
+                                            <div class="d-flex align-items-center py-3">
+                                                <div class="avatar-xs flex-shrink-0 me-3">
+                                                    <img src="@if($past_roaster->cimage) https://api.eazytask.au/{{$past_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                        alt="" class="img-fluid rounded-circle" />
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div>
+                                                        <h5 class="fs-14 mb-1">{{$past_roaster->project->pName}}</h5>
+                                                        <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$past_roaster->amount}} ({{$past_roaster->ratePerHour}})</p>
+                                                        @if($past_roaster->roaster_type)
+                                                        <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$past_roaster->roaster_type}}</p>
+                                                        @endif
+                                                        <p class="fs-13 text-muted mb-0">
+                                                            <i class="ri-calendar-line ms-2"></i>
+                                                            {{\Carbon\Carbon::parse($past_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($past_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($past_roaster->shift_end)->format('H:m')}})
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                            @if(!count($past_roasters))
+                                            <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                            @endif
+                                        </div>
+                                    </div><!-- end card body -->
+                                </div>
+                                <!--end card-->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4">
+                                            <div class="flex-grow-1">
+                                                <h5 class="card-title mb-0">Popular Posts</h5>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <div class="dropdown">
+                                                    <a href="#" role="button" id="dropdownMenuLink1"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="ri-more-2-fill fs-14"></i>
+                                                    </a>
+
+                                                    <ul class="dropdown-menu dropdown-menu-end"
+                                                        aria-labelledby="dropdownMenuLink1">
+                                                        <li><a class="dropdown-item" href="#">View</a>
+                                                        </li>
+                                                        <li><a class="dropdown-item" href="#">Edit</a>
+                                                        </li>
+                                                        <li><a class="dropdown-item" href="#">Delete</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex mb-4">
+                                            <div class="flex-shrink-0">
+                                                <img src="{{ URL::asset('app-assets/velzon/images/small/img-4.jpg') }}" alt=""
+                                                    height="50" class="rounded" />
+                                            </div>
+                                            <div class="flex-grow-1 ms-3 overflow-hidden">
+                                                <a href="javascript:void(0);">
+                                                    <h6 class="text-truncate fs-14">Design your apps in
+                                                        your own way</h6>
+                                                </a>
+                                                <p class="text-muted mb-0">15 Dec 2021</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex mb-4">
+                                            <div class="flex-shrink-0">
+                                                <img src="{{ URL::asset('app-assets/velzon/images/small/img-5.jpg') }}" alt=""
+                                                    height="50" class="rounded" />
+                                            </div>
+                                            <div class="flex-grow-1 ms-3 overflow-hidden">
+                                                <a href="javascript:void(0);">
+                                                    <h6 class="text-truncate fs-14">Smartest
+                                                        Applications for Business</h6>
+                                                </a>
+                                                <p class="text-muted mb-0">28 Nov 2021</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0">
+                                                <img src="{{ URL::asset('app-assets/velzon/images/small/img-6.jpg') }}" alt=""
+                                                    height="50" class="rounded" />
+                                            </div>
+                                            <div class="flex-grow-1 ms-3 overflow-hidden">
+                                                <a href="javascript:void(0);">
+                                                    <h6 class="text-truncate fs-14">How to get creative
+                                                        in your work</h6>
+                                                </a>
+                                                <p class="text-muted mb-0">21 Nov 2021</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end card-body-->
+                                </div>
+                                <!--end card-->
+                            </div>
+                            <!--end col-->
+                            <div class="col-xxl-9">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">About</h5>
+                                        <p>Hi I'm Anna Adame, It will be as simple as Occidental; in
+                                            fact, it will be Occidental. To an English person, it will
+                                            seem like simplified English, as a skeptical Cambridge
+                                            friend of mine told me what Occidental is European languages
+                                            are members of the same family.</p>
+                                        <p>You always want to make sure that your fonts work well
+                                            together and try to limit the number of fonts you use to
+                                            three or less. Experiment and play around with the fonts
+                                            that you already have in the software you’re working with
+                                            reputable font websites. This may be the most commonly
+                                            encountered tip I received from the designers I spoke with.
+                                            They highly encourage that you use different fonts in one
+                                            design, but do not over-exaggerate and go overboard.</p>
+                                        <div class="row">
+                                            <div class="col-6 col-md-4">
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                                                        <div
+                                                            class="avatar-title bg-light rounded-circle fs-16 text-primary">
+                                                            <i class="ri-user-2-fill"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="mb-1">Designation :</p>
+                                                        <h6 class="text-truncate mb-0">Lead Designer /
+                                                            Developer</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--end col-->
+                                            <div class="col-6 col-md-4">
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                                                        <div
+                                                            class="avatar-title bg-light rounded-circle fs-16 text-primary">
+                                                            <i class="ri-global-line"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="mb-1">Website :</p>
+                                                        <a href="#" class="fw-semibold">www.velzon.com</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--end col-->
+                                        </div>
+                                        <!--end row-->
+                                    </div>
+                                    <!--end card-body-->
+                                </div><!-- end card -->
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="card">
+                                            <div class="card-header align-items-center d-flex">
+                                                <h4 class="card-title mb-0  me-2">Recent Activity</h4>
+                                                <div class="flex-shrink-0 ms-auto">
+                                                    <ul class="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0"
+                                                        role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" data-bs-toggle="tab"
+                                                                href="#today" role="tab">
+                                                                Today
+                                                            </a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" data-bs-toggle="tab" href="#weekly"
+                                                                role="tab">
+                                                                Weekly
+                                                            </a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" data-bs-toggle="tab" href="#monthly"
+                                                                role="tab">
+                                                                Monthly
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="tab-content text-muted">
+                                                    <div class="tab-pane active" id="today" role="tabpanel">
+                                                        <div class="profile-timeline">
+                                                            <div class="accordion accordion-flush" id="todayExample">
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="headingOne">
+                                                                        <a class="accordion-button p-2 shadow-none" data-bs-toggle="collapse" href="#collapseOne" aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-2.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Jacqueline Steve
+                                                                                    </h6>
+                                                                                    <small class="text-muted">We
+                                                                                        has changed 2
+                                                                                        attributes on
+                                                                                        05:16PM</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapseOne"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="headingOne"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5">
+                                                                            In an awareness campaign, it
+                                                                            is vital for people to begin
+                                                                            put 2 and 2 together and
+                                                                            begin to recognize your
+                                                                            cause. Too much or too
+                                                                            little spacing, as in the
+                                                                            example below, can make
+                                                                            things unpleasant for the
+                                                                            reader. The goal is to make
+                                                                            your text as comfortable to
+                                                                            read as possible. A
+                                                                            wonderful serenity has taken
+                                                                            possession of my entire
+                                                                            soul, like these sweet
+                                                                            mornings of spring which I
+                                                                            enjoy with my whole heart.
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="headingTwo">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapseTwo"
+                                                                            aria-expanded="false">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0 avatar-xs">
+                                                                                    <div
+                                                                                        class="avatar-title bg-light text-success rounded-circle">
+                                                                                        M
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Megan Elmore
+                                                                                    </h6>
+                                                                                    <small class="text-muted">Adding
+                                                                                        a new event with
+                                                                                        attachments -
+                                                                                        04:45PM</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapseTwo"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="headingTwo"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5">
+                                                                            <div class="row g-2">
+                                                                                <div class="col-auto">
+                                                                                    <div
+                                                                                        class="d-flex border border-dashed p-2 rounded position-relative">
+                                                                                        <div class="flex-shrink-0">
+                                                                                            <i
+                                                                                                class="ri-image-2-line fs-17 text-danger"></i>
+                                                                                        </div>
+                                                                                        <div class="flex-grow-1 ms-2">
+                                                                                            <h6><a href="javascript:void(0);"
+                                                                                                    class="stretched-link">Business
+                                                                                                    Template
+                                                                                                    -
+                                                                                                    UI/UX
+                                                                                                    design</a>
+                                                                                            </h6>
+                                                                                            <small>685
+                                                                                                KB</small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-auto">
+                                                                                    <div
+                                                                                        class="d-flex border border-dashed p-2 rounded position-relative">
+                                                                                        <div class="flex-shrink-0">
+                                                                                            <i
+                                                                                                class="ri-file-zip-line fs-17 text-info"></i>
+                                                                                        </div>
+                                                                                        <div class="flex-grow-1 ms-2">
+                                                                                            <h6 class="mb-0">
+                                                                                                <a href="javascript:void(0);"
+                                                                                                    class="stretched-link">Bank
+                                                                                                    Management System -
+                                                                                                    PSD</a>
+                                                                                            </h6>
+                                                                                            <small>8.78
+                                                                                                MB</small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="headingThree">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse"
+                                                                            href="#collapsethree" aria-expanded="false">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-5.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        New ticket
+                                                                                        received</h6>
+                                                                                    <small class="text-muted mb-2">User
+                                                                                        <span
+                                                                                            class="text-secondary">Erica245</span>
+                                                                                        submitted a
+                                                                                        ticket -
+                                                                                        02:33PM</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="headingFour">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapseFour"
+                                                                            aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0 avatar-xs">
+                                                                                    <div
+                                                                                        class="avatar-title bg-light text-muted rounded-circle">
+                                                                                        <i class="ri-user-3-fill"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Nancy Martino
+                                                                                    </h6>
+                                                                                    <small class="text-muted">Commented
+                                                                                        on
+                                                                                        12:57PM</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapseFour"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="headingFour"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5 fst-italic">
+                                                                            " A wonderful serenity has
+                                                                            taken possession of my
+                                                                            entire soul, like these
+                                                                            sweet mornings of spring
+                                                                            which I enjoy with my whole
+                                                                            heart. Each design is a new,
+                                                                            unique piece of art birthed
+                                                                            into this world, and while
+                                                                            you have the opportunity to
+                                                                            be creative and make your
+                                                                            own style choices. "
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="headingFive">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapseFive"
+                                                                            aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-7.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Lewis Arnold
+                                                                                    </h6>
+                                                                                    <small class="text-muted">Create
+                                                                                        new project
+                                                                                        buildng product
+                                                                                        -
+                                                                                        10:05AM</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapseFive"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="headingFive"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5">
+                                                                            <p class="text-muted mb-2">
+                                                                                Every team project can
+                                                                                have a velzon. Use the
+                                                                                velzon to share
+                                                                                information with your
+                                                                                team to understand and
+                                                                                contribute to your
+                                                                                project.</p>
+                                                                            <div class="avatar-group">
+                                                                                <a href="javascript: void(0);"
+                                                                                    class="avatar-group-item"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-trigger="hover"
+                                                                                    data-bs-placement="top" title=""
+                                                                                    data-bs-original-title="Christi">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-4.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="rounded-circle avatar-xs">
+                                                                                </a>
+                                                                                <a href="javascript: void(0);"
+                                                                                    class="avatar-group-item"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-trigger="hover"
+                                                                                    data-bs-placement="top" title=""
+                                                                                    data-bs-original-title="Frank Hook">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-3.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="rounded-circle avatar-xs">
+                                                                                </a>
+                                                                                <a href="javascript: void(0);"
+                                                                                    class="avatar-group-item"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-trigger="hover"
+                                                                                    data-bs-placement="top" title=""
+                                                                                    data-bs-original-title=" Ruby">
+                                                                                    <div class="avatar-xs">
+                                                                                        <div
+                                                                                            class="avatar-title rounded-circle bg-light text-primary">
+                                                                                            R
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </a>
+                                                                                <a href="javascript: void(0);"
+                                                                                    class="avatar-group-item"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-trigger="hover"
+                                                                                    data-bs-placement="top" title=""
+                                                                                    data-bs-original-title="more">
+                                                                                    <div class="avatar-xs">
+                                                                                        <div
+                                                                                            class="avatar-title rounded-circle">
+                                                                                            2+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--end accordion-->
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane" id="weekly" role="tabpanel">
+                                                        <div class="profile-timeline">
+                                                            <div class="accordion accordion-flush" id="weeklyExample">
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading6">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse6"
+                                                                            aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-3.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Joseph Parker
+                                                                                    </h6>
+                                                                                    <small class="text-muted">New
+                                                                                        people joined
+                                                                                        with our company
+                                                                                        -
+                                                                                        Yesterday</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapse6"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="heading6"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5">
+                                                                            It makes a statement, it’s
+                                                                            impressive graphic design.
+                                                                            Increase or decrease the
+                                                                            letter spacing depending on
+                                                                            the situation and try, try
+                                                                            again until it looks right,
+                                                                            and each letter has the
+                                                                            perfect spot of its own.
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading7">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse7"
+                                                                            aria-expanded="false">
+                                                                            <div class="d-flex">
+                                                                                <div class="avatar-xs">
+                                                                                    <div
+                                                                                        class="avatar-title rounded-circle bg-light text-danger">
+                                                                                        <i
+                                                                                            class="ri-shopping-bag-line"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Your order is
+                                                                                        placed <span
+                                                                                            class="badge bg-success-subtle text-success align-middle">Completed</span>
+                                                                                    </h6>
+                                                                                    <small class="text-muted">These
+                                                                                        customers can
+                                                                                        rest assured
+                                                                                        their order has
+                                                                                        been placed - 1
+                                                                                        week Ago</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading8">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse8"
+                                                                            aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0 avatar-xs">
+                                                                                    <div
+                                                                                        class="avatar-title bg-light text-success rounded-circle">
+                                                                                        <i class="ri-home-3-line"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Velzon admin
+                                                                                        dashboard
+                                                                                        templates layout
+                                                                                        upload</h6>
+                                                                                    <small class="text-muted">We
+                                                                                        talked about a
+                                                                                        project on
+                                                                                        linkedin - 1
+                                                                                        week Ago</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapse8"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="heading8"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5 fst-italic">
+                                                                            Powerful, clean & modern
+                                                                            responsive bootstrap 5 admin
+                                                                            template. The maximum file
+                                                                            size for uploads in this
+                                                                            demo :
+                                                                            <div class="row mt-2">
+                                                                                <div class="col-xxl-6">
+                                                                                    <div
+                                                                                        class="row border border-dashed gx-2 p-2">
+                                                                                        <div class="col-3">
+                                                                                            <img src="{{ URL::asset('app-assets/velzon/images/small/img-3.jpg') }}"
+                                                                                                alt=""
+                                                                                                class="img-fluid rounded" />
+                                                                                        </div>
+                                                                                        <!--end col-->
+                                                                                        <div class="col-3">
+                                                                                            <img src="{{ URL::asset('app-assets/velzon/images/small/img-5.jpg') }}"
+                                                                                                alt=""
+                                                                                                class="img-fluid rounded" />
+                                                                                        </div>
+                                                                                        <!--end col-->
+                                                                                        <div class="col-3">
+                                                                                            <img src="{{ URL::asset('app-assets/velzon/images/small/img-7.jpg') }}"
+                                                                                                alt=""
+                                                                                                class="img-fluid rounded" />
+                                                                                        </div>
+                                                                                        <!--end col-->
+                                                                                        <div class="col-3">
+                                                                                            <img src="{{ URL::asset('app-assets/velzon/images/small/img-9.jpg') }}"
+                                                                                                alt=""
+                                                                                                class="img-fluid rounded" />
+                                                                                        </div>
+                                                                                        <!--end col-->
+                                                                                    </div>
+                                                                                    <!--end row-->
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading9">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse9"
+                                                                            aria-expanded="false">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-6.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        New ticket
+                                                                                        created <span
+                                                                                            class="badge bg-info-subtle text-info align-middle">Inprogress</span>
+                                                                                    </h6>
+                                                                                    <small class="text-muted mb-2">User
+                                                                                        <span
+                                                                                            class="text-secondary">Jack365</span>
+                                                                                        submitted a
+                                                                                        ticket - 2 week
+                                                                                        Ago</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading10">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse10"
+                                                                            aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-5.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Jennifer Carter
+                                                                                    </h6>
+                                                                                    <small class="text-muted">Commented
+                                                                                        - 4 week
+                                                                                        Ago</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapse10"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="heading10"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5">
+                                                                            <p class="text-muted fst-italic mb-2">
+                                                                                " This is an awesome
+                                                                                admin dashboard
+                                                                                template. It is
+                                                                                extremely well
+                                                                                structured and uses
+                                                                                state of the art
+                                                                                components (e.g. one of
+                                                                                the only templates using
+                                                                                boostrap 5.1.3 so far).
+                                                                                I integrated it into a
+                                                                                Rails 6 project. Needs
+                                                                                manual integration work
+                                                                                of course but the
+                                                                                template structure made
+                                                                                it easy. "</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--end accordion-->
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane" id="monthly" role="tabpanel">
+                                                        <div class="profile-timeline">
+                                                            <div class="accordion accordion-flush" id="monthlyExample">
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading11">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse11"
+                                                                            aria-expanded="false">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0 avatar-xs">
+                                                                                    <div
+                                                                                        class="avatar-title bg-light text-success rounded-circle">
+                                                                                        M
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Megan Elmore
+                                                                                    </h6>
+                                                                                    <small class="text-muted">Adding
+                                                                                        a new event with
+                                                                                        attachments - 1
+                                                                                        month
+                                                                                        Ago.</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapse11"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="heading11"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5">
+                                                                            <div class="row g-2">
+                                                                                <div class="col-auto">
+                                                                                    <div
+                                                                                        class="d-flex border border-dashed p-2 rounded position-relative">
+                                                                                        <div class="flex-shrink-0">
+                                                                                            <i
+                                                                                                class="ri-image-2-line fs-17 text-danger"></i>
+                                                                                        </div>
+                                                                                        <div class="flex-grow-1 ms-2">
+                                                                                            <h6 class="mb-0">
+                                                                                                <a href="javascript:void(0);"
+                                                                                                    class="stretched-link">Business
+                                                                                                    Template
+                                                                                                    -
+                                                                                                    UI/UX
+                                                                                                    design</a>
+                                                                                            </h6>
+                                                                                            <small>685
+                                                                                                KB</small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-auto">
+                                                                                    <div
+                                                                                        class="d-flex border border-dashed p-2 rounded position-relative">
+                                                                                        <div class="flex-shrink-0">
+                                                                                            <i
+                                                                                                class="ri-file-zip-line fs-17 text-info"></i>
+                                                                                        </div>
+                                                                                        <div class="flex-grow-1 ms-2">
+                                                                                            <h6 class="mb-0">
+                                                                                                <a href="javascript:void(0);"
+                                                                                                    class="stretched-link">Bank
+                                                                                                    Management
+                                                                                                    System
+                                                                                                    -
+                                                                                                    PSD</a>
+                                                                                            </h6>
+                                                                                            <small>8.78
+                                                                                                MB</small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-auto">
+                                                                                    <div
+                                                                                        class="d-flex border border-dashed p-2 rounded position-relative">
+                                                                                        <div class="flex-shrink-0">
+                                                                                            <i
+                                                                                                class="ri-file-zip-line fs-17 text-info"></i>
+                                                                                        </div>
+                                                                                        <div class="flex-grow-1 ms-2">
+                                                                                            <h6 class="mb-0">
+                                                                                                <a href="javascript:void(0);"
+                                                                                                    class="stretched-link">Bank
+                                                                                                    Management
+                                                                                                    System
+                                                                                                    -
+                                                                                                    PSD</a>
+                                                                                            </h6>
+                                                                                            <small>8.78
+                                                                                                MB</small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading12">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse12"
+                                                                            aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-2.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Jacqueline Steve
+                                                                                    </h6>
+                                                                                    <small class="text-muted">We
+                                                                                        has changed 2
+                                                                                        attributes on 3
+                                                                                        month
+                                                                                        Ago</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapse12"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="heading12"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5">
+                                                                            In an awareness campaign, it
+                                                                            is vital for people to begin
+                                                                            put 2 and 2 together and
+                                                                            begin to recognize your
+                                                                            cause. Too much or too
+                                                                            little spacing, as in the
+                                                                            example below, can make
+                                                                            things unpleasant for the
+                                                                            reader. The goal is to make
+                                                                            your text as comfortable to
+                                                                            read as possible. A
+                                                                            wonderful serenity has taken
+                                                                            possession of my entire
+                                                                            soul, like these sweet
+                                                                            mornings of spring which I
+                                                                            enjoy with my whole heart.
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading13">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse13"
+                                                                            aria-expanded="false">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-5.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        New ticket
+                                                                                        received</h6>
+                                                                                    <small class="text-muted mb-2">User
+                                                                                        <span
+                                                                                            class="text-secondary">Erica245</span>
+                                                                                        submitted a
+                                                                                        ticket - 5 month
+                                                                                        Ago</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading14">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse14"
+                                                                            aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0 avatar-xs">
+                                                                                    <div
+                                                                                        class="avatar-title bg-light text-muted rounded-circle">
+                                                                                        <i class="ri-user-3-fill"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Nancy Martino
+                                                                                    </h6>
+                                                                                    <small class="text-muted">Commented
+                                                                                        on 24 Nov,
+                                                                                        2021.</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapse14"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="heading14"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5 fst-italic">
+                                                                            " A wonderful serenity has
+                                                                            taken possession of my
+                                                                            entire soul, like these
+                                                                            sweet mornings of spring
+                                                                            which I enjoy with my whole
+                                                                            heart. Each design is a new,
+                                                                            unique piece of art birthed
+                                                                            into this world, and while
+                                                                            you have the opportunity to
+                                                                            be creative and make your
+                                                                            own style choices. "
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="accordion-item border-0">
+                                                                    <div class="accordion-header" id="heading15">
+                                                                        <a class="accordion-button p-2 shadow-none"
+                                                                            data-bs-toggle="collapse" href="#collapse15"
+                                                                            aria-expanded="true">
+                                                                            <div class="d-flex">
+                                                                                <div class="flex-shrink-0">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-7.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="avatar-xs rounded-circle" />
+                                                                                </div>
+                                                                                <div class="flex-grow-1 ms-3">
+                                                                                    <h6 class="fs-14 mb-1">
+                                                                                        Lewis Arnold
+                                                                                    </h6>
+                                                                                    <small class="text-muted">Create
+                                                                                        new project
+                                                                                        buildng product
+                                                                                        - 8 month
+                                                                                        Ago</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div id="collapse15"
+                                                                        class="accordion-collapse collapse show"
+                                                                        aria-labelledby="heading15"
+                                                                        data-bs-parent="#accordionExample">
+                                                                        <div class="accordion-body ms-2 ps-5">
+                                                                            <p class="text-muted mb-2">
+                                                                                Every team project can
+                                                                                have a velzon. Use the
+                                                                                velzon to share
+                                                                                information with your
+                                                                                team to understand and
+                                                                                contribute to your
+                                                                                project.</p>
+                                                                            <div class="avatar-group">
+                                                                                <a href="javascript: void(0);"
+                                                                                    class="avatar-group-item"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-trigger="hover"
+                                                                                    data-bs-placement="top" title=""
+                                                                                    data-bs-original-title="Christi">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-4.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="rounded-circle avatar-xs">
+                                                                                </a>
+                                                                                <a href="javascript: void(0);"
+                                                                                    class="avatar-group-item"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-trigger="hover"
+                                                                                    data-bs-placement="top" title=""
+                                                                                    data-bs-original-title="Frank Hook">
+                                                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-3.jpg') }}"
+                                                                                        alt=""
+                                                                                        class="rounded-circle avatar-xs">
+                                                                                </a>
+                                                                                <a href="javascript: void(0);"
+                                                                                    class="avatar-group-item"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-trigger="hover"
+                                                                                    data-bs-placement="top" title=""
+                                                                                    data-bs-original-title=" Ruby">
+                                                                                    <div class="avatar-xs">
+                                                                                        <div
+                                                                                            class="avatar-title rounded-circle bg-light text-primary">
+                                                                                            R
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </a>
+                                                                                <a href="javascript: void(0);"
+                                                                                    class="avatar-group-item"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-trigger="hover"
+                                                                                    data-bs-placement="top" title=""
+                                                                                    data-bs-original-title="more">
+                                                                                    <div class="avatar-xs">
+                                                                                        <div
+                                                                                            class="avatar-title rounded-circle">
+                                                                                            2+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--end accordion-->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div><!-- end col -->
+                                </div><!-- end row -->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Inducted Site</h5>
+                                        <!-- Swiper -->
+                                        <div class="swiper project-swiper">
+                                            <div class="d-flex justify-content-end gap-2 mb-2">
+                                                <div class="slider-button-prev">
+                                                    <div class="avatar-title fs-18 rounded px-1">
+                                                        <i class="ri-arrow-left-s-line"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="slider-button-next">
+                                                    <div class="avatar-title fs-18 rounded px-1">
+                                                        <i class="ri-arrow-right-s-line"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="swiper-wrapper">
+                                                @foreach($inductions as $induction)
+                                                <div class="swiper-slide">
+                                                    <div class="card profile-project-card shadow-none profile-project-success mb-0">
+                                                        <div class="card-body p-4">
+                                                            <div class="d-flex">
+                                                                <div class="flex-grow-1 text-muted overflow-hidden">
+                                                                    <h5 class="fs-14 text-truncate mb-1">
+                                                                        <a href="#" class="text-body">
+                                                                            {{$induction->pName}}
+                                                                        </a>
+                                                                    </h5>
+                                                                    <p class="text-muted text-truncate mb-0">
+                                                                        Last Update : <span class="fw-semibold text-body">{{\Carbon\Carbon::parse($induction->updated_at)->diffForHumans()}}</span>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="d-flex mt-4">
+                                                                <div class="flex-grow-1">
+                                                                    <div class="d-flex align-items-center gap-2">
+                                                                        <div>
+                                                                            <h5 class="fs-12 text-muted mb-0">Members :</h5>
+                                                                        </div>
+                                                                        <div class="avatar-group">
+                                                                            <div class="avatar-group-item">
+                                                                                <div class="avatar-xs">
+                                                                                    @if($induction->image)
+                                                                                        <img src="upcomingevents{{$induction->image}}" alt="" class="rounded-circle shadow img-fluid" />
+                                                                                    @else
+                                                                                        <img src="{{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}}" alt="" class="rounded-circle shadow img-fluid" />
+                                                                                    @endif
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- end card body -->
+                                                    </div>
+                                                    <!-- end card -->
+                                                </div>
+                                                <!-- end slide item -->
+                                                @endforeach
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <!-- end card body -->
+                                </div><!-- end card -->
+
+                            </div>
+                            <!--end col-->
+                        </div>
+                        <!--end row-->
+                    </div>
+                    <div class="tab-pane fade" id="compliances" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Compliances</h5>
+                                <div class="acitivity-timeline">
+                                    @foreach($compliances as $compliance)
+                                    <div class="acitivity-item py-3 d-flex">
+                                        <div class="flex-shrink-0 avatar-xs acitivity-avatar">
+                                            <div class="avatar-title bg-success-subtle text-success rounded-circle shadow">
+                                                <img src="@if($compliance->image) https://api.eazytask.au/{{$compliance->image}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg') }} @endif" alt=""
+                                                class="avatar-xs rounded-circle acitivity-avatar" />
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3 py-2">
+                                            <h6 class="mb-1">{{$compliance->employee_name}} <span class="text-muted">({{$compliance->email}})</span>
+                                                {{-- <span class="badge bg-secondary-subtle text-secondary align-middle">In Progress</span></h6> --}}
+                                            <p class="text-muted mb-1 mt-2"><i class="ri-file-text-line align-middle ms-2"></i>
+                                                {{$compliance->compliance_name}}
+                                            </p>
+                                            @if($compliance->comment)
+                                            <p class="mb-2 text-muted"><i class="ri-discuss-line ms-2"></i> {{$compliance->comment}}</p>
+                                            @endif
+                                            <p class="mb-2 text-muted"><i class="ri-hashtag ms-2"></i> {{$compliance->certificate_no}}</p>
+                                            
+                                            <p class="mb-2 text-muted ms-2">Expired At: {{$compliance->expire_date}}</p>
+                                            @if($compliance->document)
+                                            <div class="row">
+                                                <div class="col-xxl-4">
+                                                    <div class="row border border-dashed gx-2 p-2 mb-2">
+                                                        <div class="col-4">
+                                                            <img src="https://api.eazytask.au/{{$compliance->document}}" alt="" class="img-fluid rounded material-shadow">
+                                                        </div>
+                                                        <!--end col-->
+                                                    </div>
+                                                    <!--end row-->
+                                                </div>
+                                            </div>
+                                            @endif
+                                            {{-- <div class="avatar-group mb-2">
+                                                <a href="javascript: void(0);" class="avatar-group-item"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                                                    data-bs-original-title="Christi">
+                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-4.jpg') }}"
+                                                        alt="" class="rounded-circle avatar-xs" />
+                                                </a>
+                                                <a href="javascript: void(0);" class="avatar-group-item"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                                                    data-bs-original-title="Frank Hook">
+                                                    <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-3.jpg') }}"
+                                                        alt="" class="rounded-circle avatar-xs" />
+                                                </a>
+                                                <a href="javascript: void(0);" class="avatar-group-item"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                                                    data-bs-original-title=" Ruby">
+                                                    <div class="avatar-xs">
+                                                        <div class="avatar-title rounded-circle bg-light text-primary">
+                                                            R
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a href="javascript: void(0);" class="avatar-group-item"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title=""
+                                                    data-bs-original-title="more">
+                                                    <div class="avatar-xs">
+                                                        <div class="avatar-title rounded-circle">
+                                                            2+
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div> --}}
+                                            <small class="mb-0 text-muted">{{\Carbon\Carbon::parse($compliance->updated_at)->diffForHumans()}}</small>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                    
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end tab-pane-->
+                    <div class="tab-pane fade" id="projects" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none profile-project-warning">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Chat App Update</a>
+                                                        </h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">2 year
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-warning-subtle text-warning fs-10">
+                                                            Inprogress</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-1.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-3.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <div
+                                                                            class="avatar-title rounded-circle bg-light text-primary">
+                                                                            J
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none profile-project-success">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">ABC Project
+                                                                Customization</a></h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">2 month
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-primary-subtle text-primary fs-10">
+                                                            Progress</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-8.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-7.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-6.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <div
+                                                                            class="avatar-title rounded-circle bg-primary">
+                                                                            2+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none profile-project-info">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Client - Frank
+                                                                Hook</a></h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">1 hr
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-info-subtle text-info fs-10">New
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-4.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <div
+                                                                            class="avatar-title rounded-circle bg-light text-primary">
+                                                                            M
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-3.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none profile-project-primary">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Velzon Project</a>
+                                                        </h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">11 hr
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-success-subtle text-success fs-10">
+                                                            Completed</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-7.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-5.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none profile-project-danger">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Brand Logo Design</a>
+                                                        </h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">10 min
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-info-subtle text-info fs-10">New
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-7.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-6.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <div
+                                                                            class="avatar-title rounded-circle bg-light text-primary">
+                                                                            E
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none profile-project-primary">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Chat App</a></h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">8 hr
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-warning-subtle text-warning fs-10">
+                                                            Inprogress</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <div
+                                                                            class="avatar-title rounded-circle bg-light text-primary">
+                                                                            R
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-3.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-8.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none profile-project-warning">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Project Update</a>
+                                                        </h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">48 min
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-warning-subtle text-warning fs-10">
+                                                            Inprogress</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-6.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-5.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-4.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none profile-project-success">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Client - Jennifer</a>
+                                                        </h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">30 min
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-primary-subtle text-primary fs-10">
+                                                            Process</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-1.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div
+                                            class="card profile-project-card shadow-none mb-xxl-0   profile-project-info">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Bsuiness Template -
+                                                                UI/UX design</a></h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">7 month
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-success-subtle text-success fs-10">
+                                                            Completed</div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-2.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-3.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-4.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <div
+                                                                            class="avatar-title rounded-circle bg-primary">
+                                                                            2+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card body -->
+                                        </div>
+                                        <!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div
+                                            class="card profile-project-card shadow-none mb-xxl-0  profile-project-success">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Update Project</a>
+                                                        </h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">1 month
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-info-subtle text-info fs-10">New
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-7.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <div
+                                                                            class="avatar-title rounded-circle bg-light text-primary">
+                                                                            A
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div
+                                            class="card profile-project-card shadow-none mb-sm-0  profile-project-danger">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">Bank Management
+                                                                System</a></h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">10 month
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-success-subtle text-success fs-10">
+                                                            Completed</div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-7.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-6.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-5.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <div
+                                                                            class="avatar-title rounded-circle bg-primary">
+                                                                            2+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-xxl-3 col-sm-6">
+                                        <div class="card profile-project-card shadow-none mb-0  profile-project-primary">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1 text-muted overflow-hidden">
+                                                        <h5 class="fs-14 text-truncate"><a href="#"
+                                                                class="text-body">PSD to HTML
+                                                                Convert</a></h5>
+                                                        <p class="text-muted text-truncate mb-0">Last
+                                                            Update : <span class="fw-semibold text-body">29 min
+                                                                Ago</span></p>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <div class="badge bg-info-subtle text-info fs-10">New
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex mt-4">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div>
+                                                                <h5 class="fs-12 text-muted mb-0">
+                                                                    Members :</h5>
+                                                            </div>
+                                                            <div class="avatar-group">
+                                                                <div class="avatar-group-item">
+                                                                    <div class="avatar-xs">
+                                                                        <img src="{{ URL::asset('app-assets/velzon/images/users/avatar-7.jpg') }}"
+                                                                            alt=""
+                                                                            class="rounded-circle img-fluid" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div><!-- end card -->
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-lg-12">
+                                        <div class="mt-4">
+                                            <ul class="pagination pagination-separated justify-content-center mb-0">
+                                                <li class="page-item disabled">
+                                                    <a href="javascript:void(0);" class="page-link"><i
+                                                            class="mdi mdi-chevron-left"></i></a>
+                                                </li>
+                                                <li class="page-item active">
+                                                    <a href="javascript:void(0);" class="page-link">1</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a href="javascript:void(0);" class="page-link">2</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a href="javascript:void(0);" class="page-link">3</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a href="javascript:void(0);" class="page-link">4</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a href="javascript:void(0);" class="page-link">5</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a href="javascript:void(0);" class="page-link"><i
+                                                            class="mdi mdi-chevron-right"></i></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end row-->
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end tab-pane-->
+                    <div class="tab-pane fade" id="documents" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4">
+                                    <h5 class="card-title flex-grow-1 mb-0">Documents</h5>
+                                    <div class="flex-shrink-0">
+                                        <input class="form-control d-none" type="file" id="formFile">
+                                        <label for="formFile" class="btn btn-danger"><i
+                                                class="ri-upload-2-fill me-1 align-bottom"></i> Upload
+                                            File</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless align-middle mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th scope="col">File Name</th>
+                                                        <th scope="col">Type</th>
+                                                        <th scope="col">Size</th>
+                                                        <th scope="col">Upload Date</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div
+                                                                        class="avatar-title bg-primary-subtle text-primary rounded fs-20">
+                                                                        <i class="ri-file-zip-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-15 mb-0"><a
+                                                                            href="javascript:void(0)">Artboard-documents.zip</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>Zip File</td>
+                                                        <td>4.57 MB</td>
+                                                        <td>12 Dec 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);"
+                                                                    class="btn btn-light btn-icon"
+                                                                    id="dropdownMenuLink15" data-bs-toggle="dropdown"
+                                                                    aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                                    aria-labelledby="dropdownMenuLink15">
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-eye-fill me-2 align-middle text-muted"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a>
+                                                                    </li>
+                                                                    <li class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div
+                                                                        class="avatar-title bg-danger-subtle text-danger rounded fs-20">
+                                                                        <i class="ri-file-pdf-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-15 mb-0"><a
+                                                                            href="javascript:void(0);">Bank
+                                                                            Management System</a></h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>PDF File</td>
+                                                        <td>8.89 MB</td>
+                                                        <td>24 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);"
+                                                                    class="btn btn-light btn-icon"
+                                                                    id="dropdownMenuLink3" data-bs-toggle="dropdown"
+                                                                    aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                                    aria-labelledby="dropdownMenuLink3">
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-eye-fill me-2 align-middle text-muted"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a>
+                                                                    </li>
+                                                                    <li class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div
+                                                                        class="avatar-title bg-secondary-subtle text-secondary rounded fs-20">
+                                                                        <i class="ri-video-line"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-15 mb-0"><a
+                                                                            href="javascript:void(0);">Tour-video.mp4</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>MP4 File</td>
+                                                        <td>14.62 MB</td>
+                                                        <td>19 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);"
+                                                                    class="btn btn-light btn-icon"
+                                                                    id="dropdownMenuLink4" data-bs-toggle="dropdown"
+                                                                    aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                                    aria-labelledby="dropdownMenuLink4">
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-eye-fill me-2 align-middle text-muted"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a>
+                                                                    </li>
+                                                                    <li class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div
+                                                                        class="avatar-title bg-success-subtle text-success rounded fs-20">
+                                                                        <i class="ri-file-excel-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-15 mb-0"><a
+                                                                            href="javascript:void(0);">Account-statement.xsl</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>XSL File</td>
+                                                        <td>2.38 KB</td>
+                                                        <td>14 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);"
+                                                                    class="btn btn-light btn-icon"
+                                                                    id="dropdownMenuLink5" data-bs-toggle="dropdown"
+                                                                    aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                                    aria-labelledby="dropdownMenuLink5">
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-eye-fill me-2 align-middle text-muted"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-download-2-fill me-2 align-middle text-muted"></i>Download</a>
+                                                                    </li>
+                                                                    <li class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-delete-bin-5-line me-2 align-middle text-muted"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div
+                                                                        class="avatar-title bg-info-subtle text-info rounded fs-20">
+                                                                        <i class="ri-folder-line"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-15 mb-0"><a
+                                                                            href="javascript:void(0);">Project
+                                                                            Screenshots Collection</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>Floder File</td>
+                                                        <td>87.24 MB</td>
+                                                        <td>08 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);"
+                                                                    class="btn btn-light btn-icon"
+                                                                    id="dropdownMenuLink6" data-bs-toggle="dropdown"
+                                                                    aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                                    aria-labelledby="dropdownMenuLink6">
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-eye-fill me-2 align-middle"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-download-2-fill me-2 align-middle"></i>Download</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-delete-bin-5-line me-2 align-middle"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm">
+                                                                    <div
+                                                                        class="avatar-title bg-danger-subtle text-danger rounded fs-20">
+                                                                        <i class="ri-image-2-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ms-3 flex-grow-1">
+                                                                    <h6 class="fs-15 mb-0"><a
+                                                                            href="javascript:void(0);">Velzon-logo.png</a>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>PNG File</td>
+                                                        <td>879 KB</td>
+                                                        <td>02 Nov 2021</td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <a href="javascript:void(0);"
+                                                                    class="btn btn-light btn-icon"
+                                                                    id="dropdownMenuLink7" data-bs-toggle="dropdown"
+                                                                    aria-expanded="true">
+                                                                    <i class="ri-equalizer-fill"></i>
+                                                                </a>
+                                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                                    aria-labelledby="dropdownMenuLink7">
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-eye-fill me-2 align-middle"></i>View</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-download-2-fill me-2 align-middle"></i>Download</a>
+                                                                    </li>
+                                                                    <li><a class="dropdown-item"
+                                                                            href="javascript:void(0);"><i
+                                                                                class="ri-delete-bin-5-line me-2 align-middle"></i>Delete</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <a href="javascript:void(0);" class="text-success "><i
+                                                    class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"></i>
+                                                Load more </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end tab-pane-->
+                </div>
+                <!--end tab-content-->
+            </div>
+        </div>
+        <!--end col-->
+    </div>
+    <!--end row-->
+@endsection
+
+@section('')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         .dce-msg-poweredby {
@@ -174,8 +2711,8 @@
                                                 <p class="text-black-50">You have no scheduled shift at this time</p>
                                                 <button type="button"
                                                     class="btn btn-gradient-primary text-center btn-block setForm"
-                                                    data-toggle="modal"
-                                                    data-target="#userAddTimeKeeper">Unscheduled</button>
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#userAddTimeKeeper">Unscheduled</button>
 
                                             </div>
 
@@ -193,7 +2730,7 @@
                                                 <p class="mb-0 text-muted">You have no scheduled shift at this time</p>
                                                 <button type="button"
                                                     class="btn btn-gradient-primary text-center btn-block"
-                                                    data-toggle="modal" data-target="#userAddTimeKeeper">Start unscheduled
+                                                    data-bs-toggle="modal" data-bs-target="#userAddTimeKeeper">Start unscheduled
                                                     shift</button>
 
                                             </div>
@@ -212,18 +2749,17 @@
 
                             @endphp
 
-                            @if ($not_ready_sign_in)
-                                @include('pages.User.signin.modals.timeKeeperAddModal')
-                            @endif
 
-                            @include('pages.User.signin.modals.takePhotoModal')
                     </form>
                 </div>
             </div>
         </div>
     </div>
     </div>
-
+    @if ($not_ready_sign_in)
+        @include('pages.User.signin.modals.timeKeeperAddModal')
+    @endif
+    @include('pages.User.signin.modals.takePhotoModal')
     <div class="row match-height">
         <!-- calendar -->
         <div class="col-md-6">
@@ -262,10 +2798,9 @@
                     <div class="modal modal-slide-in event-sidebar fade" id="add-new-sidebar">
                         <div class="modal-dialog sidebar-lg">
                             <div class="modal-content p-0">
-                                <button type="button" class="close" data-dismiss="modal"
-                                    aria-label="Close">Ã—</button>
-                                <div class="modal-header mb-1">
+                                <div class="modal-header bg-info-subtle py-2 mb-1">
                                     <h5 class="modal-title">View Event</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
                                 <div class="modal-body flex-grow-1 pb-sm-0 pb-3">
@@ -275,7 +2810,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12 col-12">
                                                         <label for=""> Venue</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
                                                             <select class="form-control select2" name="project_id"
                                                                 id="project-select" aria-label="Default select example"
                                                                 disabled>
@@ -293,7 +2828,7 @@
                                                     </div>
                                                     <div class="col-md-12 col-12">
                                                         <label for="email-id-column">Roster Date</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
                                                             <input type="text" id="roaster_date" name="roaster_date"
                                                                 disabled class="form-control format-picker"
                                                                 placeholder="Roster Date" />
@@ -302,7 +2837,7 @@
 
                                                     <div class="col-md-12 col-12">
                                                         <label for="email-id-column">Shift Start</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
 
                                                             <input type="text" disabled id="shift_start"
                                                                 name="shift_start" class="form-control pickatime-format"
@@ -314,7 +2849,7 @@
                                                     </div>
                                                     <div class="col-md-12 col-12">
                                                         <label for="email-id-column">Shift Ends Date & Time</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
 
                                                             <input type="text" disabled id="shift_end"
                                                                 name="shift_end" class="form-control pickatime-format"
@@ -325,7 +2860,7 @@
 
                                                     <div class="col-md-12 col-12">
                                                         <label for="email-id-column">Duration</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
                                                             <input type="text" id="duration" name="duration"
                                                                 class="form-control" placeholder="Duration"
                                                                 id="days" disabled />
@@ -334,21 +2869,21 @@
 
                                                     <div class="col-md-12 col-12">
                                                         <label for="email-id-column">Amount Per Hour</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
                                                             <input type="number" id="rate" name="ratePerHour"
                                                                 class="form-control reactive" placeholder="0" disabled />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12 col-12">
                                                         <label for="email-id-column">Amount</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
                                                             <input type="text" id="amount" name="amount"
                                                                 class="form-control" placeholder="0" disabled />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12 col-12">
                                                         <label for="">Job Type</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
                                                             <select class="form-control select2" name="job_type_id"
                                                                 id="job" aria-label="Default select example"
                                                                 disabled>
@@ -364,34 +2899,9 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <!-- <div class="col-md-12 ">
-                                                                                                                                                                                                                                                                                                                                <label for="">Roster Status</label>
-                                                                                                                                                                                                                                                                                                                                <div class="form-group">
-                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" name="roaster_status_id" id="roster" aria-label="Default select example" disabled>
-                                                                                                                                                                                                                                                                                                                                        <option value="" disabled selected hidden>Please Choose...
-                                                                                                                                                                                                                                                                                                                                        </option>
-                                                                                                                                                                                                                                                                                                                                        @foreach ($roaster_status as $row)
-    <option value="{{ $row->id }}">{{ $row->name }}
-                                                                                                                                                                                                                                                                                                                                        </option>
-    @endforeach
-
-                                                                                                                                                                                                                                                                                                                                    </select>
-                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                            </div>
-
-                                                                                                                                                                                                                                                                                                                            <div class="col-md-12 ">
-                                                                                                                                                                                                                                                                                                                                <label for="roaster_type" class="form-label">Roster Type</label>
-                                                                                                                                                                                                                                                                                                                                <div class="form-group">
-                                                                                                                                                                                                                                                                                                                                    <select class="form-control select2" id="roasterType" disabled>
-                                                                                                                                                                                                                                                                                                                                        <option value="">Select Roster Type</option>
-                                                                                                                                                                                                                                                                                                                                        <option value="Unschedueled">Unschedueled</option>
-                                                                                                                                                                                                                                                                                                                                        <option value="Schedueled">Schedueled</option>
-                                                                                                                                                                                                                                                                                                                                    </select>
-                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                            </div> -->
                                                     <div class="col-md-12 col-12">
                                                         <label for="email-id-column">Remarks</label>
-                                                        <div class="form-group">
+                                                        <div class="mb-3">
                                                             <input type="text" name="remarks" id="remarks"
                                                                 class="form-control" placeholder="remarks" disabled />
                                                         </div>
@@ -400,13 +2910,10 @@
                                             </div>
                                         </div>
                                     </section>
-                                    <div class="form-group d-flex">
-                                        <button type="button" class="btn btn-outline-secondary btn-cancel"
-                                            data-dismiss="modal">Cancel</button>
-                                        <button type="button" class="btn ml-1 bg-gradient-success"
-                                            id="accept">Accept</button>
-                                        <button type="button" class="btn ml-1 bg-gradient-success" id="request"
-                                            disabled>Requested</button>
+                                    <div class="mb-3 d-flex">
+                                        <button type="button" class="btn btn-outline-secondary btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn ml-1 bg-gradient-success" id="accept">Accept</button>
+                                        <button type="button" class="btn ml-1 bg-gradient-success" id="request" disabled>Requested</button>
                                     </div>
                                 </div>
                             </div>
@@ -527,9 +3034,6 @@
                     <div>
                         <p class="card-title text-primary d-inline">Upcoming shifts</p>
                     </div>
-                    <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                            <a href="/home/upcoming/shift" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                        </div> -->
                 </div>
 
                 <div class="row" id="table-hover-animation">
@@ -621,9 +3125,7 @@
                                     </table>
 
                                 </div>
-                                <div style="    padding: 10px 0;
-    margin-top: 20px;font-size: 18px;"
-                                    class=" text-right">
+                                <div style="adding: 10px 0; margin-top: 20px;font-size: 18px;" class=" text-right">
                                     <a href="/home/upcoming/shift">More...</a>
                                 </div>
                             </div>
@@ -743,9 +3245,6 @@
                     <div>
                         <p class="card-title text-primary d-inline">Past shifts</p>
                     </div>
-                    <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                            <a href="/home/past/shift" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                        </div> -->
                 </div>
 
                 <div class="row" id="table-hover-animation">
@@ -836,9 +3335,7 @@
                                     </table>
 
                                 </div>
-                                <div style="    padding: 10px 0;
-    margin-top: 20px;font-size: 18px;"
-                                    class=" text-right">
+                                <div style="padding: 10px 0; margin-top: 20px;font-size: 18px;" class=" text-right">
                                     <a href="/home/past/shift">More...</a>
                                 </div>
                             </div>
@@ -857,9 +3354,6 @@
                     <div>
                         <p class="card-title text-primary d-inline">Upcoming Events</p>
                     </div>
-                    <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                            <a href="/user/home/upcomingevent/go" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                        </div> -->
                 </div>
                 <div class="card-body">
 
@@ -940,8 +3434,7 @@
                                         </table>
                                     </div>
 
-                                    <div style="    padding: 10px 0;
-    margin-top: 20px;font-size: 18px;"
+                                    <div style="padding: 10px 0; margin-top: 20px;font-size: 18px;"
                                         class=" text-right">
                                         <a href="/user/home/upcomingevent/go">More...</a>
                                     </div>
@@ -963,9 +3456,6 @@
                     <div>
                         <p class="card-title text-primary d-inline">Timesheet</p>
                     </div>
-                    <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                            <a href="/home/timesheet" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                        </div> -->
                 </div>
                 <div class="card-body">
 
@@ -1044,9 +3534,7 @@
                                             </table>
 
                                         </div>
-                                        <div style="    padding: 10px 0;
-    margin-top: 20px;font-size: 18px;"
-                                            class=" text-right">
+                                        <div style="    padding: 10px 0; margin-top: 20px;font-size: 18px;" class=" text-right">
                                             <a href="/home/timesheet">More...</a>
                                         </div>
                                     </div>
@@ -1068,9 +3556,6 @@
                     <div>
                         <p class="card-title text-primary d-inline">Payments</p>
                     </div>
-                    <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                            <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                        </div> -->
                 </div>
                 <div class="card-body">
 
@@ -1133,9 +3618,7 @@
 
                                             </table>
                                         </div>
-                                        <div style="    padding: 10px 0;
-    margin-top: 20px;font-size: 18px;"
-                                            class=" text-right">
+                                        <div style="padding: 10px 0; margin-top: 20px;font-size: 18px;"  class=" text-right">
                                             <a href="/home/payment/report">More...</a>
                                         </div>
                                     </div>
@@ -1172,21 +3655,18 @@
                                 <div>
                                     <p class="card-title text-primary d-inline">Time Off</p>
                                 </div>
-                                <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                        <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                    </div> -->
                             </div>
                             <div class="card-body">
                                 <div class="">
                                     <ul class="nav nav-tabs" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" onclick="changeMode('availabity')" id="home-tab"
-                                                data-toggle="tab" href="#home" aria-controls="home" role="tab"
+                                                data-bs-toggle="tab" href="#home" aria-controls="home" role="tab"
                                                 aria-selected="true">Unavailability</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" onclick="changeMode('leave')" id="profile-tab"
-                                                data-toggle="tab" href="#profile" aria-controls="profile" role="tab"
+                                                data-bs-toggle="tab" href="#profile" aria-controls="profile" role="tab"
                                                 aria-selected="false">Leave Day</a>
                                         </li>
                                     </ul>
@@ -1289,16 +3769,11 @@
                                             </div>
                                         </div>
 
-                                        <div class="tab-pane" id="profile" aria-labelledby="profile-tab"
-                                            role="tabpanel">
+                                        <div class="tab-pane" id="profile" aria-labelledby="profile-tab" role="tabpanel">
                                             <div class="card">
                                                 <div class="card-header">
                                                     <button class="btn btn-primary" type="button"
                                                         onclick="openModal()">Add Leave</button>
-                                                    {{-- <h4 class="bg-light-primary p-1 badge">Total Leave:
-                                                        {{ $unavailabilities->where('status', 'approved')->sum('total') }}
-                                                        Days
-                                                    </h4> --}}
                                                 </div>
 
                                                 <div class="card-body">
@@ -1394,9 +3869,7 @@
 
                                 <div class="container">
 
-                                    <div style="    padding: 10px 0;
-margin-top: 0px;font-size: 18px;"
-                                        class=" text-right">
+                                    <div style="padding: 10px 0; margin-top: 0px;font-size: 18px;" class=" text-right">
                                         <a href="/home/time/off">More...</a>
                                     </div>
                                 </div>
@@ -1452,32 +3925,36 @@ margin-top: 0px;font-size: 18px;"
                                     </div>
 
                                     <div id="myModal" class="modal">
-                                        <div class="modal-content post-modal">
-                                            <span class="close" onclick="closeModal()">&times;</span>
-                                            <div class="post-content">
-                                                <h2 id="modalTitle"></h2>
-                                                <p id="modalDescription"></p>
-                                            </div>
-
-                                            <div class="horizontal-line"></div>
-                                            <br>
-                                            <h5>Comments:</h5>
-                                            <ul id="modalReplies"></ul>
-                                            <div class="reply-form">
-                                                <h5>Reply:</h5>
-                                                <form id="replyForm" action="{{ url('home/messages/reply') }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <input type="hidden" name="message_id" id="reply_message_id">
-                                                    <textarea name="text" id="replyContent" class="form-control" rows="3" required></textarea><br><br>
-                                                    <input type="submit" class="btn btn-primary" value="Submit Reply">
-
-                                                    <button type="button" style="float: right;" id="confirmationButton"
-                                                        class="btn btn-info">
-                                                        <i data-feather="check-circle"></i> Confirm
-                                                    </button>
-                                                </form>
-
+                                        <div class="modal-dialog">
+                                            <div class="modal-content post-modal">
+                                                <div class="modal-body">
+                                                    <span class="btn-close float-end" onclick="closeModal()"></span>
+                                                    <div class="post-content">
+                                                        <h2 id="modalTitle"></h2>
+                                                        <p id="modalDescription"></p>
+                                                    </div>
+        
+                                                    <div class="horizontal-line"></div>
+                                                    <br>
+                                                    <h5>Comments:</h5>
+                                                    <ul id="modalReplies"></ul>
+                                                    <div class="reply-form">
+                                                        <h5>Reply:</h5>
+                                                        <form id="replyForm" action="{{ url('home/messages/reply') }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="message_id" id="reply_message_id">
+                                                            <textarea name="text" id="replyContent" class="form-control" rows="3" required></textarea><br><br>
+                                                            <input type="submit" class="btn btn-primary" value="Submit Reply">
+        
+                                                            <button type="button" style="float: right;" id="confirmationButton"
+                                                                class="btn btn-info">
+                                                                <i data-feather="check-circle"></i> Confirm
+                                                            </button>
+                                                        </form>
+        
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1515,9 +3992,7 @@ margin-top: 0px;font-size: 18px;"
                                                     </div>
                                                     <div class="container">
 
-                                                        <div style="    padding: 10px 0;
-                    margin-top: 10px;font-size: 18px;"
-                                                            class=" text-right">
+                                                        <div style="padding: 10px 0;  margin-top: 10px;font-size: 18px;" class=" text-right">
                                                             <a href="/home/messages">More...</a>
                                                         </div>
                                                     </div>
@@ -1543,9 +4018,6 @@ margin-top: 0px;font-size: 18px;"
                     <div>
                         <p class="card-title text-primary d-inline">Compliances</p>
                     </div>
-                    <!-- <div class="mt-3 mt-md-0">
-                                                                                                                                                                                                                                                                                                                                                            <a href="/home/payment/report" class="btn btn-gradient-primary ">See more</a>
-                                                                                                                                                                                                                                                                                                                                                        </div> -->
                 </div>
                 <div class="card-body">
 
@@ -1572,9 +4044,7 @@ margin-top: 0px;font-size: 18px;"
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div style="    padding: 10px 0;
-    margin-top: 20px;font-size: 18px;"
-                                            class=" text-right">
+                                        <div style="padding: 10px 0; margin-top: 20px;font-size: 18px;" class=" text-right">
                                             <a href="/home/compliance">More...</a>
                                         </div>
                                     </div>
@@ -1590,423 +4060,620 @@ margin-top: 0px;font-size: 18px;"
 
     </div>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="{{ URL::asset('app-assets/velzon/libs/swiper/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css')}}">
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/calendars/fullcalendar.min.css')}}">
+
+    <style>
+        .avatar-xs img{
+            aspect-ratio: 1/1;
+        }
+        .avatar-lg img{
+            aspect-ratio: 1/1;
+        }
+        
+        /* Other styles */
+        #postList {
+            height: auto;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .post {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        .pagination {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-right: 5px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .pagination a.active {
+            background-color: #ccc;
+        }
+
+        .create-post-btn {
+            margin-bottom: 10px;
+        }
+
+        .post-row {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+        }
+
+        .post-row:hover {
+            background-color: #f1f1f1;
+        }
+
+        .post-row .initials {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .post-row .fullname {
+            font-weight: bold;
+        }
+
+        .post-row .timestamp {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .post-row .purpose {
+            font-weight: bold;
+        }
+
+        .post-row .replies {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .post-row .description {
+            margin-top: 10px;
+        }
+
+        .post-modal .post-content {
+            margin-bottom: 20px;
+        }
+
+        .post-modal .reply-form {
+            margin-top: 20px;
+        }
+
+        .reply-item .initials {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .post-row {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+        }
+
+        .post-row:hover {
+            background-color: #f1f1f1;
+        }
+
+        .initials {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .post-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fullname {
+            font-weight: bold;
+        }
+
+        .timestamp-purpose {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .horizontal-line {
+            border-top: 1px solid #000;
+            width: 100%;
+        }
+
+        .chosen-container {
+            display: block;
+            width: 100% !important;
+        }
+    </style>
+@endpush
+
 @push('scripts')
+    <script src="{{ URL::asset('app-assets/velzon/libs/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ URL::asset('app-assets/velzon/js/pages/profile.init.js') }}"></script>
+    <script src="{{ URL::asset('app-assets/velzon/js/app.js') }}"></script>
+    @include('components.datatablescript')
+    @include('components.select2')
+
+    
+    <script src="{{asset('app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js')}}"></script>
     <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
-    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet" />
+    <script src="{{asset('app-assets/vendors/js/calendar/fullcalendar.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/extensions/moment.min.js')}}"></script>
+    <script src="{{asset('app-assets\js\scripts\pages\app-calendar-timekeeper.js')}}"></script>
 
     <script>
-        fetchCompliances = function() {
-            $.ajax({
-                url: '/home/user/compliance/fetch?get=3',
-                type: 'get',
-                dataType: 'json',
-                success: function(data) {
-                    if (data.data) {
-                        $('#exampleCompliance').DataTable().clear().destroy();
-                        $('#complianceBody').html(data.data);
-                        $('#exampleCompliance').DataTable({
-                            "pageLength": 3, // Set the number of rows to display on each page to 3
-                            "paging": false, // Disable pagination
-                            "info": false, // Optional: Disable showing 'Showing x of y entries' info
-                            "searching": false // Optional: Disable search box
-                        });
-                        feather.replace({
-                            width: 14,
-                            height: 14
-                        });
-                    }
+        $(document).ready(function(){
 
-                    $("#addCompliance").modal("hide");
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-            });
-        };
-
-        fetchCompliances();
-
-        complianceAddFunc = function() {
-            if ($("#complianceForm").valid()) {
+            fetchCompliances = function() {
                 $.ajax({
-                    data: $('#complianceForm').serialize(),
-                    url: "/home/user/compliance/store",
-                    type: "POST",
+                    url: '/home/user/compliance/fetch?get=3',
+                    type: 'get',
                     dataType: 'json',
                     success: function(data) {
-                        toastr[data.alertType](data.message, {
-                            closeButton: true,
-                            tapToDismiss: false,
-                        });
-                        fetchCompliances()
-                    },
-                    error: function(data) {
-                        console.log(data)
-                    }
-                });
-            }
-        }
-        $(document).on("click", ".del-compliance", function() {
-            swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover this!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $.ajax({
-                            url: '/home/user/compliance/delete/' + $(this).data("id"),
-                            type: 'get',
-                            dataType: 'json',
-                            success: function(data) {
-                                toastr[data.alertType](data.message, {
-                                    closeButton: true,
-                                    tapToDismiss: false,
-                                });
-                                fetchCompliances()
-                            },
-                            error: function(err) {
-                                console.log(err)
-                            }
-                        });
-                    }
-                });
-        })
-
-        $(document).on("click", ".edit-btn-compliance", function() {
-            resetValueCompliance()
-            var rowData = $(this).data("row");
-
-            $("#compliance_id").val(rowData.compliance_id).trigger('change')
-            $("#certificate_no").val(rowData.certificate_no)
-            $("#expire_date").val(moment(rowData.expire_date).format('DD-MM-YYYY'))
-            $("#comment").val(rowData.comment)
-
-            $("#editComplianceSubmit").prop("hidden", true)
-            $("#addComplianceSubmit").prop("hidden", false)
-            $("#addCompliance").modal("show")
-        })
-
-        function resetValueCompliance() {
-            $("#editComplianceSubmit").prop("hidden", false)
-            $("#addComplianceSubmit").prop("hidden", true)
-            $("#compliance_id").val('').trigger('change')
-            $("#certificate_no").val('')
-            $("#expire_date").val()
-            $("#comment").val('')
-        }
-
-        // Function to handle confirmation button click event
-        function handleConfirmation() {
-            var button = document.getElementById('confirmationButton');
-            var the_message_id = document.getElementById('reply_message_id').value;
-
-            // Check if the button is already confirmed
-            if (button.classList.contains('confirmed')) {
-                // Send AJAX request to unconfirm
-                $.ajax({
-                    url: "{{ url('home/messages/unconfirm') }}",
-                    type: 'POST',
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                            'content') // Include the CSRF token in headers
-                    },
-                    data: {
-                        message_id: the_message_id,
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Update button appearance
-                            button.classList.remove('confirmed');
-                            button.classList.remove('btn-success');
-                            button.classList.add('btn-info');
-                            button.innerHTML =
-                                `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Confirm`;
-                            window.location.reload();
+                        if (data.data) {
+                            $('#exampleCompliance').DataTable().clear().destroy();
+                            $('#complianceBody').html(data.data);
+                            $('#exampleCompliance').DataTable({
+                                "pageLength": 3, // Set the number of rows to display on each page to 3
+                                "paging": false, // Disable pagination
+                                "info": false, // Optional: Disable showing 'Showing x of y entries' info
+                                "searching": false // Optional: Disable search box
+                            });
+                            feather.replace({
+                                width: 14,
+                                height: 14
+                            });
                         }
+
+                        $("#addCompliance").modal("hide");
                     },
                     error: function(err) {
-                        console.log(err)
+                        console.log(err);
                     }
                 });
-            } else {
-                // Send AJAX request to confirm
-                $.ajax({
-                    url: "{{ url('home/messages/confirm') }}",
-                    type: 'POST',
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                            'content') // Include the CSRF token in headers
-                    },
-                    data: {
-                        message_id: the_message_id,
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Update button appearance
-                            button.classList.add('confirmed');
-                            button.classList.remove('btn-info');
-                            button.classList.add('btn-success');
-                            button.textContent = 'Confirmed';
-                            window.location.reload();
-                        }
-                    },
-                    error: function(err) {
-                        console.log(err)
-                    }
-                });
-            }
-        }
-
-        // Function to send AJAX request
-        function ajaxRequest(method, url, callback) {
-            var xhr = new XMLHttpRequest();
-            xhr.open(method, url, true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    callback(response);
-                }
             };
-            xhr.send();
-        }
 
-        // Attach click event listener to the button
-        document.getElementById('confirmationButton').addEventListener('click', handleConfirmation);
+            fetchCompliances();
 
-
-        $(".chosen-select").chosen({
-            no_results_text: "Oops, nothing found!"
-        })
-        // This is just a dummy data for demonstration purposes
-        var posts = @json($messages)
-
-        // Function to generate the HTML for each post
-        function generatePostHTML(post) {
-            return `<div class="post">
-                <h3>${post.heading}</h3>
-                <p>${post.text}</p>
-              </div>`;
-        }
-        console.log(posts)
-
-        function generatePostRowHTML(post) {
-            var initials = post.fullname.match(/\b(\w)/g).join('').toUpperCase();
-            var description = post.text.length > 100 ? post.text.substring(0, 100) + '...' : post.text;
-
-            if (post.purposes && post.purposes.length > 0) {
-                purpose = post.purposes.join(", ");
-            } else {
-                purpose = "All Venue";
-            }
-
-            return `<div class="post-row" onclick="openPostModal('${post.need_confirm}', '${post.my_confirm}', '${post.id}', '${post.heading}', '${post.text}', '${encodeURIComponent(JSON.stringify(post.replies))}')">
-                <div class="initials">${initials}</div>
-                <div class="post-details">
-                  <div class="fullname">${post.fullname}</div>
-                  <div class="timestamp-purpose">
-                    <div class="timestamp">${post.publish_date} to <b>${purpose}</b></div>
-                  </div>
-                    ${description}
-                </div>
-                <div class="replies">Replies: ${post.replies.length}</div>
-              </div>`;
-        }
-
-        // Function to render the posts on the page
-        var postsPerPage = 5;
-
-        function renderPosts(page) {
-
-            var startIndex = (page - 1) * postsPerPage;
-            var endIndex = startIndex + postsPerPage;
-
-            var postList = document.getElementById("postList");
-            postList.innerHTML = "";
-
-            for (var i = startIndex; i < endIndex && i < posts.length; i++) {
-                var postRowHTML = generatePostRowHTML(posts[i]);
-                postList.innerHTML += postRowHTML;
-            }
-        }
-
-        // Function to open the post modal
-        function openPostModal(need_confirm, my_confirm, id, title, description, encodedReplies) {
-            const decodedReplies = decodeURIComponent(encodedReplies);
-            const replies = JSON.parse(decodedReplies);
-            var modal = document.getElementById("myModal");
-            var modalTitle = document.getElementById("modalTitle");
-            var modalDescription = document.getElementById("modalDescription");
-            var modalReplies = document.getElementById("modalReplies");
-            var replyForm = document.getElementById("replyForm");
-            var button = document.getElementById('confirmationButton');
-
-            document.getElementById('reply_message_id').value = id;
-            modalTitle.textContent = title;
-            modalDescription.textContent = description;
-
-            // Clear previous replies
-            modalReplies.innerHTML = "";
-
-            // Populate the list of replies
-            for (var i = 0; i < replies.length; i++) {
-                var replyItemHTML = generateReplyItemHTML(replies[i]);
-                modalReplies.innerHTML += replyItemHTML;
-            }
-
-            // Show the reply form
-            replyForm.style.display = "block";
-
-            modal.style.display = "block";
-
-            if (need_confirm == 'Y') {
-                button.style.display = 'block';
-                if (my_confirm == 'true') {
-                    button.classList.add('confirmed');
-                    button.classList.remove('btn-info');
-                    button.classList.add('btn-success');
-                    button.textContent = 'Confirmed';
-                } else {
-                    var button = document.getElementById('confirmationButton');
-                    button.classList.remove('confirmed');
-                    button.classList.remove('btn-success');
-                    button.classList.add('btn-info');
-                    button.innerHTML =
-                        `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Confirm`;
+            complianceAddFunc = function() {
+                if ($("#complianceForm").valid()) {
+                    $.ajax({
+                        data: $('#complianceForm').serialize(),
+                        url: "/home/user/compliance/store",
+                        type: "POST",
+                        dataType: 'json',
+                        success: function(data) {
+                            toastr[data.alertType](data.message, {
+                                closeButton: true,
+                                tapToDismiss: false,
+                            });
+                            fetchCompliances()
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                    });
                 }
-            } else {
-                button.style.display = 'none';
             }
-        }
+            $(document).on("click", ".del-compliance", function() {
+                swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: '/home/user/compliance/delete/' + $(this).data("id"),
+                                type: 'get',
+                                dataType: 'json',
+                                success: function(data) {
+                                    toastr[data.alertType](data.message, {
+                                        closeButton: true,
+                                        tapToDismiss: false,
+                                    });
+                                    fetchCompliances()
+                                },
+                                error: function(err) {
+                                    console.log(err)
+                                }
+                            });
+                        }
+                    });
+            })
 
-        function generateReplyItemHTML(reply) {
-            var initials = reply.fullname.match(/\b(\w)/g).join('').toUpperCase();
+            $(document).on("click", ".edit-btn-compliance", function() {
+                resetValueCompliance()
+                var rowData = $(this).data("row");
 
-            return `<div class="post-row">
-                <div class="initials">${initials}</div>
-                <div class="post-details">
-                  <div class="fullname">${reply.fullname}</div>
-                  <div class="timestamp-purpose">
-                    <div class="timestamp">${reply.publish_date}</div>
-                  </div>
-                    ${reply.text}
-                </div>
-              </div>`;
-        }
+                $("#compliance_id").val(rowData.compliance_id).trigger('change')
+                $("#certificate_no").val(rowData.certificate_no)
+                $("#expire_date").val(moment(rowData.expire_date).format('DD-MM-YYYY'))
+                $("#comment").val(rowData.comment)
 
-        // Submit form to reply to a post
-        var replyForm = document.getElementById("replyForm");
-        replyForm.addEventListener("submit", function(event) {
-            // event.preventDefault();
+                $("#editComplianceSubmit").prop("hidden", true)
+                $("#addComplianceSubmit").prop("hidden", false)
+                $("#addCompliance").modal("show")
+            })
 
-            // var replyContent = document.getElementById("replyContent").value;
+            function resetValueCompliance() {
+                $("#editComplianceSubmit").prop("hidden", false)
+                $("#addComplianceSubmit").prop("hidden", true)
+                $("#compliance_id").val('').trigger('change')
+                $("#certificate_no").val('')
+                $("#expire_date").val()
+                $("#comment").val('')
+            }
 
-            // Add the new reply to the post's replies array
-            // var postIndex = 0; // Replace this with the actual index of the post
-            // posts[postIndex].replies.push({
-            //     fullname: "Your Full Name", // Replace with the actual full name
-            //     content: replyContent,
-            //     timestamp: new Date().toLocaleString() // Replace with the appropriate timestamp format
+            // Function to handle confirmation button click event
+            function handleConfirmation() {
+                var button = document.getElementById('confirmationButton');
+                var the_message_id = document.getElementById('reply_message_id').value;
+
+                // Check if the button is already confirmed
+                if (button.classList.contains('confirmed')) {
+                    // Send AJAX request to unconfirm
+                    $.ajax({
+                        url: "{{ url('home/messages/unconfirm') }}",
+                        type: 'POST',
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content') // Include the CSRF token in headers
+                        },
+                        data: {
+                            message_id: the_message_id,
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Update button appearance
+                                button.classList.remove('confirmed');
+                                button.classList.remove('btn-success');
+                                button.classList.add('btn-info');
+                                button.innerHTML =
+                                    `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Confirm`;
+                                window.location.reload();
+                            }
+                        },
+                        error: function(err) {
+                            console.log(err)
+                        }
+                    });
+                } else {
+                    // Send AJAX request to confirm
+                    $.ajax({
+                        url: "{{ url('home/messages/confirm') }}",
+                        type: 'POST',
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content') // Include the CSRF token in headers
+                        },
+                        data: {
+                            message_id: the_message_id,
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Update button appearance
+                                button.classList.add('confirmed');
+                                button.classList.remove('btn-info');
+                                button.classList.add('btn-success');
+                                button.textContent = 'Confirmed';
+                                window.location.reload();
+                            }
+                        },
+                        error: function(err) {
+                            console.log(err)
+                        }
+                    });
+                }
+            }
+
+            // Function to send AJAX request
+            function ajaxRequest(method, url, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open(method, url, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        callback(response);
+                    }
+                };
+                xhr.send();
+            }
+
+            // Attach click event listener to the button
+            document.getElementById('confirmationButton').addEventListener('click', handleConfirmation);
+
+
+            $(".chosen-select").chosen({
+                no_results_text: "Oops, nothing found!"
+            })
+            // This is just a dummy data for demonstration purposes
+            var posts = @json($messages)
+
+            // Function to generate the HTML for each post
+            function generatePostHTML(post) {
+                return `<div class="post">
+                    <h3>${post.heading}</h3>
+                    <p>${post.text}</p>
+                </div>`;
+            }
+            console.log(posts)
+
+            function generatePostRowHTML(post) {
+                var initials = post.fullname.match(/\b(\w)/g).join('').toUpperCase();
+                var description = post.text.length > 100 ? post.text.substring(0, 100) + '...' : post.text;
+
+                if (post.purposes && post.purposes.length > 0) {
+                    purpose = post.purposes.join(", ");
+                } else {
+                    purpose = "All Venue";
+                }
+
+                return `<div class="post-row" onclick="openPostModal('${post.need_confirm}', '${post.my_confirm}', '${post.id}', '${post.heading}', '${post.text}', '${encodeURIComponent(JSON.stringify(post.replies))}')">
+                    <div class="initials">${initials}</div>
+                    <div class="post-details">
+                    <div class="fullname">${post.fullname}</div>
+                    <div class="timestamp-purpose">
+                        <div class="timestamp">${post.publish_date} to <b>${purpose}</b></div>
+                    </div>
+                        ${description}
+                    </div>
+                    <div class="replies">Replies: ${post.replies.length}</div>
+                </div>`;
+            }
+
+            // Function to render the posts on the page
+            var postsPerPage = 5;
+
+            function renderPosts(page) {
+
+                var startIndex = (page - 1) * postsPerPage;
+                var endIndex = startIndex + postsPerPage;
+
+                var postList = document.getElementById("postList");
+                postList.innerHTML = "";
+
+                for (var i = startIndex; i < endIndex && i < posts.length; i++) {
+                    var postRowHTML = generatePostRowHTML(posts[i]);
+                    postList.innerHTML += postRowHTML;
+                }
+            }
+
+            // Function to open the post modal
+            function openPostModal(need_confirm, my_confirm, id, title, description, encodedReplies) {
+                const decodedReplies = decodeURIComponent(encodedReplies);
+                const replies = JSON.parse(decodedReplies);
+                var modal = document.getElementById("myModal");
+                var modalTitle = document.getElementById("modalTitle");
+                var modalDescription = document.getElementById("modalDescription");
+                var modalReplies = document.getElementById("modalReplies");
+                var replyForm = document.getElementById("replyForm");
+                var button = document.getElementById('confirmationButton');
+
+                document.getElementById('reply_message_id').value = id;
+                modalTitle.textContent = title;
+                modalDescription.textContent = description;
+
+                // Clear previous replies
+                modalReplies.innerHTML = "";
+
+                // Populate the list of replies
+                for (var i = 0; i < replies.length; i++) {
+                    var replyItemHTML = generateReplyItemHTML(replies[i]);
+                    modalReplies.innerHTML += replyItemHTML;
+                }
+
+                // Show the reply form
+                replyForm.style.display = "block";
+
+                modal.style.display = "block";
+
+                if (need_confirm == 'Y') {
+                    button.style.display = 'block';
+                    if (my_confirm == 'true') {
+                        button.classList.add('confirmed');
+                        button.classList.remove('btn-info');
+                        button.classList.add('btn-success');
+                        button.textContent = 'Confirmed';
+                    } else {
+                        var button = document.getElementById('confirmationButton');
+                        button.classList.remove('confirmed');
+                        button.classList.remove('btn-success');
+                        button.classList.add('btn-info');
+                        button.innerHTML =
+                            `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg> Confirm`;
+                    }
+                } else {
+                    button.style.display = 'none';
+                }
+            }
+
+            function generateReplyItemHTML(reply) {
+                var initials = reply.fullname.match(/\b(\w)/g).join('').toUpperCase();
+
+                return `<div class="post-row">
+                    <div class="initials">${initials}</div>
+                    <div class="post-details">
+                    <div class="fullname">${reply.fullname}</div>
+                    <div class="timestamp-purpose">
+                        <div class="timestamp">${reply.publish_date}</div>
+                    </div>
+                        ${reply.text}
+                    </div>
+                </div>`;
+            }
+
+            // Submit form to reply to a post
+            var replyForm = document.getElementById("replyForm");
+            replyForm.addEventListener("submit", function(event) {
+                // event.preventDefault();
+
+                // var replyContent = document.getElementById("replyContent").value;
+
+                // Add the new reply to the post's replies array
+                // var postIndex = 0; // Replace this with the actual index of the post
+                // posts[postIndex].replies.push({
+                //     fullname: "Your Full Name", // Replace with the actual full name
+                //     content: replyContent,
+                //     timestamp: new Date().toLocaleString() // Replace with the appropriate timestamp format
+                // });
+
+                // // Clear the reply form field
+                // document.getElementById("replyContent").value = "";
+
+                // // Re-render the posts to update the list
+                // renderPosts(1);
+            });
+
+            // Initially render the first page
+            renderPosts(1);
+
+            function calculatePageCount() {
+                return Math.ceil(posts.length / postsPerPage);
+            }
+
+            // Update the pagination links based on the number of pages
+            function updatePaginationLinks() {
+                var pageCount = calculatePageCount();
+                var paginationLinks = "";
+
+                for (var i = 1; i <= pageCount; i++) {
+                    paginationLinks += `<a href="#" id="page${i}" onclick="handlePageClick(${i})">${i}</a>`;
+                }
+
+                var paginationContainer = document.getElementsByClassName("pagination")[0];
+                paginationContainer.innerHTML = paginationLinks;
+            }
+
+            // Initially render the posts and update the pagination links
+            renderPosts(1);
+            updatePaginationLinks();
+            // Modal related functions
+            var modal = document.getElementById("myModalDetail");
+
+            var modal_create = document.getElementById("myModal");
+
+            function openModal() {
+                modal.style.display = "block";
+            }
+
+            function closeModal() {
+                modal.style.display = "none";
+                modal_create.style.display = "none";
+            }
+
+            // Submit form to create a new post
+            // var createPostForm = document.getElementById("createPostForm");
+            // createPostForm.addEventListener("submit", function(event) {
+            //     event.preventDefault();
+
+            //     var postTitle = document.getElementById("postTitle").value;
+            //     var postContent = document.getElementById("postContent").value;
+
+            //     // Create a new post object
+            //     var newPost = {
+            //         title: postTitle,
+            //         content: postContent,
+            //     };
+
+            //     // Add the new post to the posts array
+            //     posts.push(newPost);
+
+            //     // Clear the form fields
+            //     document.getElementById("postTitle").value = "";
+            //     document.getElementById("postContent").value = "";
+
+            //     // Close the modal
+            //     closeModal();
+
+            //     // Re-render the posts to update the list
+            //     renderPosts(1);
+            //     updatePaginationLinks();
             // });
 
-            // // Clear the reply form field
-            // document.getElementById("replyContent").value = "";
+            function handlePageClick(page) {
+                renderPosts(page);
 
-            // // Re-render the posts to update the list
-            // renderPosts(1);
-        });
-
-        // Initially render the first page
-        renderPosts(1);
-
-        function calculatePageCount() {
-            return Math.ceil(posts.length / postsPerPage);
-        }
-
-        // Update the pagination links based on the number of pages
-        function updatePaginationLinks() {
-            var pageCount = calculatePageCount();
-            var paginationLinks = "";
-
-            for (var i = 1; i <= pageCount; i++) {
-                paginationLinks += `<a href="#" id="page${i}" onclick="handlePageClick(${i})">${i}</a>`;
+                // Update active class for pagination links
+                var paginationLinks = document.getElementsByClassName("pagination")[0].getElementsByTagName("a");
+                for (var i = 0; i < paginationLinks.length; i++) {
+                    paginationLinks[i].classList.remove("active");
+                }
+                var activeLink = document.getElementById("page" + page);
+                activeLink.classList.add("active");
             }
 
-            var paginationContainer = document.getElementsByClassName("pagination")[0];
-            paginationContainer.innerHTML = paginationLinks;
-        }
-
-        // Initially render the posts and update the pagination links
-        renderPosts(1);
-        updatePaginationLinks();
-        // Modal related functions
-        var modal = document.getElementById("myModalDetail");
-
-        var modal_create = document.getElementById("myModal");
-
-        function openModal() {
-            modal.style.display = "block";
-        }
-
-        function closeModal() {
-            modal.style.display = "none";
-            modal_create.style.display = "none";
-        }
-
-        // Submit form to create a new post
-        // var createPostForm = document.getElementById("createPostForm");
-        // createPostForm.addEventListener("submit", function(event) {
-        //     event.preventDefault();
-
-        //     var postTitle = document.getElementById("postTitle").value;
-        //     var postContent = document.getElementById("postContent").value;
-
-        //     // Create a new post object
-        //     var newPost = {
-        //         title: postTitle,
-        //         content: postContent,
-        //     };
-
-        //     // Add the new post to the posts array
-        //     posts.push(newPost);
-
-        //     // Clear the form fields
-        //     document.getElementById("postTitle").value = "";
-        //     document.getElementById("postContent").value = "";
-
-        //     // Close the modal
-        //     closeModal();
-
-        //     // Re-render the posts to update the list
-        //     renderPosts(1);
-        //     updatePaginationLinks();
-        // });
-
-        function handlePageClick(page) {
-            renderPosts(page);
-
-            // Update active class for pagination links
+            // Add click event listeners to pagination links
             var paginationLinks = document.getElementsByClassName("pagination")[0].getElementsByTagName("a");
             for (var i = 0; i < paginationLinks.length; i++) {
-                paginationLinks[i].classList.remove("active");
+                paginationLinks[i].addEventListener("click", function(event) {
+                    event.preventDefault();
+                    var page = parseInt(this.innerHTML);
+                    handlePageClick(page);
+                });
             }
-            var activeLink = document.getElementById("page" + page);
-            activeLink.classList.add("active");
-        }
-
-        // Add click event listeners to pagination links
-        var paginationLinks = document.getElementsByClassName("pagination")[0].getElementsByTagName("a");
-        for (var i = 0; i < paginationLinks.length; i++) {
-            paginationLinks[i].addEventListener("click", function(event) {
-                event.preventDefault();
-                var page = parseInt(this.innerHTML);
-                handlePageClick(page);
-            });
-        }
+            
+        });
     </script>
     <script>
         $(document).ready(function() {
@@ -2610,18 +5277,18 @@ margin-top: 0px;font-size: 18px;"
 
                 $("#project-select").val(rowData.project_id).trigger('change');
                 $("#addTimeKeeper").modal("show")
-
+                console.log($('#addTimeKeeper'))
                 initAllDatePicker();
                 allCalculation()
 
             })
         });
     </script>
-
     <!-- unconfirm shifts -->
     <script type="text/javascript">
         let ids = []
-        let totalId = <?php echo json_encode($all_ids); ?>;
+        console.log('hello');
+        let totalId = <?php echo json_encode($all_ids); ?>;//php
 
         function multipleShift(action) {
             $.ajax({
@@ -2706,222 +5373,5 @@ margin-top: 0px;font-size: 18px;"
 
         }
     </script>
-    <style>
-        /* Styles for the modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 999999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            animation: modalOpenAnimation 0.3s ease-out;
-        }
-
-        @keyframes modalOpenAnimation {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #333;
-            text-decoration: none;
-        }
-
-        /* end */
-
-        /* Other styles */
-        #postList {
-            height: auto;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
-
-        .post {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-        }
-
-        .pagination {
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .pagination a {
-            display: inline-block;
-            padding: 5px 10px;
-            margin-right: 5px;
-            background-color: #f4f4f4;
-            border: 1px solid #ccc;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .pagination a.active {
-            background-color: #ccc;
-        }
-
-        .create-post-btn {
-            margin-bottom: 10px;
-        }
-
-        .post-row {
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            margin-bottom: 10px;
-        }
-
-        .post-row:hover {
-            background-color: #f1f1f1;
-        }
-
-        .post-row .initials {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background-color: #ccc;
-            border-radius: 50%;
-            line-height: 40px;
-            text-align: center;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .post-row .fullname {
-            font-weight: bold;
-        }
-
-        .post-row .timestamp {
-            color: #888;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-
-        .post-row .purpose {
-            font-weight: bold;
-        }
-
-        .post-row .replies {
-            color: #888;
-            font-size: 12px;
-        }
-
-        .post-row .description {
-            margin-top: 10px;
-        }
-
-        .post-modal .post-content {
-            margin-bottom: 20px;
-        }
-
-        .post-modal .reply-form {
-            margin-top: 20px;
-        }
-
-        .reply-item .initials {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background-color: #ccc;
-            border-radius: 50%;
-            line-height: 40px;
-            text-align: center;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .post-row {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            margin-bottom: 10px;
-        }
-
-        .post-row:hover {
-            background-color: #f1f1f1;
-        }
-
-        .initials {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 40px;
-            height: 40px;
-            background-color: #ccc;
-            border-radius: 50%;
-            line-height: 40px;
-            text-align: center;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .post-details {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .fullname {
-            font-weight: bold;
-        }
-
-        .timestamp-purpose {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #888;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
-        .horizontal-line {
-            border-top: 1px solid #000;
-            width: 100%;
-        }
-
-        .chosen-container {
-            display: block;
-            width: 100% !important;
-        }
-    </style>
 @endpush

@@ -565,6 +565,8 @@
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUiC49n0UCoKfiz4TrHQwK-BCsLzc_LY4&callback=myMap&libraries=places">
     </script>
 
+@endpush
+@push('styles')
     <style>
         /* Custom styles for DataTables search and length menu alignment */
         .dataTables_wrapper .dataTables_filter {

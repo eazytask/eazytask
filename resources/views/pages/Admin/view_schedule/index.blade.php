@@ -1,37 +1,6 @@
 @extends('layouts.Admin.master')
 @push('styles')
-
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css') }}">
-@endpush
-
-
-@php
-
-    function getTime($date)
-    {
-        return \Carbon\Carbon::parse($date)->format('H:i');
-    }
-    $curr_emp = Session::get('current_employee');
-
-    $start_date = null;
-    $end_date = null;
-    if (Session::get('fromDate') && Session::get('toDate')) {
-        $start_date = Session::get('fromDate')->format('d-m-Y');
-        $end_date = Session::get('toDate')->format('d-m-Y');
-    }
-
-    //pdf
-    $all_roaster = [];
-@endphp
-@section('admin_page_content')
-    @component('components.breadcrumb')
-        @slot('li_1')
-            Timesheet
-        @endslot
-        @slot('title')
-            View Timesheet
-        @endslot
-    @endcomponent
     <style>
         .collapse-icon [data-bs-toggle='collapse']:after {
             position: absolute;
@@ -62,6 +31,37 @@
             margin: 0;
         }
     </style>
+@endpush
+
+
+@php
+
+    function getTime($date)
+    {
+        return \Carbon\Carbon::parse($date)->format('H:i');
+    }
+    $curr_emp = Session::get('current_employee');
+
+    $start_date = null;
+    $end_date = null;
+    if (Session::get('fromDate') && Session::get('toDate')) {
+        $start_date = Session::get('fromDate')->format('d-m-Y');
+        $end_date = Session::get('toDate')->format('d-m-Y');
+    }
+
+    //pdf
+    $all_roaster = [];
+@endphp
+@section('admin_page_content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            Timesheet
+        @endslot
+        @slot('title')
+            View Timesheet
+        @endslot
+    @endcomponent
+
     
     <div class="row">
         <div class="col-lg-12 col-md-12">

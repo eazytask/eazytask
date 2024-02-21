@@ -341,7 +341,7 @@
                                                                                             for="company-column">Document
                                                                                             Image Upload</label>
                                                                                         <input type="file"
-                                                                                            class="form-control comp"
+                                                                                            class="form-control"
                                                                                             id="_document"
                                                                                             placeholder="Avatar"
                                                                                             onchange="encodeDocumentFileAsURL(this)" />

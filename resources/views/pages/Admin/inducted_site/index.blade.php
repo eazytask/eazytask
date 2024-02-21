@@ -12,19 +12,7 @@
     @component('components.employeeTab')
         @slot('active') inducted_site @endslot
     @endcomponent
-    <style>
-        .dataTables_wrapper .dataTables_filter {
-            float: right;
-            margin-left: 10px;
-        }
-        .dataTables_wrapper .dataTables_length {
-            float: left;
-            margin-right: 20px;
-        }
-        .dataTables_wrapper .dt-buttons{
-            margin-right: 20px;
-        }
-    </style>
+
     <div class="">
         <div class="card">
             <div class="card-header">
@@ -122,6 +110,23 @@
         </div>
     </div>
 @endsection
+
+@push('styles')
+    <style>
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
+        }
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
+        }
+        .dataTables_wrapper .dt-buttons{
+            margin-right: 20px;
+        }
+    </style>
+@endpush
+
 @push('scripts')
     @include('components.select2')
     @include('components.datatablescript')

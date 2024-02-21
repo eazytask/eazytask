@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Message;
 use App\Models\MessageReply;
 use App\Models\MessageConfirm;
-use App\Models\Compliance;
+use App\Models\UserCompliance;
+use App\Models\Inductedsite;
 
 class HomeController extends Controller
 {
@@ -110,46 +111,56 @@ class HomeController extends Controller
 
         // upcoming shifts
         $upcoming_roasters = TimeKeeper::where([
-            ['employee_id',Auth::user()->employee->id ?? false],
-            ['company_code',Auth::user()->employee->company ?? false],
-            ['roaster_status_id',Session::get('roaster_status')['Accepted']],
-            ['shift_end','>=',Carbon::now()],
-            ['sing_in',null]
-        ])->orderBy('shift_start','asc')->limit(3)->get();
+            ['time_keepers.employee_id',Auth::user()->employee->id ?? false],
+            ['time_keepers.company_code',Auth::user()->employee->company ?? false],
+            ['time_keepers.roaster_status_id',Session::get('roaster_status')['Accepted']],
+            ['time_keepers.shift_end','>=',Carbon::now()],
+            ['time_keepers.sing_in',null]
+        ])->leftjoin('clients', 'clients.id', 'time_keepers.client_id')
+        ->select('time_keepers.*', 'clients.cimage')
+        ->orderBy('time_keepers.shift_start','asc')->limit(3)->get();
 
         // past shifts
         $past_roasters = TimeKeeper::where([
-            ['employee_id',Auth::user()->employee->id ?? false],
-            ['company_code',Auth::user()->employee->company ?? false],
-            // ['shift_end','<=',Carbon::now()]
+            ['time_keepers.employee_id',Auth::user()->employee->id ?? false],
+            ['time_keepers.company_code',Auth::user()->employee->company ?? false],
+            ['time_keepers.shift_end','<=',Carbon::now()]
         ])
         ->where(function ($q) {
-            $q->where('sing_in', '!=', null);
-            $q->where('sing_out', '!=', null);
+            $q->where('time_keepers.sing_in', '!=', null);
+            $q->where('time_keepers.sing_out', '!=', null);
             $q->orWhere(function ($q) {
-                $q->where('shift_end', '<=', Carbon::now());
+                $q->where('time_keepers.shift_end', '<=', Carbon::now());
             });
         })
         ->where(function ($q) {
             avoid_rejected_key($q);
         })
-        ->orderBy('shift_end','desc')->limit(3)->get();
+        ->leftjoin('clients', 'clients.id', 'time_keepers.client_id')
+        ->select('time_keepers.*', 'clients.cimage')
+        ->orderBy('time_keepers.shift_end','desc')->limit(3)->get();
+        // return $past_roasters;
 
         // unconfirm shifts
         $unconfirm_roasters = TimeKeeper::where([
-            ['employee_id',Auth::user()->employee->id ?? false],
-            ['company_code',Auth::user()->employee->company ?? false],
-            ['roaster_status_id',Session::get('roaster_status')['Published']],
-            ['shift_end','>=',Carbon::now()],
+            ['time_keepers.employee_id',Auth::user()->employee->id ?? false],
+            ['time_keepers.company_code',Auth::user()->employee->company ?? false],
+            ['time_keepers.roaster_status_id',Session::get('roaster_status')['Published']],
+            ['time_keepers.shift_end','>=',Carbon::now()],
         ])
-        ->orderBy('shift_start','asc')->limit(3)->get();
+        ->leftjoin('clients', 'clients.id', 'time_keepers.client_id')
+        ->orderBy('time_keepers.shift_start','asc')
+        ->select('time_keepers.*', 'clients.cimage')->limit(3)->get();
 
         //upcoming events
         $upcomingevents = Upcomingevent::where([
-            ['company_code', Auth::user()->employee->company ?? false],
+            ['upcomingevents.company_code', Auth::user()->employee->company ?? false],
             ['event_date', '>', Carbon::now()]
         ])
-            ->orderBy('event_date','asc')->limit(3)->get();
+        ->leftjoin('clients', 'clients.id', 'upcomingevents.client_name')
+        ->orderBy('event_date','asc')
+        ->limit(3)
+        ->select('upcomingevents.*', 'clients.cimage', 'clients.cname')->get();
 
         //timesheets
         $fromRoaster = Carbon::now()->subWeek()->startOfWeek()->subDays();
@@ -207,9 +218,21 @@ class HomeController extends Controller
             }
         }
         
-        $compliances = Compliance::get();
+        $compliances = UserCompliance::select('user_compliances.*', 'compliances.name as compliance_name', DB::raw("CONCAT(employees.fname, ' ', COALESCE(employees.mname, ''), ' ', employees.lname) AS employee_name"), 'employees.contact_number', 'employees.image')
+        ->leftjoin('employees', 'employees.email', 'user_compliances.email')
+        ->leftjoin('compliances', 'compliances.id', 'user_compliances.compliance_id')
+        ->orderBy('id', 'desc')
+        ->get();
+        
+        // return $compliances;
 
-        return view('pages.User.index',compact('roasters', 'projects','job_types','roaster_status','upcoming_roasters','past_roasters','unconfirm_roasters','upcomingevents','timesheets','payments', 'unavailabilities','leaves','leave_types', 'messages', 'compliances'));
+        $inductions = Inductedsite::where([
+            ['inductedsites.company_code', Auth::user()->company_roles->first()->company->id]
+        ])->leftjoin('employees', 'employees.id', 'inductedsites.employee_id')
+        ->leftjoin('projects', 'projects.id', 'inductedsites.project_id')
+        ->orderBy('employee_id', 'asc')->select('inductedsites.*', 'projects.pName', 'employees.image')->get();
+
+        return view('pages.User.index',compact('roasters', 'projects','job_types','roaster_status','upcoming_roasters','past_roasters','unconfirm_roasters','upcomingevents','timesheets','payments', 'unavailabilities','leaves','leave_types', 'messages', 'compliances', 'inductions'));
         // return redirect('home/sign/in');
     }
 
