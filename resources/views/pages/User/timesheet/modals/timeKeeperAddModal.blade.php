@@ -2,11 +2,9 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-gradient-primary">
-                <h4 class="modal-title text-white" id="myModalLabel17">New Timesheet</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header bg-info-subtle">
+                <h4 class="modal-title" id="myModalLabel17">New Timesheet</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
             </div>
             <form action="{{ route('store-timesheet') }}" method="POST" id="newModalForm">
                 <input type="text" id="timekeeper_id" name="timekeeper_id" value="" hidden>

@@ -195,6 +195,132 @@
                                         </div>
                                     </div><!-- end card body -->
                                 </div><!-- end card -->
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 col-sm-6">
+                                        <div class="card">
+                                            <div class="card-body pb-0">
+                                                <div style="flex:1;">
+                                                    <h3 class="text-center" id="clock"></h3>
+                                                </div>
+                                                <input type="number" id="total_entry" value="{{ $roasters->count() }}" hidden>
+                                                <form action="" id="mainForm" method="post">
+                                                    @csrf
+                                                    <div class="row">
+                            
+                                                        <input type="text" name="lat" class="lat" hidden>
+                                                        <input type="text" name="lon" class="lon" hidden>
+                                                        <input type="text" name="timekeeper_id" id="timekeeperID" hidden>
+                                                        @if ($roasters)
+                                                            @foreach ($roasters as $k => $roster)
+                                                                @if ($roster->sing_out == null && $roster->shift_start <= \Carbon\Carbon::now()->addMinutes(15))
+                                                                    @php
+                                                                        $not_ready_sign_in = false;
+                                                                    @endphp
+                                                                @endif
+                            
+                            
+                                                                <input type="datetime" id="shift_start{{ $k }}"
+                                                                    value="{{ $roster->shift_start }}" hidden>
+                                                                <input type="datetime" id="shift_end{{ $k }}"
+                                                                    value="{{ $roster->shift_end }}" hidden>
+                                                                <input type="datetime" id="sing_in{{ $k }}" value="{{ $roster->sing_in }}"
+                                                                    hidden>
+                                                                <input type="datetime" id="sing_out{{ $k }}"
+                                                                    value="{{ $roster->sing_out }}" hidden>
+                            
+                                                                <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
+                                                                    <div class="card plan-card border-primary text-center">
+                                                                        <div class="justify-content-between align-items-center p-75">
+                                                                            <p id="countdown{{ $k }}" class="mb-1"
+                                                                                {{ $roster->sing_in == null ? '' : 'hidden' }}></p>
+                                                                            <h3 id="working{{ $k }}" class="mb-0"
+                                                                                {{ $roster->sing_in == null ? 'hidden' : '' }}></h3>
+                            
+                                                                            <p id="shift-end-in{{ $k }}" class="mb-1"
+                                                                                {{ $roster->sing_in == null ? 'hidden' : '' }}></p>
+                            
+                            
+                                                                            <div class="badge badge-light-primary text-uppercase">
+                                                                                <h6>{{ $roster->project->pName }}</h6>
+                                                                            </div>
+                                                                            <p class="mb-1">Shift time, {{ getTime($roster->shift_start) }} -
+                                                                                {{ getTime($roster->shift_end) }} </p>
+                            
+                                                                            <div class="d-none">
+                            
+                                                                                <select class="form-control" name="project_id" id="project-select"
+                                                                                    hidden>
+                                                                                    <option selected>{{ $roster->project->pName }}</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <button type="button" shiftId="{{ $roster->id }}"
+                                                                                lat="{{ $roster->project->lat }}" lon="{{ $roster->project->lon }}"
+                                                                                class="btn btn-gradient-primary text-center btn-block check-location"
+                                                                                {{ $already_sign_in == $roster->sing_in ? '' : 'disabled' }}
+                                                                                {{ $roster->sing_out == null && $roster->shift_start <= \Carbon\Carbon::now()->addMinutes(15) ? '' : 'disabled' }}>
+                                                                                {{ $roster->sing_in == null ? 'Start Shift' : 'Sign Out' }}
+                                                                            </button>
+                            
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        @else
+                                                            <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
+                                                                <div class="card plan-card border-primary text-center">
+                                                                    <div class="justify-content-between align-items-center pt-75">
+                            
+                                                                        <div class="card-body">
+                                                                            <p class="text-black-50">You have no scheduled shift at this time</p>
+                                                                            <button type="button"
+                                                                                class="btn btn-gradient-primary text-center btn-block setForm"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#userAddTimeKeeper">Unscheduled</button>
+                            
+                                                                        </div>
+                            
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                            
+                                                        @if ($not_ready_sign_in)
+                                                            <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
+                                                                <div class="card plan-card border-primary text-center">
+                                                                    <div class="justify-content-between align-items-center pt-75">
+                            
+                                                                        <div class="card-body">
+                                                                            <p class="mb-0 text-muted">You have no scheduled shift at this time</p>
+                                                                            <button type="button"
+                                                                                class="btn btn-gradient-primary text-center btn-block"
+                                                                                data-bs-toggle="modal" data-bs-target="#userAddTimeKeeper">Start unscheduled
+                                                                                shift</button>
+                            
+                                                                        </div>
+                            
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                        @php
+                            
+                                                            $form_action = $already_sign_in == false ? '/home/sign/in/timekeeper' : '/home/sign/out/timekeeper';
+                            
+                                                            if ($not_ready_sign_in) {
+                                                                $form_action = '/home/user/store/timekeeper';
+                                                            }
+                            
+                                                        @endphp
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if ($not_ready_sign_in)
+                                    @include('pages.User.signin.modals.timeKeeperAddModal')
+                                @endif
+                                @include('pages.User.signin.modals.takePhotoModal')
 
                                 <div class="card">
                                     <div class="card-body">
@@ -217,191 +343,252 @@
                                         </div>
                                     </div><!-- end card body -->
                                 </div><!-- end card -->
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-4">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Upcoming Events</h5>
-                                            </div>
-                                            {{-- div.flex-shrink-0>.dropdown --}}
-                                        </div>
-                                        <div>
-                                            @foreach($upcomingevents as $upcomingevent)
-                                            <div class="d-flex align-items-center py-3">
-                                                <div class="avatar-xs flex-shrink-0 me-3">
-                                                    <img src="@if($upcomingevent->cimage) https://api.eazytask.au/{{$upcomingevent->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
-                                                        alt="" class="img-fluid rounded-circle" />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <div class="flex-grow-1">
+                                                        <h5 class="card-title mb-0">Upcoming Events</h5>
+                                                    </div>
+                                                    {{-- div.flex-shrink-0>.dropdown --}}
                                                 </div>
-                                                <div class="flex-grow-1">
-                                                    <div>
-                                                        <h5 class="fs-14 mb-1">{{$upcomingevent->project->pName}}</h5>
-                                                        <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$upcomingevent->rate}}</p>
-                                                        @if($upcomingevent->remarks)
-                                                        <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$upcomingevent->remarks}}</p>
-                                                        @endif
-                                                        <p class="fs-13 text-muted mb-0">
-                                                            <i class="ri-calendar-line ms-2"></i>
-                                                            {{\Carbon\Carbon::parse($upcomingevent->event_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($upcomingevent->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($upcomingevent->shift_end)->format('H:m')}})
-                                                        </p>
+                                                <div>
+                                                    @foreach($upcomingevents as $upcomingevent)
+                                                    <div class="d-flex align-items-center py-3">
+                                                        <div class="avatar-xs flex-shrink-0 me-3">
+                                                            <img src="@if($upcomingevent->cimage) https://api.eazytask.au/{{$upcomingevent->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                                alt="" class="img-fluid rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div>
+                                                                <h5 class="fs-14 mb-1">{{$upcomingevent->project->pName}}</h5>
+                                                                <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$upcomingevent->rate}}</p>
+                                                                @if($upcomingevent->remarks)
+                                                                <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$upcomingevent->remarks}}</p>
+                                                                @endif
+                                                                <p class="fs-13 text-muted mb-0">
+                                                                    <i class="ri-calendar-line ms-2"></i>
+                                                                    {{\Carbon\Carbon::parse($upcomingevent->event_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($upcomingevent->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($upcomingevent->shift_end)->format('H:m')}})
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-shrink-0 ms-2">
+        
+                                                            <form action="{{ route('store-event') }}" method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="event_id"
+                                                                    value="{{ $upcomingevent->id }}">
+                                                                @if (App\Models\Eventrequest::where('event_id', $upcomingevent->id)->where('user_id', Auth::id())->count())
+                                                                    <button class="btn btn-outline-success btn-sm" disabled>
+                                                                        <i class="ri-star-fill"></i>
+                                                                    </button>
+                                                                @else
+                                                                    <button class="btn btn-sm btn-outline-success">
+                                                                        <i class="ri-star-line align-middle"></i>
+                                                                    </button>
+                                                                @endif
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                    @if(!count($upcomingevents))
+                                                    <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                                    @endif
+                                                </div>
+                                                <div class="text-end">
+                                                    <a href="/user/home/upcomingevent/go">More...</a>
+                                                </div>
+                                            </div><!-- end card body -->
+
+                                        </div>
+                                    </div>
+                                    <!--end card-->
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <div class="flex-grow-1">
+                                                        <h5 class="card-title mb-0">Upcoming shifts</h5>
+                                                    </div>
+                                                    {{-- div.flex-shrink-0>.dropdown --}}
+                                                </div>
+                                                <div>
+                                                    @foreach($upcoming_roasters as $upcoming_roaster)
+                                                    <div class="d-flex align-items-center py-3">
+                                                        <div class="avatar-xs flex-shrink-0 me-3">
+                                                            <img src="@if($upcoming_roaster->cimage) https://api.eazytask.au/{{$upcoming_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                                alt="" class="img-fluid rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div>
+                                                                <h5 class="fs-14 mb-1">{{$upcoming_roaster->project->pName}}</h5>
+                                                                <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$upcoming_roaster->amount}} ({{$upcoming_roaster->ratePerHour}})</p>
+                                                                @if($upcoming_roaster->remarks)
+                                                                <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$upcoming_roaster->roaster_type}}</p>
+                                                                @endif
+                                                                <p class="fs-13 text-muted mb-0">
+                                                                    <i class="ri-calendar-line ms-2"></i>
+                                                                    {{\Carbon\Carbon::parse($upcoming_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($upcoming_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($upcoming_roaster->shift_end)->format('H:m')}})
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                    @if(!count($upcoming_roasters))
+                                                    <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                                    @endif
+                                                </div>
+                                                <div class="text-end">
+                                                    <a href="/home/upcoming/shift">More...</a>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div>
+                                    </div>
+                                    <!--end card-->
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <div class="flex-grow-1">
+                                                        <h5 class="card-title mb-0">Assigned shifts</h5>
+                                                    </div>
+                                                    {{-- div.flex-shrink-0>.dropdown --}}
+                                                    <div class="d-flex align-items-center">
+                                                        <button class="btn btn-sm pl-2 pr-2 border-primary" onclick="checkAllID()">
+                                                            <input type="checkbox" class="mr-50" id="checkAllID" onclick="checkAllID()">
+                                                            <span>Check All</span>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger text-center mx-1 reject" disabled
+                                                            onclick="multipleShift('reject')">
+                                                            <span class="desktop-view">Reject</span>
+                                                            <i data-feather='x-circle'></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-success text-center accept" disabled
+                                                            onclick="multipleShift('accept')">
+                                                            <span class="desktop-view">Accept</span>
+                                                            <i data-feather='check-circle'></i>
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div class="flex-shrink-0 ms-2">
-
-                                                    <form action="{{ route('store-event') }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="event_id"
-                                                            value="{{ $upcomingevent->id }}">
-                                                        @if (App\Models\Eventrequest::where('event_id', $upcomingevent->id)->where('user_id', Auth::id())->count())
-                                                            <button class="btn btn-outline-success btn-sm" disabled>
-                                                                <i class="ri-star-fill"></i>
-                                                            </button>
-                                                        @else
-                                                            <button class="btn btn-sm btn-outline-success">
-                                                                <i class="ri-star-line align-middle"></i>
-                                                            </button>
-                                                        @endif
-                                                    </form>
-                                                </div>
-                                            </div>
-                                            @endforeach
-                                            @if(!count($upcomingevents))
-                                            <h4 class="text-muted text-center mb-4">Not Found!</h4>
-                                            @endif
-                                        </div>
-                                    </div><!-- end card body -->
-                                </div>
-                                <!--end card-->
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-4">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Upcoming shifts</h5>
-                                            </div>
-                                            {{-- div.flex-shrink-0>.dropdown --}}
-                                        </div>
-                                        <div>
-                                            @foreach($upcoming_roasters as $upcoming_roaster)
-                                            <div class="d-flex align-items-center py-3">
-                                                <div class="avatar-xs flex-shrink-0 me-3">
-                                                    <img src="@if($upcoming_roaster->cimage) https://api.eazytask.au/{{$upcoming_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
-                                                        alt="" class="img-fluid rounded-circle" />
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <div>
-                                                        <h5 class="fs-14 mb-1">{{$upcoming_roaster->project->pName}}</h5>
-                                                        <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$upcoming_roaster->amount}} ({{$upcoming_roaster->ratePerHour}})</p>
-                                                        @if($upcoming_roaster->remarks)
-                                                        <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$upcoming_roaster->roaster_type}}</p>
-                                                        @endif
-                                                        <p class="fs-13 text-muted mb-0">
-                                                            <i class="ri-calendar-line ms-2"></i>
-                                                            {{\Carbon\Carbon::parse($upcoming_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($upcoming_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($upcoming_roaster->shift_end)->format('H:m')}})
-                                                        </p>
+                                                <div>
+                                                    @foreach($unconfirm_roasters as $unconfirm_roaster)
+                                                    <div class="d-flex align-items-center py-3">
+                                                        <div class="avatar-xs flex-shrink-0 me-3">
+                                                            <img src="@if($unconfirm_roaster->cimage) https://api.eazytask.au/{{$unconfirm_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                                alt="" class="img-fluid rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div>
+                                                                <h5 class="fs-14 mb-1">{{$unconfirm_roaster->project->pName}}</h5>
+                                                                <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$unconfirm_roaster->amount}} ({{$unconfirm_roaster->ratePerHour}})</p>
+                                                                @if($unconfirm_roaster->roaster_type)
+                                                                <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$unconfirm_roaster->roaster_type}}</p>
+                                                                @endif
+                                                                <p class="fs-13 text-muted mb-0">
+                                                                    <i class="ri-calendar-line ms-2"></i>
+                                                                    {{\Carbon\Carbon::parse($unconfirm_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($unconfirm_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($unconfirm_roaster->shift_end)->format('H:m')}})
+                                                                </p>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    @endforeach
+                                                    @if(!count($unconfirm_roasters))
+                                                    <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                                    @endif
                                                 </div>
-                                            </div>
-                                            @endforeach
-                                            @if(!count($upcoming_roasters))
-                                            <h4 class="text-muted text-center mb-4">Not Found!</h4>
-                                            @endif
-                                        </div>
-                                    </div><!-- end card body -->
-                                </div>
-                                <!--end card-->
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-4">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Assigned shifts</h5>
-                                            </div>
-                                            {{-- div.flex-shrink-0>.dropdown --}}
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <button class="btn pl-2 pr-2 border-primary" onclick="checkAllID()">
-                                                <input type="checkbox" class="mr-50" id="checkAllID" onclick="checkAllID()">
-                                                <span>Check All</span>
-                                            </button>
-                                            <button class="btn btn-danger text-center mx-1 reject" disabled
-                                                onclick="multipleShift('reject')">
-                                                <span class="desktop-view">Reject</span>
-                                                <i data-feather='x-circle'></i>
-                                            </button>
-                                            <button class="btn btn-success text-center accept" disabled
-                                                onclick="multipleShift('accept')">
-                                                <span class="desktop-view">Accept</span>
-                                                <i data-feather='check-circle'></i>
-                                            </button>
-                                        </div>
-                                        <div>
-                                            @foreach($unconfirm_roasters as $unconfirm_roaster)
-                                            <div class="d-flex align-items-center py-3">
-                                                <div class="avatar-xs flex-shrink-0 me-3">
-                                                    <img src="@if($unconfirm_roaster->cimage) https://api.eazytask.au/{{$unconfirm_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
-                                                        alt="" class="img-fluid rounded-circle" />
+                                                <div class="text-end">
+                                                    <a href="/home/unconfirmed/shift">More...</a>
                                                 </div>
-                                                <div class="flex-grow-1">
-                                                    <div>
-                                                        <h5 class="fs-14 mb-1">{{$unconfirm_roaster->project->pName}}</h5>
-                                                        <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$unconfirm_roaster->amount}} ({{$unconfirm_roaster->ratePerHour}})</p>
-                                                        @if($unconfirm_roaster->roaster_type)
-                                                        <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$unconfirm_roaster->roaster_type}}</p>
-                                                        @endif
-                                                        <p class="fs-13 text-muted mb-0">
-                                                            <i class="ri-calendar-line ms-2"></i>
-                                                            {{\Carbon\Carbon::parse($unconfirm_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($unconfirm_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($unconfirm_roaster->shift_end)->format('H:m')}})
-                                                        </p>
+                                            </div><!-- end card body -->
+                                        </div>
+                                    </div>
+                                    <!--end card-->
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <div class="flex-grow-1">
+                                                        <h5 class="card-title mb-0">Past shifts</h5>
                                                     </div>
+                                                    {{-- div.flex-shrink-0>.dropdown --}}
                                                 </div>
-                                            </div>
-                                            @endforeach
-                                            @if(!count($unconfirm_roasters))
-                                            <h4 class="text-muted text-center mb-4">Not Found!</h4>
-                                            @endif
-                                        </div>
-                                    </div><!-- end card body -->
-                                </div>
-                                <!--end card-->
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-4">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Past shifts</h5>
-                                            </div>
-                                            {{-- div.flex-shrink-0>.dropdown --}}
-                                        </div>
-                                        <div>
-                                            @foreach($past_roasters as $past_roaster)
-                                            <div class="d-flex align-items-center py-3">
-                                                <div class="avatar-xs flex-shrink-0 me-3">
-                                                    <img src="@if($past_roaster->cimage) https://api.eazytask.au/{{$past_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
-                                                        alt="" class="img-fluid rounded-circle" />
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <div>
-                                                        <h5 class="fs-14 mb-1">{{$past_roaster->project->pName}}</h5>
-                                                        <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$past_roaster->amount}} ({{$past_roaster->ratePerHour}})</p>
-                                                        @if($past_roaster->roaster_type)
-                                                        <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$past_roaster->roaster_type}}</p>
-                                                        @endif
-                                                        <p class="fs-13 text-muted mb-0">
-                                                            <i class="ri-calendar-line ms-2"></i>
-                                                            {{\Carbon\Carbon::parse($past_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($past_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($past_roaster->shift_end)->format('H:m')}})
-                                                        </p>
+                                                <div>
+                                                    @foreach($past_roasters as $past_roaster)
+                                                    <div class="d-flex align-items-center py-3">
+                                                        <div class="avatar-xs flex-shrink-0 me-3">
+                                                            <img src="@if($past_roaster->cimage) https://api.eazytask.au/{{$past_roaster->cimage}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                                alt="" class="img-fluid rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div>
+                                                                <h5 class="fs-14 mb-1">{{$past_roaster->project->pName}}</h5>
+                                                                <p class="fs-12 text-muted mb-0 mt-2"><i class="ri-wallet-3-fill ms-2"></i> {{$past_roaster->amount}} ({{$past_roaster->ratePerHour}})</p>
+                                                                @if($past_roaster->roaster_type)
+                                                                <p class="fs-12 text-muted mb-0"><i class="ri-bookmark-line ms-2"></i> {{$past_roaster->roaster_type}}</p>
+                                                                @endif
+                                                                <p class="fs-13 text-muted mb-0">
+                                                                    <i class="ri-calendar-line ms-2"></i>
+                                                                    {{\Carbon\Carbon::parse($past_roaster->roaster_date)->format('M d, Y')}} ({{\Carbon\Carbon::parse($past_roaster->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($past_roaster->shift_end)->format('H:m')}})
+                                                                </p>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    @endforeach
+                                                    @if(!count($past_roasters))
+                                                    <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                                    @endif
                                                 </div>
-                                            </div>
-                                            @endforeach
-                                            @if(!count($past_roasters))
-                                            <h4 class="text-muted text-center mb-4">Not Found!</h4>
-                                            @endif
+                                                <div class="text-end">
+                                                    <a href="/home/past/shift">More...</a>
+                                                </div>
+                                            </div><!-- end card body -->
                                         </div>
-                                    </div><!-- end card body -->
+                                        <!--end card-->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <div class="flex-grow-1">
+                                                        <h5 class="card-title mb-0">Payments</h5>
+                                                    </div>
+                                                    {{-- div.flex-shrink-0>.dropdown --}}
+                                                </div>
+                                                <div>
+                                                    @foreach($payments as $payment)
+                                                    <div class="d-flex align-items-center py-3">
+                                                        <div class="avatar-xs flex-shrink-0 me-3">
+                                                            <img src="@if($payment->image) https://api.eazytask.au/{{$payment->image}} @else {{asset('app-assets/velzon/images/users/user-dummy-img.jpg')}} @endif"
+                                                                alt="" class="img-fluid rounded-circle" />
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div>
+                                                                <h5 class="fs-14 mb-1">{{ \Carbon\Carbon::parse($payment->Payment_Date)->format('d-m-Y') }}</h5>
+                                                                <p class="fs-13 text-muted mb-0">
+                                                                    <i class="ri-calendar-line ms-2"></i>
+                                                                    {{\Carbon\Carbon::parse($payment->shift_start)->format('H:m')}} to {{\Carbon\Carbon::parse($payment->shift_end)->format('H:m')}}
+                                                                </p>
+                                                                <p class="fs-13 text-muted mb-0">
+                                                                    <i class="ri-wallet-3-fill ms-2"></i>
+                                                                    {{ $payment->details->total_pay }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                    @if(!count($payments))
+                                                    <h4 class="text-muted text-center mb-4">Not Found!</h4>
+                                                    @endif
+                                                </div>
+                                                <div class="text-end">
+                                                    <a href="/home/payment/report">More...</a>
+                                                </div>
+                                            </div><!-- end card body -->
+                                        </div>
+                                    </div>
+                                    <!--end card-->
                                 </div>
-                                <!--end card-->
 
                                 <div class="card">
                                     <div class="card-body">
@@ -529,8 +716,8 @@
                                 </div><!-- end card -->
 
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="card">
+                                    <div class="col-md-6">
+                                        {{-- <div class="card">
                                             <div class="card-header align-items-center d-flex">
                                                 <h4 class="card-title mb-0  me-2">Recent Activity</h4>
                                                 <div class="flex-shrink-0 ms-auto">
@@ -1374,8 +1561,343 @@
                                                     </div>
                                                 </div>
                                             </div><!-- end card body -->
-                                        </div><!-- end card -->
+                                        </div><!-- end card --> --}}
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title mb-3 text-primary">Schedule</h5>
+                                                <div class="container p-0 mb-2">
+                                                    <div class=" pt-0 pb-0">
+                                                        <!-- <div id="editor"> -->
+        
+                                                        <button type="button" class="btn bg-light-primary pt-50 pb-50 mt-25"
+                                                            id="prev"><i data-feather='arrow-left'></i></button>
+                                                        <button type="button" class="btn bg-light-primary pt-50 pb-50 mt-25"
+                                                            id="currentWeek">{{ \Carbon\Carbon::now()->startOfWeek()->format('d M, Y') }}
+                                                            - {{ \Carbon\Carbon::now()->endOfWeek()->format('d M, Y') }}</button>
+                                                        <button type="button"
+                                                            class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" id="next"><i
+                                                                data-feather='arrow-right'></i></button>
+        
+                                                        <button class="btn p-0 pt-50 pb-50 mr-50 mt-25">
+                                                            <select id="project" class="form-control"
+                                                                style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
+                                                                name="project_id">
+                                                                <option value="">Select Venue</option>
+                                                            </select>
+                                                        </button>
+                                                        <!-- <button id="download" disabled class="btn text-white bg-primary pt-50 pb-50 mr-50 mr-25"><i data-feather='download' class="mr-25"></i>Download</button> -->
+                                                        <!-- </div> -->
+                                                    </div>
+                                                </div>
+                
+                                                <div id="table-hover-animation">
+                                                    <div class="table-responsive">
+                                                        <table id="myTable"
+                                                            class="myTable table table-bordered table-striped ">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Employee Name</th>
+                                                                    <th>Monday</th>
+                                                                    <th>Tuesday</th>
+                                                                    <th>Wednesday</th>
+                                                                    <th>Thursday</th>
+                                                                    <th>Friday</th>
+                                                                    <th>Saturday</th>
+                                                                    <th>Sunday</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tBody">
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tbody>
+    
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                            
+                                        </div>
                                     </div><!-- end col -->
+                                    <div class="col-md-6">
+                                        <div class="card card-company-table">
+                            
+                                            <div class="card-body px-0 pb-0">
+                                                <div>
+                                                    <h5 class="card-title mb-3 ms-3">Calendar</h5>
+                                                </div>
+                                                <div class="mt-3 mt-md-0">
+                                                    <!--   <a href="/home/calender" class="btn btn-gradient-primary "><i data-feather="calendar" class="avatar-icon font-medium-3"></i></a> -->
+                                                </div>
+                                                <div class="app-calendar overflow-hidden border mb-0">
+                                                    <div class="row no-gutters">
+                                                        <div class="d-none">
+                                                            <select name="" id="projectFilter" hidden>
+                                                                <option value="">Select</option>
+                                                            </select>
+                                                        </div>
+                                                        
+                                                        <!-- Calendar -->
+                                                        <div class="col position-relative">
+                                                            <div class="card shadow-none border-0 mb-0 rounded-0">
+                                                                <div class="card-body pb-0">
+                                                                    <div id="user_calendar_timekeeper"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /Calendar -->
+                                                        <div class="body-content-overlay"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <section>
+                                            <!-- Calendar Add/Update/Delete event modal-->
+                                            <div class="modal modal-slide-in event-sidebar fade" id="add-new-sidebar">
+                                                <div class="modal-dialog sidebar-lg">
+                                                    <div class="modal-content p-0">
+                                                        <div class="modal-header mb-1">
+                                                            <h5 class="modal-title">View Event</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                        
+                                                        <div class="modal-body flex-grow-1 pb-sm-0 pb-3">
+                                                            <section id="multiple-column-form">
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for=""> Venue</label>
+                                                                                <div class="mb-3">
+                                                                                    <select class="form-control select2" name="project_id"
+                                                                                        id="project-select" aria-label="Default select example"
+                                                                                        disabled>
+                                                                                        <option value="" disabled selected hidden>Please
+                                                                                            Choose...
+                                                                                        </option>
+                                                                                        @foreach ($projects as $project)
+                                                                                            <option value="{{ $project->id }}">
+                                                                                                {{ $project->pName }}
+                                                                                            </option>
+                                                                                        @endforeach
+                        
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for="email-id-column">Roster Date</label>
+                                                                                <div class="mb-3">
+                                                                                    <input type="text" id="roaster_date" name="roaster_date"
+                                                                                        disabled class="form-control format-picker"
+                                                                                        placeholder="Roster Date" />
+                                                                                </div>
+                                                                            </div>
+                        
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for="email-id-column">Shift Start</label>
+                                                                                <div class="mb-3">
+                        
+                                                                                    <input type="text" disabled id="shift_start"
+                                                                                        name="shift_start" class="form-control pickatime-format"
+                                                                                        placeholder="Shift Start Time" />
+                        
+                                                                                    <span id="shift_start_error"
+                                                                                        class="text-danger text-small"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for="email-id-column">Shift Ends Date & Time</label>
+                                                                                <div class="mb-3">
+                        
+                                                                                    <input type="text" disabled id="shift_end"
+                                                                                        name="shift_end" class="form-control pickatime-format"
+                                                                                        placeholder="Shift End Time" />
+                                                                                    <span id="shift_end_error" class="text-danger"></span>
+                                                                                </div>
+                                                                            </div>
+                        
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for="email-id-column">Duration</label>
+                                                                                <div class="mb-3">
+                                                                                    <input type="text" id="duration" name="duration"
+                                                                                        class="form-control" placeholder="Duration"
+                                                                                        id="days" disabled />
+                                                                                </div>
+                                                                            </div>
+                        
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for="email-id-column">Amount Per Hour</label>
+                                                                                <div class="mb-3">
+                                                                                    <input type="number" id="rate" name="ratePerHour"
+                                                                                        class="form-control reactive" placeholder="0" disabled />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for="email-id-column">Amount</label>
+                                                                                <div class="mb-3">
+                                                                                    <input type="text" id="amount" name="amount"
+                                                                                        class="form-control" placeholder="0" disabled />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for="">Job Type</label>
+                                                                                <div class="mb-3">
+                                                                                    <select class="form-control select2" name="job_type_id"
+                                                                                        id="job" aria-label="Default select example"
+                                                                                        disabled>
+                                                                                        <option value="" disabled selected hidden>Please
+                                                                                            Choose...
+                                                                                        </option>
+                                                                                        @foreach ($job_types as $job_type)
+                                                                                            <option value="{{ $job_type->id }}">
+                                                                                                {{ $job_type->name }}
+                                                                                            </option>
+                                                                                        @endforeach
+                        
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-12 col-12">
+                                                                                <label for="email-id-column">Remarks</label>
+                                                                                <div class="mb-3">
+                                                                                    <input type="text" name="remarks" id="remarks"
+                                                                                        class="form-control" placeholder="remarks" disabled />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </section>
+
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-outline-secondary btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="button" class="btn ms-1 btn-success" id="accept">Accept</button>
+                                                            <button type="button" class="btn ms-1 btn-success" id="request" disabled>Requested</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <form method="post" id="signInFrom" hidden>
+                                                @csrf
+                                                <input type="text" id="event_id" name="event_id">
+                                            </form>
+                                            <!--/ Calendar Add/Update/Delete event modal-->
+                                        </section>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="container d-flex align-content-center ">
+                                            <div class="table-responsive">
+                                                <div id="myModalDetail" class="modal">
+                                                    <div class="modal-content">
+                                                        <span class="close" onclick="closeModal()">&times;</span>
+                                                        <h2>Create New Post</h2>
+                                                        <hr>
+                                                        <form action="{{ url('home/messages') }}" method="POST">
+                                                            @csrf
+                                                            <label for="postTitle">Heading:</label><br>
+                                                            <input type="text" class="form-control" id="postTitle" name="heading"
+                                                                required><br>
+                                                            <label for="postContent">Text:</label><br>
+                                                            <textarea id="postContent" class="form-control" name="text" rows="5" required></textarea><br>
+                                                            <label for="postTitle">Need Confirm:</label><br>
+                                                            <select name="need_confirm" id="need_confirm" class="form-control">
+                                                                <option value="N">No</option>
+                                                                <option value="Y">Yes</option>
+                                                            </select><br>
+                                                            <label for="selectVenue">Select Venue/Sites:</label>
+                                                            <select data-placeholder="Begin typing a name to filter" multiple
+                                                                class="chosen-select" name="list_venue[]">
+                                                                <option value="all" selected>All Venue</option>
+                                                                @foreach ($projects as $project)
+                                                                    <option value="{{ $project->id }}">{{ $project->pName }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            <br>
+                                                            <br>
+                                                            <input type="submit" class="btn btn-primary" value="Create Post">
+                                                        </form>
+                                                    </div>
+                                                </div>
+            
+                                                <div id="myModal" class="modal fade">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content post-modal">
+                                                            <div class="modal-header">
+                                                                <button class="btn-close float-end" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+
+                                                                <div class="post-content">
+                                                                    <h2 id="modalTitle"></h2>
+                                                                    <p id="modalDescription"></p>
+                                                                </div>
+                    
+                                                                <div class="horizontal-line"></div>
+                                                                <br>
+                                                                <h5>Comments:</h5>
+                                                                <ul id="modalReplies"></ul>
+                                                                <div class="reply-form">
+                                                                    <h5>Reply:</h5>
+                                                                    <form id="replyForm" action="{{ url('home/messages/reply') }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <input type="hidden" name="message_id" id="reply_message_id">
+                                                                        <textarea name="text" id="replyContent" class="form-control" rows="3" required></textarea><br><br>
+                                                                        <input type="submit" class="btn btn-primary" value="Submit Reply">
+                    
+                                                                        <button type="button" style="float: right;" id="confirmationButton"
+                                                                            class="btn btn-info">
+                                                                            <i data-feather="check-circle"></i> Confirm
+                                                                        </button>
+                                                                    </form>
+                    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card p-0">
+                                                    <div class="card-body">
+
+                                                        <h3 class="card-title mb-3">
+                                                            Messages
+                                                        </h3>
+            
+                                                        <div class="card-body pt-0 pb-0">
+                                                            <div class="row row-xs">
+            
+                                                            </div>
+                                                        </div>
+            
+                                                        <div id="postList" class="border-0 p-0 mb-2">
+                                                            <!-- This is where the posts will be dynamically added -->
+                                                        </div>
+
+                                                        <div class="pagination" style="display: none;">
+                                                            <!-- Updated pagination links with IDs -->
+                                                            <!-- ... Your existing pagination links ... -->
+                                                        </div>
+                                          
+                                                        <div class=" text-end">
+                                                            <a href="/home/messages">More...</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+            
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div><!-- end row -->
 
                                 <div class="card">
@@ -1440,6 +1962,9 @@
                                                 <!-- end slide item -->
                                                 @endforeach
                                             </div>
+                                            @if (!count($inductions))
+                                                <h4 class="text-center text-muted mb-4">Not Found!</h4>
+                                            @endif
 
                                         </div>
 
@@ -1526,7 +2051,9 @@
                                         </div>
                                     </div>
                                     @endforeach
-                                    
+                                    @if (!count($compliances))
+                                        <h4 class="text-center text-muted mb-4">Not Found!</h4>
+                                    @endif
                                 </div>
                             </div>
                             <!--end card-body-->
@@ -3928,7 +4455,7 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content post-modal">
                                                 <div class="modal-body">
-                                                    <span class="btn-close float-end" onclick="closeModal()"></span>
+                                                    <button class="btn-close float-end" data-bs-dismiss="modal"></button>
                                                     <div class="post-content">
                                                         <h2 id="modalTitle"></h2>
                                                         <p id="modalDescription"></p>
@@ -4066,8 +4593,23 @@
     <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css')}}">
     <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/calendars/fullcalendar.min.css')}}">
-
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/pages/app-calendar.css')}}">
     <style>
+        .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
+            background-color: #3577f1!important;
+            border-color: #3577f1!important;
+            color: #000 !important;
+        }
+        .fc .fc-list-event-title a {
+            color: #000 !important;
+        }
+        .fc-list-event-title{
+            text-align: left;
+        }
+        .fc-view-harness.fc-view-harness-active{
+            margin-inline: 0px;
+            margin-bottom: 20px;
+        }
         .avatar-xs img{
             aspect-ratio: 1/1;
         }
@@ -4240,6 +4782,8 @@
 @endpush
 
 @push('scripts')
+    {{-- <script src="{{ URL::asset('app-assets/velzon/libs/fullcalendar/index.global.min.js') }}"></script> --}}
+    {{-- <script src="{{ URL::asset('app-assets/velzon/js/pages/calendar.init.js') }}"></script> --}}
     <script src="{{ URL::asset('app-assets/velzon/libs/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ URL::asset('app-assets/velzon/js/pages/profile.init.js') }}"></script>
     <script src="{{ URL::asset('app-assets/velzon/js/app.js') }}"></script>
@@ -4252,11 +4796,9 @@
     <script src="{{asset('app-assets/vendors/js/calendar/fullcalendar.min.js')}}"></script>
     <script src="{{asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
     <script src="{{asset('app-assets/vendors/js/extensions/moment.min.js')}}"></script>
-    <script src="{{asset('app-assets\js\scripts\pages\app-calendar-timekeeper.js')}}"></script>
+    {{-- <script src="{{asset('app-assets\js\scripts\pages\app-calendar-timekeeper.js')}}"></script> --}}
 
     <script>
-        $(document).ready(function(){
-
             fetchCompliances = function() {
                 $.ajax({
                     url: '/home/user/compliance/fetch?get=3',
@@ -4522,8 +5064,12 @@
 
                 // Show the reply form
                 replyForm.style.display = "block";
+                var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
+                    keyboard: false
+                });
+                myModal.show();
+                
 
-                modal.style.display = "block";
 
                 if (need_confirm == 'Y') {
                     button.style.display = 'block';
@@ -4673,7 +5219,7 @@
                 });
             }
             
-        });
+        
     </script>
     <script>
         $(document).ready(function() {

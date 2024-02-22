@@ -179,9 +179,11 @@ class HomeController extends Controller
 
         //payments
         $payments = paymentmaster::where([
-                ['employee_id',Auth::user()->employee->id ?? false],
+                // ['payment_master.employee_id',Auth::user()->employee->id ?? false],
             ])
-            ->orderBy('Payment_Date', 'desc')
+            ->leftjoin('employees', 'employees.id', 'payment_master.employee_id')
+            ->orderBy('payment_master.Payment_Date', 'desc')
+            ->select('payment_master.*', 'employees.image')
             ->limit(3)->get();
             
         //time off
@@ -221,10 +223,10 @@ class HomeController extends Controller
         $compliances = UserCompliance::select('user_compliances.*', 'compliances.name as compliance_name', DB::raw("CONCAT(employees.fname, ' ', COALESCE(employees.mname, ''), ' ', employees.lname) AS employee_name"), 'employees.contact_number', 'employees.image')
         ->leftjoin('employees', 'employees.email', 'user_compliances.email')
         ->leftjoin('compliances', 'compliances.id', 'user_compliances.compliance_id')
+        ->where('user_compliances.email', Auth::user()->email)
         ->orderBy('id', 'desc')
         ->get();
         
-        // return $compliances;
 
         $inductions = Inductedsite::where([
             ['inductedsites.company_code', Auth::user()->company_roles->first()->company->id]
