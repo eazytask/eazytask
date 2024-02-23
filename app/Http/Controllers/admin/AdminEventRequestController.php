@@ -111,7 +111,7 @@ class AdminEventRequestController extends Controller
         $shift_start = $value->shift_start;
         $shift_end = $value->shift_end;
 
-        $employee_status = TimeKeeper::where([
+        $employee_timekeeper = TimeKeeper::where([
           ['employee_id', $employee->id],
           ['user_id', $value->user_id],
           ['project_id', $value->project_name],
@@ -125,9 +125,10 @@ class AdminEventRequestController extends Controller
               $q->where('shift_end', '>=', $shift_start);
               $q->where('shift_end', '<=', $shift_end);
             });
-          })
-          ->count();
-        $employees[$k]['status'] = $employee_status ? 'Added' : 'Waiting';
+          });
+        $timekeepers = $employee_timekeeper->first();
+        $employees[$k]['status'] = $employee_timekeeper->count() ? 'Added' : 'Waiting';
+        if($timekeepers) $employees[$k]['timekeeper_id'] = $timekeepers['id'];
       }
 
       if (Carbon::parse($value->event_date)->toDateString() < Carbon::now()->toDateString()) {

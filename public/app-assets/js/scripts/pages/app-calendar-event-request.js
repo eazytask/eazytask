@@ -188,6 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
     showImployees($('#filterStatus').val())
   });
 
+
   //show imployee by status
   function showImployees(status) {
     eventToUpdate = window.info;
@@ -213,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
       let employeeId = null
       let checkbox_status = ''
       if (employee.status == 'Added') {
-        status = 'badge badge-pill badge-light-success mr-1'
+        // status = 'badge badge-pill badge-light-success mr-1'
         checkbox_status = 'disabled'
         current_ids.push(employee.id)
       } else {
@@ -227,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <td>` + employee.fname + `</td>
           <td>` + employee.contact_number + `</td>
           <td>` + employee.email + `</td>
-          <td class="` + status + `">` + employee.status + `</td>
+          <td class="` + status + `">${employee.status == 'Added'? '<button data-id="'+ employee.timekeeper_id +'" class="btn btn-danger btn-sm delete_roster" data-id="'+employee.id+'"><i class="ri-delete-back-2-line"></i></button>': employee.status}</td>
         </tr>
       `;
     }
@@ -282,12 +283,38 @@ document.addEventListener('DOMContentLoaded', function () {
     //  Delete Event
   }
 
-  
-  $(document).on('click', '.add_employee', function(){
+  function deleteRoster(){
     let id = $(this).data('id');
+    console.log($(this));
+    $(this).attr('disabled', '');
+    $.ajax({
+      url: '/admin/home/report/delete/' + id,
+      type: 'GET',
+      success: function(data) {
+        if (data.notification) {
+          toastr.success(data.notification)
+        }
+      },
+      complete: function() {
+        fetchEvents('current', '/admin/home/event/weekly').then(function() {
+          add_employee_button(this, window.event_id);
+          console.log(window.event_id);
+        }).catch(function(error) {
+          // Handle error if fetchEvents fails
+          console.error('Error fetching events:', error);
+        });
+      }
+    });
+  }
+  $(document).on('click', '.delete_roster', deleteRoster);
+
+  const add_employee_button = function(e, event_id = null){
+    const id = event_id ? event_id : $(this).data('id');
+    window.event_id = id;
     let events = window.events;
     let event = getOnlyArray(id);
     window.info = event[0];
+    console.log(window.info);
 
     //event click modal
     $('#eventName').html(info.extendedProps.project.pName).trigger('change');
@@ -298,11 +325,12 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#filterStatus').val('all')
     showImployees('all')
 
-    $("#eventClick").modal("show")
+    !event_id ? $("#eventClick").modal("show"):'';
     function getOnlyArray(id) {
       return events.filter((s) => s.id === id)
     }
-  });
+  }
+  $(document).on('click', '.add_employee', add_employee_button);
     
 
 
@@ -318,26 +346,30 @@ document.addEventListener('DOMContentLoaded', function () {
   // AXIOS: fetchEvents
   // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
   // --------------------------------------------------------------------------------------------------
-  function fetchEvents(goto='', address = '/admin/home/event/search') {
-    // Fetch Events from API endpoint reference
-    $.ajax({
-      url: address,
-      data: {
-        'goto': goto,
-        'projectFilter': projectFilter.val(),
-      },
-      type: 'GET',
-      success: function (results) {
-        $('#currentWeek').html(results.date_between);
-        const events = results.events;
-        window.events = results.events;
-        dataEntries(events);
-      },
-      error: function (error) {
-        console.log(error);
-      }
+  function fetchEvents(goto = '', address = '/admin/home/event/search') {
+    return new Promise(function(resolve, reject) {
+      $.ajax({
+        url: address,
+        data: {
+          'goto': goto,
+          'projectFilter': projectFilter.val(),
+        },
+        type: 'GET',
+        success: function(results) {
+          $('#currentWeek').html(results.date_between);
+          const events = results.events;
+          window.events = results.events;
+          dataEntries(events);
+          resolve(); // Resolve the promise when the AJAX request is successful
+        },
+        error: function(error) {
+          console.log(error);
+          reject(error); // Reject the promise if there's an error
+        }
+      });
     });
   }
+
   fetchEvents();
 
   function dataEntries(events){
@@ -351,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function () {
           if(employee.status == 'Added'){
             var image = '';
             if(employee.image){
-              image = `<img src="${url+employee.image}" alt="" class="rounded-circle img-fluid">`;
+              image = `<img src="https://api.eazytask.au/${employee.image}" alt="" class="rounded-circle img-fluid w-100 h-100">`;
             }else{
               image = `<img src="${url}images/app/no-image.png" alt="" class="rounded-circle img-fluid">`;
             }

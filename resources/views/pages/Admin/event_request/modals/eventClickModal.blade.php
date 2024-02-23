@@ -20,7 +20,7 @@
                     <div class="row">
                         <div class="col-6">
                             <button class="btn btn-gradient-success text-center border-primary mb-1" disabled
-                                id="addToRoaster">Add To Roster</button>
+                                id="addToRoaster">Add To Event</button>
                             <button class="btn btn-gradient-primary text-center border-primary mb-1"
                                 id="sendNotification">Send Notification</button>
                         </div>

@@ -172,6 +172,8 @@
 
 @push('scripts')
     <script src="{{asset('app-assets/velzon/libs/moment/moment.js')}}"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/sweetalert.min.js"></script>
+    <script src="{{ asset('backend') }}/lib/sweetalert/code.js"></script>
     @include('components.datatablescript')
     @include('components.stepper')
     @include('components.select2')
@@ -939,28 +941,27 @@
         function deleteRoaster(roasterId) {
             // let roasterId = $("#deleteBtn").attr("roasterId");
             swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover this!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $.ajax({
-                            url: '/admin/home/report/delete/' + roasterId,
-                            type: 'GET',
-                            success: function(data) {
-                                // $("#roasterClick").modal("hide")
-                                searchNow('current')
-                                if (data.notification) {
-                                    toastr.success(data.notification)
-                                }
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        url: '/admin/home/report/delete/' + roasterId,
+                        type: 'GET',
+                        success: function(data) {
+                            // $("#roasterClick").modal("hide")
+                            searchNow('current')
+                            if (data.notification) {
+                                toastr.success(data.notification)
                             }
-                        });
-                    }
-                });
-
+                        }
+                    });
+                }
+            });
         }
 
         function publishRoaster(roasterId) {
