@@ -342,17 +342,23 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchEvents('next', '/admin/home/event/weekly');
   })
 
+
+  $('#search_date').on('change', function(){
+    let date = $(this).val();
+    fetchEvents('date', '/admin/home/event/weekly', date);
+  });
   // --------------------------------------------------------------------------------------------------
   // AXIOS: fetchEvents
   // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
   // --------------------------------------------------------------------------------------------------
-  function fetchEvents(goto = '', address = '/admin/home/event/search') {
+  function fetchEvents(goto = '', address = '/admin/home/event/search', date = null) {
     return new Promise(function(resolve, reject) {
       $.ajax({
         url: address,
         data: {
           'goto': goto,
           'projectFilter': projectFilter.val(),
+          'date': date
         },
         type: 'GET',
         success: function(results) {

@@ -58,6 +58,11 @@ class AdminEventRequestController extends Controller
     }elseif($request->goto == 'current'){
       $current_week = Session::get('current_week');
       $week = Carbon::now()->addWeek($current_week);
+    }elseif($request->goto == 'date'){
+      // $date = Carbon::parse($request->date)->addDay();
+      $week_diff = Carbon::now()->startOfWeek()->diffInWeekendDays(Carbon::parse($request->date)->startOfWeek(), false);
+      Session::put('current_week', $week_diff / 2);
+      $week = Carbon::now()->addWeek(Session::get('current_week'));
     }else{
       $week = Carbon::now();
     }

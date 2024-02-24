@@ -103,7 +103,6 @@ class UserReportController extends Controller
 
         $start_date = $request->start_date ? Carbon::parse($request->start_date):$start_week;
         $end_date = $request->end_date ? Carbon::parse($request->end_date):$end_week;
-
         Session::put('fromDate',$start_date);
         Session::put('toDate',$end_date);
 

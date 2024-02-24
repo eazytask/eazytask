@@ -1,5 +1,13 @@
 @extends('layouts.Admin.master')
-@section('admincontent')
+@section('admin_page_content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            Home
+        @endslot
+        @slot('title')
+            Messages
+        @endslot
+    @endcomponent
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div class="col-lg-12 col-md-12 p-0">
@@ -123,15 +131,15 @@
         </form>
 
         <div class="card p-0">
-            <div class="container p-0">
-                <div class="card-header text-primary border-top-0 border-left-0 border-right-0">
-                    <h3 class="card-title text-primary d-inline">
+            <div class="p-0">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">
                         Messages
                     </h3>
 
                     @if (auth()->user()->company_roles->pluck('role')->contains(fn($role) => in_array($role, [2, 4])))
-                        <span class="float-right">
-                            <button class="create-post-btn btn btn-primary" onclick="openModal()">Create New Post</button>
+                        <span >
+                            <button class="create-post-btn btn btn-primary m-0" onclick="openModal()">Create New Post</button>
                         </span>
                     @endif
 
@@ -146,28 +154,255 @@
                 </div>
             </div>
 
-            <div class="row" id="table-hover-animation">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="container">
-                            <div id="postList">
-                                <!-- This is where the posts will be dynamically added -->
-                            </div>
-
-                            <div class="pagination">
-                                <!-- Updated pagination links with IDs -->
-                                <!-- ... Your existing pagination links ... -->
-                            </div>
-                        </div>
-
-                    </div>
+            <div id="postList" class="border-0">
+                <!-- This is where the posts will be dynamically added -->
+            </div>
+            <div class="card-body pt-0">
+                <div class="pagination">
+                    <!-- Updated pagination links with IDs -->
+                    <!-- ... Your existing pagination links ... -->
                 </div>
             </div>
         </div>
 
     </div>
-    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+
+@endsection
+@push('styles')
     <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet" />
+    <style>
+        .dt-buttons {
+            display: none !important;
+        }
+
+        #myTable {
+            width: 1000px !important;
+        }
+
+        .font-small-2 {
+            font-size: 0.7rem !important;
+        }
+
+        /* Styles for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            animation: modalOpenAnimation 0.3s ease-out;
+        }
+
+        @keyframes modalOpenAnimation {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #333;
+            text-decoration: none;
+        }
+
+        /* end */
+
+        /* Other styles */
+        #postList {
+            height: auto;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .post {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        .pagination {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-right: 5px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .pagination a.active {
+            background-color: #ccc;
+        }
+
+        .create-post-btn {
+            margin-bottom: 10px;
+        }
+
+        .post-row {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+        }
+
+        .post-row:hover {
+            background-color: #f1f1f1;
+        }
+
+        .post-row .initials {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .post-row .fullname {
+            font-weight: bold;
+        }
+
+        .post-row .timestamp {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .post-row .purpose {
+            font-weight: bold;
+        }
+
+        .post-row .replies {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .post-row .description {
+            margin-top: 10px;
+        }
+
+        .post-modal .post-content {
+            margin-bottom: 20px;
+        }
+
+        .post-modal .reply-form {
+            margin-top: 20px;
+        }
+
+        .reply-item .initials {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .post-row {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+        }
+
+        .post-row:hover {
+            background-color: #f1f1f1;
+        }
+
+        .initials {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .post-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fullname {
+            font-weight: bold;
+        }
+
+        .timestamp-purpose {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .horizontal-line {
+            border-top: 1px solid #000;
+            width: 100%;
+        }
+
+        .chosen-container {
+            display: block;
+            width: 100% !important;
+        }
+    </style>
+@endpush
+@push('scripts')
+    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
 
     <script>
         // Function to handle confirmation button click event
@@ -262,7 +497,7 @@
             return `<div class="post">
                 <h3>${post.heading}</h3>
                 <p>${post.text}</p>
-              </div>`;
+            </div>`;
         }
         console.log(posts)
 
@@ -278,29 +513,50 @@
             var user_id = '{{ auth()->user()->id }}';
             let actionButton = ``;
             if (post.user_id == user_id) {
-                actionButton = `<button type="button" class="btn btn-primary btn-sm" onclick="editMessage('${post.need_confirm}', '${post.my_confirm}', '${post.id}', '${post.heading}', '${post.text}', '${encodeURIComponent(JSON.stringify(post.list_venue))}', '${encodeURIComponent(JSON.stringify(post.purposes))}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteMessage('${post.id}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                    </button>
-                    <br><br>`;
+                // actionButton = `<button type="button" class="btn btn-primary btn-sm" onclick="editMessage('${post.need_confirm}', '${post.my_confirm}', '${post.id}', '${post.heading}', '${post.text}', '${encodeURIComponent(JSON.stringify(post.list_venue))}', '${encodeURIComponent(JSON.stringify(post.purposes))}')">
+                //         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                //     </button>
+                //     <button type="button" class="btn btn-danger btn-sm" onclick="deleteMessage('${post.id}')">
+                //         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
+                //     </button>
+                //     <br><br>`;
+                actionButton = `
+                    <div class="dropdown text-end mb-2">
+                        <button class="btn btn-soft-info btn-sm d-inline" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ri-more-2-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button type="button" class="dropdown-item" onclick="editMessage('${post.need_confirm}', '${post.my_confirm}', '${post.id}', '${post.heading}', '${post.text}', '${encodeURIComponent(JSON.stringify(post.list_venue))}', '${encodeURIComponent(JSON.stringify(post.purposes))}')">
+                                    Edit    
+                                </button>    
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item" onclick="deleteMessage('${post.id}')">
+                                    Delete
+                                </button>    
+                            </li>
+                        </ul>
+                    </div>
+                `;
             }
 
-            return `<div class="post-row">
-                <div class="initials">${initials}</div>
-                <div class="post-details" onclick="openPostModal('${post.need_confirm}', '${post.my_confirm}', '${post.id}', '${post.heading}', '${post.text}', '${encodeURIComponent(JSON.stringify(post.replies))}')">
-                <div class="fullname">${post.fullname}</div>
-                <div class="timestamp-purpose">
-                    <div class="timestamp">${post.publish_date} to <b>${purpose}</b></div>
+            return `
+                <div class="post-row">
+                    <div class="initials">${initials}</div>
+                    <div class="post-details" onclick="openPostModal('${post.need_confirm}', '${post.my_confirm}', '${post.id}', '${post.heading}', '${post.text}', '${encodeURIComponent(JSON.stringify(post.replies))}')">
+                    <div class="fullname">${post.fullname}</div>
+                    <div class="timestamp-purpose">
+                        <div class="timestamp">${post.publish_date} to <b>${purpose}</b></div>
+                    </div>
+                    ${description}
+                    </div>
+                    <div class="replies">
+                        ` + actionButton + `
+                        Replies: ${post.replies.length}
+                    </div>
                 </div>
-                ${description}
-                </div>
-                <div class="replies">
-                    ` + actionButton + `
-                    Replies: ${post.replies.length}
-                </div>
-            </div>`;
+            `;
         }
 
         // Function to render the posts on the page
@@ -433,28 +689,40 @@
             var user_id = '{{ auth()->user()->id }}';
             let actionButton = ``;
             if (reply.user_id == user_id) {
-                actionButton = `<button type="button" class="btn btn-primary btn-sm" onclick="editReplyMessage('${reply.id}', '${reply.heading}', '${reply.text}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteReplyMessage('${reply.id}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
-                    </button>
-                    <br><br>`;
+                actionButton = `
+                    <div class="dropdown text-end mb-2">
+                        <button class="btn btn-soft-info btn-sm d-inline" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ri-more-2-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button type="button" class="dropdown-item" onclick="editReplyMessage('${reply.id}', '${reply.heading}', '${reply.text}')">
+                                    Edit    
+                                </button>    
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item" onclick="deleteReplyMessage('${reply.id}')">
+                                    Delete
+                                </button>    
+                            </li>
+                        </ul>
+                    </div>
+                `;
             }
 
             return `<div class="post-row">
                 <div class="initials">${initials}</div>
                 <div class="post-details">
-                  <div class="fullname">${reply.fullname}</div>
-                  <div class="timestamp-purpose">
+                <div class="fullname">${reply.fullname}</div>
+                <div class="timestamp-purpose">
                     <div class="timestamp">${reply.publish_date}</div>
-                  </div>
+                </div>
                     ${reply.text}
                 </div>
                     <div class="replies">
                     ` + actionButton + `
                 </div>
-              </div>`;
+            </div>`;
         }
 
         // Submit form to reply to a post
@@ -573,6 +841,7 @@
             });
         }
     </script>
+
     <script type="text/javascript">
         $('#prev').on('click', function() {
             searchNow('previous')
@@ -696,222 +965,198 @@
         // }
     </script>
 
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
-                searchNow()
+    <script>
+        $(document).ready(function() {
+            searchNow()
 
-                $('#search_date').on('change', function() {
-                    searchNow('search_date', $('#search_date').val())
-                })
+            $('#search_date').on('change', function() {
+                searchNow('search_date', $('#search_date').val())
+            })
 
-                $(document).on('show.bs.modal', '.modal', function() {
-                    const zIndex = 1040 + 10 * $('.modal:visible').length;
-                    $(this).css('z-index', zIndex);
-                    setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
-                        .addClass('modal-stack'));
+            $(document).on('show.bs.modal', '.modal', function() {
+                const zIndex = 1040 + 10 * $('.modal:visible').length;
+                $(this).css('z-index', zIndex);
+                setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
+                    .addClass('modal-stack'));
+            });
+
+            // var roaster_date, roaster_end, shift_start, shift_end;
+            function timeToSeconds(time) {
+                time = time.split(/:/);
+                return time[0] * 3600 + time[1] * 60;
+            }
+            $.time = function(dateObject) {
+                var t = dateObject.split(/[- :]/);
+                // Apply each element to the Date function
+                var actiondate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
+                var d = new Date(actiondate);
+
+                // var d = new Date(dateObject);
+                var curr_hour = d.getHours();
+                var curr_min = d.getMinutes();
+                var date = curr_hour + ':' + curr_min;
+                return date;
+            };
+
+            function allCalculation() {
+                var start = $("#app_start").val();
+                var end = $("#app_end").val();
+                var rate = $("#app_rate").val();
+
+                if (start && end) {
+                    // calculate hours
+                    var diff = (timeToSeconds(end) - timeToSeconds(start)) / 3600
+                    if (diff < 0) {
+                        diff = 24 - Math.abs(diff)
+                    }
+                    if (diff) {
+                        $("#app_duration").val(diff);
+                        if (rate) {
+                            $("#app_amount").val(parseFloat(rate) * diff);
+                        }
+                    }
+
+                } else {
+                    $("#app_duration").val('');
+                    $("#app_amount").val('');
+                }
+            }
+
+            var isValid = true;
+            var modalToTarget = document.getElementById("addTimeKeeper");
+
+            function roasterEndTimeInit() {
+                $("#app_end").change(function() {
+                    allCalculation()
                 });
 
-                // var roaster_date, roaster_end, shift_start, shift_end;
-                function timeToSeconds(time) {
-                    time = time.split(/:/);
-                    return time[0] * 3600 + time[1] * 60;
-                }
-                $.time = function(dateObject) {
-                    var t = dateObject.split(/[- :]/);
-                    // Apply each element to the Date function
-                    var actiondate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-                    var d = new Date(actiondate);
+            }
+            roasterEndTimeInit()
 
-                    // var d = new Date(dateObject);
-                    var curr_hour = d.getHours();
-                    var curr_min = d.getMinutes();
-                    var date = curr_hour + ':' + curr_min;
-                    return date;
-                };
-
-                function allCalculation() {
-                    var start = $("#app_start").val();
-                    var end = $("#app_end").val();
-                    var rate = $("#app_rate").val();
-
-                    if (start && end) {
-                        // calculate hours
-                        var diff = (timeToSeconds(end) - timeToSeconds(start)) / 3600
-                        if (diff < 0) {
-                            diff = 24 - Math.abs(diff)
-                        }
-                        if (diff) {
-                            $("#app_duration").val(diff);
-                            if (rate) {
-                                $("#app_amount").val(parseFloat(rate) * diff);
-                            }
-                        }
-
+            function roasterStartTimeInit() {
+                $("#app_start").change(function() {
+                    if ($(this).val()) {
+                        $("#app_end").removeAttr("disabled")
                     } else {
-                        $("#app_duration").val('');
-                        $("#app_amount").val('');
+                        $("#app_end").prop('disabled', true);
                     }
-                }
 
-                var isValid = true;
-                var modalToTarget = document.getElementById("addTimeKeeper");
+                    allCalculation()
+                });
 
-                function roasterEndTimeInit() {
-                    $("#app_end").change(function() {
+            }
+            roasterStartTimeInit()
+
+            const initDatePicker = () => {
+                $("#roaster_date").change(function() {
+                    if ($(this).val()) {
+                        $("#app_start").removeAttr("disabled")
+                    } else {
+                        $(".picker__button--clear").removeAttr("disabled")
+
+                        $(".picker__button--clear")[1].click()
+                        $(".picker__button--clear")[2].click()
+
+                        $("#app_start").prop('disabled', true)
+
+                        $("#app_end").prop('disabled', true);
                         allCalculation()
-                    });
+                    }
+                });
+            }
 
-                }
-                roasterEndTimeInit()
-
-                function roasterStartTimeInit() {
-                    $("#app_start").change(function() {
-                        if ($(this).val()) {
-                            $("#app_end").removeAttr("disabled")
-                        } else {
-                            $("#app_end").prop('disabled', true);
-                        }
-
-                        allCalculation()
-                    });
-
-                }
-                roasterStartTimeInit()
-
-                const initDatePicker = () => {
-                    $("#roaster_date").change(function() {
-                        if ($(this).val()) {
-                            $("#app_start").removeAttr("disabled")
-                        } else {
-                            $(".picker__button--clear").removeAttr("disabled")
-
-                            $(".picker__button--clear")[1].click()
-                            $(".picker__button--clear")[2].click()
-
-                            $("#app_start").prop('disabled', true)
-
-                            $("#app_end").prop('disabled', true);
-                            allCalculation()
-                        }
-                    });
-                }
-
+            initDatePicker();
+            const initAllDatePicker = () => {
                 initDatePicker();
-                const initAllDatePicker = () => {
-                    initDatePicker();
-                    roasterStartTimeInit();
-                    roasterEndTimeInit();
+                roasterStartTimeInit();
+                roasterEndTimeInit();
+            }
+            $(document).on("click", ".editBtn", function() {
+                resetValue()
+                var rowData = $(this).data("row");
+
+                $("#timepeeper_id").val(rowData.id);
+                $("#employee_id").val(rowData.employee_id).trigger('change');
+                $("#project-select").val(rowData.project_id).trigger('change');
+                $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
+                $("#shift_start").val($.time(rowData.shift_start))
+                $("#shift_end").val($.time(rowData.shift_end))
+                if (rowData.sing_in) {
+                    $("#sign_in").val($.time(rowData.sing_in))
+                } else {
+                    $("#sign_in").val('unspecified')
                 }
-                $(document).on("click", ".editBtn", function() {
-                    resetValue()
-                    var rowData = $(this).data("row");
-
-                    $("#timepeeper_id").val(rowData.id);
-                    $("#employee_id").val(rowData.employee_id).trigger('change');
-                    $("#project-select").val(rowData.project_id).trigger('change');
-                    $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
-                    $("#shift_start").val($.time(rowData.shift_start))
-                    $("#shift_end").val($.time(rowData.shift_end))
-                    if (rowData.sing_in) {
-                        $("#sign_in").val($.time(rowData.sing_in))
-                    } else {
-                        $("#sign_in").val('unspecified')
-                    }
-                    if (rowData.sing_out) {
-                        $("#sign_out").val($.time(rowData.sing_out))
-                    } else {
-                        $("#sign_out").val('unspecified')
-                    }
-
-                    if (rowData.is_approved == 1) {
-                        $('.timekeer-btn').hide();
-                    } else {
-                        $('.timekeer-btn').show();
-                    }
-
-                    $("#app_start").val($.time(rowData.Approved_start_datetime))
-                    $("#app_end").val($.time(rowData.Approved_end_datetime))
-
-                    $("#app_rate").val(rowData.app_rate)
-                    $("#app_duration").val(rowData.app_duration)
-                    $("#app_amount").val(rowData.app_amount)
-                    $("#job").val(rowData.job_type_id).trigger('change');
-                    // $("#job").val(rowData.job_type_id)
-                    // $("#roster").val(rowData.roaster_status_id)
-
-                    $("#remarks").val(rowData.remarks)
-
-                    initAllDatePicker();
-                    allCalculation()
-                    $("#addTimeKeeper").modal("show")
-                })
-
-                $(document).on("input", ".reactive", function() {
-                    allCalculation()
-                })
-
-                function resetValue() {
-                    $("#timepeeper_id").val();
-                    $('#timepeeper_id').attr('value', '');
-                    $("#employee_id").val('');
-                    // $("#client-select").val('').trigger('change');
-
-                    $("#roaster_date").val('')
-                    $("#shift_start").val('')
-                    $("#shift_end").val('')
-                    $("#sign_in").val('')
-                    $("#sign_out").val('')
-                    $("#app_start").val('')
-                    $("#app_end").val('')
-
-                    $("#app_rate").val('')
-                    $("#app_duration").val('')
-                    $("#app_amount").val('')
-                    $("#job").val('').trigger('change');
-                    // $("#job").val('')
-                    // $("#roster").val('')
-
-                    $("#remarks").val('')
-                    $("#project-select").val('');
+                if (rowData.sing_out) {
+                    $("#sign_out").val($.time(rowData.sing_out))
+                } else {
+                    $("#sign_out").val('unspecified')
                 }
 
-
-                timekeeperEditFunc = function() {
-                    if ($("#timekeeperAddForm").valid()) {
-                        $.ajax({
-                            data: $('#timekeeperAddForm').serialize(),
-                            url: "/admin/home/shift/approve",
-                            type: "POST",
-                            dataType: 'json',
-                            success: function(data) {
-                                $("#addTimeKeeper").modal("hide")
-                                // $("#roasterClick").modal("hide")
-                                searchNow('current')
-                                toastr['success']('👋 Successfully Approved', 'Success!', {
-                                    closeButton: true,
-                                    tapToDismiss: false,
-                                });
-                            },
-                            error: function(data) {
-                                console.log(data)
-                            }
-                        });
-                    }
+                if (rowData.is_approved == 1) {
+                    $('.timekeer-btn').hide();
+                } else {
+                    $('.timekeer-btn').show();
                 }
-                approveAllFunc = function() {
+
+                $("#app_start").val($.time(rowData.Approved_start_datetime))
+                $("#app_end").val($.time(rowData.Approved_end_datetime))
+
+                $("#app_rate").val(rowData.app_rate)
+                $("#app_duration").val(rowData.app_duration)
+                $("#app_amount").val(rowData.app_amount)
+                $("#job").val(rowData.job_type_id).trigger('change');
+                // $("#job").val(rowData.job_type_id)
+                // $("#roster").val(rowData.roaster_status_id)
+
+                $("#remarks").val(rowData.remarks)
+
+                initAllDatePicker();
+                allCalculation()
+                $("#addTimeKeeper").modal("show")
+            })
+
+            $(document).on("input", ".reactive", function() {
+                allCalculation()
+            })
+
+            function resetValue() {
+                $("#timepeeper_id").val();
+                $('#timepeeper_id').attr('value', '');
+                $("#employee_id").val('');
+                // $("#client-select").val('').trigger('change');
+
+                $("#roaster_date").val('')
+                $("#shift_start").val('')
+                $("#shift_end").val('')
+                $("#sign_in").val('')
+                $("#sign_out").val('')
+                $("#app_start").val('')
+                $("#app_end").val('')
+
+                $("#app_rate").val('')
+                $("#app_duration").val('')
+                $("#app_amount").val('')
+                $("#job").val('').trigger('change');
+                // $("#job").val('')
+                // $("#roster").val('')
+
+                $("#remarks").val('')
+                $("#project-select").val('');
+            }
+
+
+            timekeeperEditFunc = function() {
+                if ($("#timekeeperAddForm").valid()) {
                     $.ajax({
-                        url: "/admin/home/shift/approve/week",
-                        type: "get",
+                        data: $('#timekeeperAddForm').serialize(),
+                        url: "/admin/home/shift/approve",
+                        type: "POST",
                         dataType: 'json',
-                        data: {
-                            'project': $('#project').val(),
-                        },
                         success: function(data) {
                             $("#addTimeKeeper").modal("hide")
                             // $("#roasterClick").modal("hide")
                             searchNow('current')
-                            toastr['success']('👋 All Approved Successfully', 'Success!', {
+                            toastr['success']('👋 Successfully Approved', 'Success!', {
                                 closeButton: true,
                                 tapToDismiss: false,
                             });
@@ -921,241 +1166,33 @@
                         }
                     });
                 }
-            });
-
-            $(window).on('load', function() {
-                $(".approve").prop('hidden', false)
-            });
-        </script>
-        <style>
-            .dt-buttons {
-                display: none !important;
             }
-
-            #myTable {
-                width: 1000px !important;
+            approveAllFunc = function() {
+                $.ajax({
+                    url: "/admin/home/shift/approve/week",
+                    type: "get",
+                    dataType: 'json',
+                    data: {
+                        'project': $('#project').val(),
+                    },
+                    success: function(data) {
+                        $("#addTimeKeeper").modal("hide")
+                        // $("#roasterClick").modal("hide")
+                        searchNow('current')
+                        toastr['success']('👋 All Approved Successfully', 'Success!', {
+                            closeButton: true,
+                            tapToDismiss: false,
+                        });
+                    },
+                    error: function(data) {
+                        console.log(data)
+                    }
+                });
             }
+        });
 
-            .font-small-2 {
-                font-size: 0.7rem !important;
-            }
-
-            /* Styles for the modal */
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 999999;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0, 0, 0, 0.4);
-            }
-
-            .modal-content {
-                background-color: #fefefe;
-                margin: 10% auto;
-                padding: 20px;
-                border: 1px solid #888;
-                width: 80%;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-                animation: modalOpenAnimation 0.3s ease-out;
-            }
-
-            @keyframes modalOpenAnimation {
-                from {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-
-            .close {
-                color: #aaa;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-                cursor: pointer;
-                position: absolute;
-                top: 10px;
-                right: 10px;
-            }
-
-            .close:hover,
-            .close:focus {
-                color: #333;
-                text-decoration: none;
-            }
-
-            /* end */
-
-            /* Other styles */
-            #postList {
-                height: auto;
-                overflow-y: scroll;
-                border: 1px solid #ccc;
-                padding: 10px;
-            }
-
-            .post {
-                margin-bottom: 10px;
-                padding: 10px;
-                background-color: #f9f9f9;
-                border: 1px solid #ddd;
-            }
-
-            .pagination {
-                margin-top: 10px;
-                text-align: center;
-            }
-
-            .pagination a {
-                display: inline-block;
-                padding: 5px 10px;
-                margin-right: 5px;
-                background-color: #f4f4f4;
-                border: 1px solid #ccc;
-                text-decoration: none;
-                color: #333;
-            }
-
-            .pagination a.active {
-                background-color: #ccc;
-            }
-
-            .create-post-btn {
-                margin-bottom: 10px;
-            }
-
-            .post-row {
-                cursor: pointer;
-                padding: 10px;
-                border: 1px solid #ddd;
-                background-color: #f9f9f9;
-                margin-bottom: 10px;
-            }
-
-            .post-row:hover {
-                background-color: #f1f1f1;
-            }
-
-            .post-row .initials {
-                display: inline-block;
-                width: 40px;
-                height: 40px;
-                background-color: #ccc;
-                border-radius: 50%;
-                line-height: 40px;
-                text-align: center;
-                font-weight: bold;
-                margin-right: 10px;
-            }
-
-            .post-row .fullname {
-                font-weight: bold;
-            }
-
-            .post-row .timestamp {
-                color: #888;
-                font-size: 12px;
-                margin-bottom: 5px;
-            }
-
-            .post-row .purpose {
-                font-weight: bold;
-            }
-
-            .post-row .replies {
-                color: #888;
-                font-size: 12px;
-            }
-
-            .post-row .description {
-                margin-top: 10px;
-            }
-
-            .post-modal .post-content {
-                margin-bottom: 20px;
-            }
-
-            .post-modal .reply-form {
-                margin-top: 20px;
-            }
-
-            .reply-item .initials {
-                display: inline-block;
-                width: 40px;
-                height: 40px;
-                background-color: #ccc;
-                border-radius: 50%;
-                line-height: 40px;
-                text-align: center;
-                font-weight: bold;
-                margin-right: 10px;
-            }
-
-            .post-row {
-                display: flex;
-                align-items: center;
-                cursor: pointer;
-                padding: 10px;
-                border: 1px solid #ddd;
-                background-color: #f9f9f9;
-                margin-bottom: 10px;
-            }
-
-            .post-row:hover {
-                background-color: #f1f1f1;
-            }
-
-            .initials {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 40px;
-                height: 40px;
-                background-color: #ccc;
-                border-radius: 50%;
-                line-height: 40px;
-                text-align: center;
-                font-weight: bold;
-                margin-right: 10px;
-            }
-
-            .post-details {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .fullname {
-                font-weight: bold;
-            }
-
-            .timestamp-purpose {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                color: #888;
-                font-size: 12px;
-                margin-top: 5px;
-            }
-
-            .horizontal-line {
-                border-top: 1px solid #000;
-                width: 100%;
-            }
-
-            .chosen-container {
-                display: block;
-                width: 100% !important;
-            }
-        </style>
-    @endpush
-@endsection
+        $(window).on('load', function() {
+            $(".approve").prop('hidden', false)
+        });
+    </script>
+@endpush

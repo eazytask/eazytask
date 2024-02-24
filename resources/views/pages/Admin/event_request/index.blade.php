@@ -52,13 +52,14 @@
                     <button type="button" class="btn bg-light-secondary" id="prev">
                         <i data-feather='arrow-left'></i>
                     </button>
-                    <button type="button" class="btn bg-light-secondary fw-bolder" id="currentWeek">
+                    <label for="search_date" class="btn bg-light-secondary fw-bolder m-0" id="currentWeek">
                         {{ \Carbon\Carbon::now()->startOfWeek()->format('d M, Y') }} - {{ \Carbon\Carbon::now()->endOfWeek()->format('d M, Y') }}
-                    </button>
+                    </label>
                     <button type="button" class="btn bg-light-secondary" id="next">
                         <i data-feather='arrow-right'></i>
                     </button>
                 </div>
+                <input type="text" id="search_date" name="search_date" class="d-none form-control format-picker form-control-sm" placeholder="dd-mm-yyyy">
             </div>
         </div>
     </div>

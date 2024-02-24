@@ -179,7 +179,7 @@ class HomeController extends Controller
 
         //payments
         $payments = paymentmaster::where([
-                // ['payment_master.employee_id',Auth::user()->employee->id ?? false],
+                ['payment_master.employee_id',Auth::user()->employee->id ?? false],
             ])
             ->leftjoin('employees', 'employees.id', 'payment_master.employee_id')
             ->orderBy('payment_master.Payment_Date', 'desc')
@@ -229,10 +229,11 @@ class HomeController extends Controller
         
 
         $inductions = Inductedsite::where([
-            ['inductedsites.company_code', Auth::user()->company_roles->first()->company->id]
+            ['inductedsites.company_code', Auth::user()->company_roles->first()->company->id],
+            ['inductedsites.employee_id', Auth::user()->employee->id]
         ])->leftjoin('employees', 'employees.id', 'inductedsites.employee_id')
         ->leftjoin('projects', 'projects.id', 'inductedsites.project_id')
-        ->orderBy('employee_id', 'asc')->select('inductedsites.*', 'projects.pName', 'employees.image')->get();
+        ->orderBy('employee_id', 'asc')->select('inductedsites.*', 'projects.pName', 'employees.image', DB::raw("CONCAT(employees.fname, ' ', COALESCE(employees.mname, ''), ' ', employees.lname) AS employee_name"))->get();
 
         return view('pages.User.index',compact('roasters', 'projects','job_types','roaster_status','upcoming_roasters','past_roasters','unconfirm_roasters','upcomingevents','timesheets','payments', 'unavailabilities','leaves','leave_types', 'messages', 'compliances', 'inductions'));
         // return redirect('home/sign/in');
