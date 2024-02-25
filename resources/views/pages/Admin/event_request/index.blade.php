@@ -59,7 +59,7 @@
                         <i data-feather='arrow-right'></i>
                     </button>
                 </div>
-                <input type="text" id="search_date" name="search_date" class="d-none form-control format-picker form-control-sm" placeholder="dd-mm-yyyy">
+                <input type="hidden" id="search_date" name="search_date" class="form-control form-control-sm visually-hidden" placeholder="dd-mm-yyyy">
             </div>
         </div>
     </div>
@@ -110,12 +110,19 @@
     <script src="{{asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
     <script src="{{asset('app-assets/vendors/js/calendar/fullcalendar.min.js')}}"></script>
     <script src="{{asset('app-assets/velzon/libs/moment/moment.js')}}"></script>
+    <script src="{{asset('app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js')}}"></script>
 
 
     <script type="text/javascript">
 
         var auth_id = "{{Auth::user()->id}}";
         $(document).ready(function() {
+            $('#currentWeek').on('click', function() {
+                $('#search_date').flatpickr({
+                    mode: "range"
+                }).open();
+            });
+
             $('#addEvent').removeAttr('disabled');
             var project_id = $('#project_id');
 

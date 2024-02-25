@@ -1035,7 +1035,8 @@
                     <div class="tab-pane fade" id="projects" role="tabpanel">
                         <div class="card">
                             <div class="card-body">
-                                <div class="row">
+                                <h4 class="text-muted text-center my-4">Coming Soon!</h4>
+                                {{-- <div class="row">
                                     <div class="col-xxl-3 col-sm-6">
                                         <div class="card profile-project-card shadow-none profile-project-warning">
                                             <div class="card-body p-4">
@@ -1728,7 +1729,7 @@
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <!--end row-->
                             </div>
                             <!--end card-body-->

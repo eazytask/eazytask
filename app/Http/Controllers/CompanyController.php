@@ -358,7 +358,7 @@ class CompanyController extends Controller
         $admin->name = $request->name;
         $admin->mname = $request->mname;
         $admin->lname = $request->lname;
-        // $admin->email = $request->email;
+        $admin->email = $request->email;
         $admin->save();
 
         if ($request->company) {
@@ -373,12 +373,18 @@ class CompanyController extends Controller
             $row->lname = $request->lname;
             $row->save();
         }
-
         $employees = Employee::where('userID', Auth::id())->get();
         foreach ($employees as $row) {
             $row->fname = $request->name;
             $row->mname = $request->mname;
             $row->lname = $request->lname;
+            $row->email = $request->email;
+            $row->date_of_birth = $request->date_of_birth;
+            $row->contact_number = $request->contact;
+            $row->address = $request->street;
+            $row->suburb = $request->suburb;
+            $row->state = $request->state;
+            $row->postal_code = $request->postal_code;
             $row->save();
         }
 

@@ -46,12 +46,24 @@ class AdminEventRequestController extends Controller
   public function search(Request $request)
   {
     if($request->goto == 'previous'){
-      $current_week = Session::get('current_week');
+      if(Session::has('start_week')){
+        $current_week = Session::get('start_week');
+        Session::forget('start_week');
+        Session::forget('end_week');
+      }else{
+        $current_week = Session::get('current_week');
+      }
       Session::put('current_week', $current_week - 1);
 
       $week = Carbon::now()->addWeek(Session::get('current_week'));
     }elseif($request->goto == 'next'){
-      $current_week = Session::get('current_week');
+      if(Session::has('end_week')){
+        $current_week = Session::get('end_week');
+        Session::forget('start_week');
+        Session::forget('end_week');
+      }else{
+        $current_week = Session::get('current_week');
+      }
       Session::put('current_week', $current_week + 1);
 
       $week = Carbon::now()->addWeek(Session::get('current_week'));
@@ -59,16 +71,24 @@ class AdminEventRequestController extends Controller
       $current_week = Session::get('current_week');
       $week = Carbon::now()->addWeek($current_week);
     }elseif($request->goto == 'date'){
+      $range = explode(' to ', $request->date);
+      $start_date = Carbon::parse($range[0]);
+      $end_date = Carbon::parse($range[1]);
       // $date = Carbon::parse($request->date)->addDay();
-      $week_diff = Carbon::now()->startOfWeek()->diffInWeekendDays(Carbon::parse($request->date)->startOfWeek(), false);
-      Session::put('current_week', $week_diff / 2);
-      $week = Carbon::now()->addWeek(Session::get('current_week'));
+      $start_week = Carbon::now()->startOfWeek()->diffInWeekendDays(Carbon::parse($range[0])->startOfWeek(), false);
+      $end_week = Carbon::now()->startOfWeek()->diffInWeekendDays(Carbon::parse($range[1])->endOfWeek(), false);
+      Session::put('current_week', $start_week / 2);
+      Session::put('start_week', $start_week / 2);
+      Session::put('end_week', $end_week / 2);
+      // $week = Carbon::now()->addWeek(Session::get('current_week'));
     }else{
       $week = Carbon::now();
     }
 
-    $start_date = Carbon::parse($week)->startOfWeek();
-    $end_date = Carbon::parse($week)->endOfWeek();
+    if($request->goto != 'date'){
+      $start_date = Carbon::parse($week)->startOfWeek();
+      $end_date = Carbon::parse($week)->endOfWeek();
+    }
 
 
     $filter_project = $request->projectFilter ? ['project_name', $request->projectFilter] : ['project_name', '>', 0];

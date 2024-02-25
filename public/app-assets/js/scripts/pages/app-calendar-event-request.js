@@ -343,6 +343,14 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
 
+  $('#currentWeek').on('click', function() {
+    $('#search_date').flatpickr({
+        mode: "range",
+        onChange: function(){
+          console.log('ok');
+        }
+    }).open();
+  });
   $('#search_date').on('change', function(){
     let date = $(this).val();
     fetchEvents('date', '/admin/home/event/weekly', date);
@@ -369,7 +377,6 @@ document.addEventListener('DOMContentLoaded', function () {
           resolve(); // Resolve the promise when the AJAX request is successful
         },
         error: function(error) {
-          console.log(error);
           reject(error); // Reject the promise if there's an error
         }
       });
