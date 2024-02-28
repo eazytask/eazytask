@@ -470,7 +470,7 @@ class NewTimeKeeperController extends Controller
         ])
             ->whereBetween('roaster_date', [Carbon::parse(Session::get('fromRoaster')), Carbon::parse(Session::get('toRoaster'))])
             ->orderBy('roaster_date', 'desc')->get();
-
+        // return ['employees'=>$employees, 'projects'=> $projects, 'timekeepers'=> $timekeepers, 'job_types'=> $job_types, 'roaster_status'=> $roaster_status];
         return view('pages.Admin.timekeeper.newindex', compact('employees', 'projects', 'timekeepers', 'job_types', 'roaster_status'));
     }
 }

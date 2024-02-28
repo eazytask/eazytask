@@ -115,4 +115,33 @@ class UpcomingeventController extends Controller
         return response()->json(['status' => 'successfully deleted']);
     }
 
+    public function upcoming_event(Request $req){
+        $startDate = '';
+        $endDate = '';
+        if($req->goto == 'month'){
+            $startDate = Carbon::create($req->year, $req->month, 1)->startOfMonth();
+            $endDate = Carbon::create($req->year, $req->month, 1)->endOfMonth();
+        }else{
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
+        }
+        $formattedStartDate = $startDate->format('Y-m-d');
+        $formattedEndDate = $endDate->format('Y-m-d');
+
+        $roster = TimeKeeper::where([
+            ['company_code',Auth::user()->employee->company],
+            // ['shift_end','>=',Carbon::now()],
+            ['sing_in',null]
+        ])->orderBy('roaster_date','desc')->whereBetween('roaster_date', [$formattedStartDate, $formattedEndDate])
+        ->limit(4)->get();
+        //for unsheduled user
+        $projects = Project::whereHas('client', function ($query) {
+            $query->where('status', 1);
+        })->where([
+            ['company_code', Auth::user()->company_roles->first()->company->id],
+            ['Status', '1'],
+        ])->orderBy('pName', 'asc')->get();
+
+        return response()->json(['rosters'=> $roster, 'projects'=> $projects]);
+    }
 }

@@ -405,6 +405,44 @@ class HomeController extends Controller
 
         return view('pages.Admin.index', compact('data','projects','job_types'));
     }
+
+    public function upcoming_schedules(Request $req){
+        $startDate = '';
+        $endDate = '';
+        if($req->goto == 'month'){
+            $month = $req->month + 1;
+            $startDate = Carbon::create($req->year, $month, 1)->startOfMonth();
+            $endDate = Carbon::create($req->year, $month, 1)->endOfMonth();
+        }elseif($req->goto == 'date'){
+            $range = explode('to',$req->date);
+            $startDate = Carbon::create($range[0]);
+            $endDate = Carbon::create($range[1]);
+        }else{
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
+        }
+        $formattedStartDate = $startDate->format('Y-m-d');
+        $formattedEndDate = $endDate->format('Y-m-d');
+
+        $roster = TimeKeeper::where([
+            ['time_keepers.company_code',Auth::user()->employee->company],
+            ['time_keepers.roaster_date', '>=', Carbon::now()->format('Y-m-d')]
+            // ['shift_end','>=',Carbon::now()],
+            // ['sing_in',null]
+        ])->leftjoin('projects', 'projects.id', 'time_keepers.project_id')
+        ->orderBy('time_keepers.roaster_date','desc')->whereBetween('time_keepers.roaster_date', [$formattedStartDate, $formattedEndDate])
+        ->select('time_keepers.*', 'projects.pName', 'projects.cName', 'projects.project_address as address', 'projects.suburb', 'projects.project_state as state', 'projects.postal_code')
+        ->limit(4)->get();
+
+        return response()->json([
+            'status'=> true,
+            'rosters'=> $roster, 
+            'requests'=> $req->all(),
+            'start_date'=> $formattedStartDate,
+            'end_date'=> $formattedEndDate
+        ]);
+    }
+
     public function taskDescriptions()
     {
         $data = TaskDescription::where('user_id', Auth::id())->orderBy('id', 'desc')->get();

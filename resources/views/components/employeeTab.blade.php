@@ -23,5 +23,13 @@
                 <h5 class="nav-titl nav-tab-position m-0">Inducted Site</h5>
             </a>
         </li>
+        
+        <li class="nav-item" role="presentation">
+            <a href="{{ route('compliance_page') }}"  class="nav-link @if($active == 'compliance') active @endif" >
+                <i class="ri-file-text-line nav-icon nav-tab-position"></i>
+                <h5 class="nav-titl nav-tab-position m-0">Compliance</h5>
+            </a>
+        </li>
+
     </ul>
 </div>

@@ -978,19 +978,27 @@ class EmployeeController extends Controller
                         'password' => Hash::make($request->password),
                     ]);
                 }
-
+                // return response()->json([
+                //     ['user_id'=> $employee->userID],
+                //     ['role'=> $emp_role],
+                //     ['company_code'=> $employee->company]
+                // ]);
                 $user_role = UserRole::where([
                     ['user_id', $employee->userID],
                     ['role', $emp_role],
                     ['company_code', $employee->company]
                 ])->first();
-                if ($request->status == 1) {
-                    $user_role->status = 1;
-                } else {
-                    $user_role->status = 0;
+                // return response()->json(['role'=> $user_role]);
+                if($user_role){
+                    if ($request->status == 1) {
+                        $user_role->status = 1;
+                    } else {
+                        $user_role->status = 0;
+                    }
+                    $user_role->role = $request->role;
+                    $user_role->save();
                 }
-                $user_role->role = $request->role;
-                $user_role->save();
+                // return $request->all();
 
                 // if ($request->has_compliance) {
                 //     foreach ($request->Compliance as $compliance) {

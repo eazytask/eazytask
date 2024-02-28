@@ -159,6 +159,33 @@
             </div>
         </div>
 
+        <div class="col-xxl-4">
+            <div class="card">
+                <div class="card-header border-0">
+                    <h4 class="card-title mb-0">Upcoming Schedules</h4>
+                </div><!-- end cardheader -->
+                <div class="card-body pt-0">
+                    <div class="upcoming-scheduled">
+                        <input type="text" class="form-control" id="upcoming_calendar" data-provider="flatpickr" data-date-format="Y-m-d" data-deafult-date="today" data-inline-date="true" data-range-date>
+                    </div>
+
+                    <h6 class="text-uppercase fw-semibold mt-4 mb-3 text-muted">Events:</h6>
+                    <div id="upcoming_schedule">
+                        <div class="text-center m-5">
+                            <div class="spinner-grow" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <a href="/admin/home/event/request" class="text-muted text-decoration-underline">View all Events</a>
+                    </div>
+
+                </div><!-- end cardbody -->
+            </div><!-- end card -->
+        </div><!-- end col -->
+
         <div class="col-xxl-6">
             <div class="card card-height-100">
                 <div class="card-header align-items-center d-flex">
@@ -469,17 +496,114 @@
 
     @include('pages.Admin.modals.task-modal')
 @endsection
-
+@push('styles')
+    <style>
+        .upcoming-scheduled .flatpickr-calendar .flatpickr-day.today:not(.selected){
+            background: transparent !important;
+            color: black !important;
+        }
+    </style>
+@endpush
 @section('script')
     <script src="{{ URL::asset('app-assets/velzon/libs/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ URL::asset('app-assets/velzon/js/pages/dashboard-analytics.init.js') }}"></script>
     <script src="{{ URL::asset('app-assets/velzon/js/pages/dashboard-crm.init.js') }}"></script>
     <script src="{{ asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js') }}"></script>
+    <script src="{{asset('app-assets/velzon/libs/moment/moment.js')}}"></script>
 
     <script>
+
+		var flatpickrExamples = document.querySelectorAll("[data-provider]");
+		Array.from(flatpickrExamples).forEach(function (item) {
+			if (item.getAttribute("data-provider") == "flatpickr") {
+				var dateData = {};
+				var isFlatpickerVal = item.attributes;
+				dateData.disableMobile = "true";
+				if (isFlatpickerVal["data-date-format"])
+					dateData.dateFormat = isFlatpickerVal["data-date-format"].value.toString();
+
+				if (isFlatpickerVal["data-deafult-date"]) {
+					dateData.defaultDate = isFlatpickerVal["data-deafult-date"].value.toString();
+					dateData.dateFormat = isFlatpickerVal["data-date-format"].value.toString();
+				}
+
+				if (isFlatpickerVal["data-range-date"]) {
+					dateData.mode = "range";
+					dateData.dateFormat = isFlatpickerVal["data-date-format"].value.toString();
+				}
+				if (isFlatpickerVal["data-inline-date"]) {
+					(dateData.inline = true),
+						(dateData.defaultDate = isFlatpickerVal["data-deafult-date"].value.toString());
+					dateData.dateFormat = isFlatpickerVal["data-date-format"].value.toString();
+				}
+
+				dateData.onYearChange = monthly_schedule
+                dateData.onMonthChange = monthly_schedule
+                dateData.minDate = moment().format('Y-M-D')
+				flatpickr(item, dateData);
+                console.log(dateData);
+			}
+		});
+
         let task_ids = []
         let totalTaskId = []
- 
+        function monthly_schedule(){
+            let month = $('.flatpickr-monthDropdown-months').val();
+            let year = $('.numInput.cur-year').val();
+            upcoming_schedule('month', month, year);
+        }
+        $('#upcoming_calendar').on('change', function(){
+            let goto = 'date';
+            let date = $(this).val();
+            $.get("{{route('upcoming_schedules')}}",{ goto, date }, function(data){
+                if(data.status){
+                    console.log(data)
+                    upcoming_schedule_entry(data.rosters);
+                }
+            });
+        })
+        console.log($('.numInput.cur-year'));
+        const upcoming_schedule = function(goto = null, month= null, year = null){
+            $.get("{{route('upcoming_schedules')}}",{ goto, month, year }, function(data){
+                if(data.status){
+                    console.log(data)
+                    upcoming_schedule_entry(data.rosters);
+                }
+            });
+        }
+        upcoming_schedule();
+        function upcoming_schedule_entry(data){
+            let container = $('#upcoming_schedule');
+            let html = '';
+            let i= 0;
+            if(data.length){
+                data.forEach(function(roster){
+                    var day = moment(roster.roaster_date).format('DD');
+                    html += `
+                        <div class="mini-stats-wid d-flex align-items-center mt-3">
+                            <div class="flex-shrink-0 avatar-sm">
+                                <span
+                                    class="mini-stat-icon avatar-title rounded-circle text-success bg-success-subtle fs-4">
+                                    ${day}
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">${roster.pName}</h6>
+                                <p class="text-muted mb-0">${roster.cName} </p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <p class="text-muted mb-0">${moment(roster.shift_start).format('LT')}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }else{
+                html = "<h4 class='text-center text-muted'>Not Found!</h4>";
+            }
+            container.html(html);
+        }
+
+
         $(document).on("click", ".taskCheckID", function() {
             if ($(this).is(':checked')) {
                 task_ids.push($(this).val())

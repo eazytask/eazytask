@@ -236,6 +236,10 @@ File: Main Js File
 					dates.push(isFlatpickerVal["data-week-number"].value);
 					dateData.weekNumbers = true
 				}
+				dateData.mode = "range"
+				dateData.onYearChange = function(){
+					console.log('changed');
+				}
 				flatpickr(item, dateData);
 			} else if (item.getAttribute("data-provider") == "timepickr") {
 				var timeData = {};

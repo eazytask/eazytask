@@ -1,4 +1,7 @@
 @extends('layouts.Admin.master')
+
+
+
 @section('admin_page_content')
     @component('components.breadcrumb')
         @slot('li_1')
@@ -169,6 +172,7 @@
 
 @endsection
 @push('styles')
+    <link rel="stylesheet" href="{{ URL::asset('app-assets/velzon/libs/glightbox/css/glightbox.min.css')}}">
     <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet" />
     <style>
         .dt-buttons {
@@ -402,6 +406,18 @@
     </style>
 @endpush
 @push('scripts')
+
+    <script src="{{ URL::asset('app-assets/velzon/libs/glightbox/js/glightbox.min.js') }}"></script>
+
+    <!-- fgEmojiPicker js -->
+    <script src="{{ URL::asset('app-assets/velzon/libs/fg-emoji-picker/fgEmojiPicker.js') }}"></script>
+
+    <!-- chat init js -->
+    <script src="{{ URL::asset('app-assets/velzon/js/pages/chat.init.js') }}"></script>
+    <script src="{{ URL::asset('app-assets/velzon/js/app.js') }}"></script>
+
+
+
     <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
 
     <script>

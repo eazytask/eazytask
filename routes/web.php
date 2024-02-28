@@ -55,6 +55,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\admin\MessagesController;
 use App\Http\Controllers\admin\EventReportController;
+use App\Http\Controllers\admin\AdminComplianceController;
 
 //dcw add controller
 use App\Http\Controllers\admin\PDFEmailController;
@@ -453,6 +454,7 @@ Route::group(['middleware' => ['company_status']], function () {
 
     //Route::get('admin/home', [HomeController::class, 'adminHome'])->name('admin.home')->middleware('is_admin');
     // admin/company routes
+    Route::get('admin/home/upcoming-schedule', [HomeController::class, 'upcoming_schedules'])->name('upcoming_schedules')->middleware('is_admin');
     Route::get('admin/home/{id}', [HomeController::class, 'adminHome'])->middleware('is_admin');
     Route::get('admin/home/employee/{id}', [EmployeeController::class, 'index'])->middleware('is_admin');
     Route::get('admin/home/fetch/employee', [EmployeeController::class, 'fetch']);
@@ -546,4 +548,9 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::post('admin/home/inducted/site/store', [InductedsiteController::class, 'store'])->name('store-induction')->middleware('is_admin');
     Route::post('admin/home/inducted/site/update', [InductedsiteController::class, 'update'])->name('update-induction')->middleware('is_admin');
     Route::get('admin/home/inducted/site/delete/{id}', [InductedsiteController::class, 'delete'])->middleware('is_admin');
+});
+
+Route::controller(AdminComplianceController::class)->group(function(){
+    Route::get('admin/home/compliance/employees', 'index')->name('compliance_page');
+    Route::get('admin/home/compliance/get', 'get_compliance')->name('get_compliance');
 });
