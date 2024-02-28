@@ -553,4 +553,6 @@ Route::group(['middleware' => ['company_status']], function () {
 Route::controller(AdminComplianceController::class)->group(function(){
     Route::get('admin/home/compliance/employees', 'index')->name('compliance_page');
     Route::get('admin/home/compliance/get', 'get_compliance')->name('get_compliance');
+    Route::get('admin/home/compliance/delete/{id?}', 'delete_compliance')->name('delete_compliance');
+    Route::post('admin/home/compliance/store', 'store_compliance')->name('store_compliance');
 });

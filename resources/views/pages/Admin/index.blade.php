@@ -135,31 +135,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-xxl-6">
-            <div class="card card-height-100">
-                <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">
-                        Weekly Hour - ({{ $data['weekly_hour'] }})
-                    </h4>
-                </div>
-
-                <div class="card-body p-0 pb-2">
-                    <div class="pt-3 d-flex justify-content-center">
-                        <p class="mb-0 text-muted">
-                            Weekend In
-                            {{ \Carbon\Carbon::now()->subWeeks(2)->endOfWeek()->format('d F, Y') }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <div id="statistics-order-chart" data-colors='["--vz-success", "--vz-light"]' class="apex-charts" dir="ltr"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xxl-4">
+        <div class="col-xxl-12">
             <div class="card">
                 <div class="card-header border-0">
                     <h4 class="card-title mb-0">Upcoming Schedules</h4>
@@ -185,6 +161,30 @@
                 </div><!-- end cardbody -->
             </div><!-- end card -->
         </div><!-- end col -->
+        <div class="col-xxl-6">
+            <div class="card card-height-100">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">
+                        Weekly Hour - ({{ $data['weekly_hour'] }})
+                    </h4>
+                </div>
+
+                <div class="card-body p-0 pb-2">
+                    <div class="pt-3 d-flex justify-content-center">
+                        <p class="mb-0 text-muted">
+                            Weekend In
+                            {{ \Carbon\Carbon::now()->subWeeks(2)->endOfWeek()->format('d F, Y') }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <div id="statistics-order-chart" data-colors='["--vz-success", "--vz-light"]' class="apex-charts" dir="ltr"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <div class="col-xxl-6">
             <div class="card card-height-100">
@@ -539,9 +539,7 @@
 
 				dateData.onYearChange = monthly_schedule
                 dateData.onMonthChange = monthly_schedule
-                dateData.minDate = moment().format('Y-M-D')
 				flatpickr(item, dateData);
-                console.log(dateData);
 			}
 		});
 

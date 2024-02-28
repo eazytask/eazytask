@@ -426,7 +426,7 @@ class HomeController extends Controller
 
         $roster = TimeKeeper::where([
             ['time_keepers.company_code',Auth::user()->employee->company],
-            ['time_keepers.roaster_date', '>=', Carbon::now()->format('Y-m-d')]
+            // ['time_keepers.roaster_date', '>=', Carbon::now()->format('Y-m-d')]
             // ['shift_end','>=',Carbon::now()],
             // ['sing_in',null]
         ])->leftjoin('projects', 'projects.id', 'time_keepers.project_id')
@@ -436,10 +436,7 @@ class HomeController extends Controller
 
         return response()->json([
             'status'=> true,
-            'rosters'=> $roster, 
-            'requests'=> $req->all(),
-            'start_date'=> $formattedStartDate,
-            'end_date'=> $formattedEndDate
+            'rosters'=> $roster
         ]);
     }
 
