@@ -550,9 +550,12 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::get('admin/home/inducted/site/delete/{id}', [InductedsiteController::class, 'delete'])->middleware('is_admin');
 });
 
-Route::controller(AdminComplianceController::class)->group(function(){
-    Route::get('admin/home/compliance/employees', 'index')->name('compliance_page');
-    Route::get('admin/home/compliance/get', 'get_compliance')->name('get_compliance');
-    Route::get('admin/home/compliance/delete/{id?}', 'delete_compliance')->name('delete_compliance');
-    Route::post('admin/home/compliance/store', 'store_compliance')->name('store_compliance');
+Route::middleware('is_admin')->group(function () {
+    Route::controller(AdminComplianceController::class)->group(function(){
+        Route::get('admin/home/compliance/employees', 'index')->name('compliance_page');
+        Route::get('admin/home/compliance/get', 'get_compliance')->name('get_compliance');
+        Route::post('admin/home/compliance/store', 'store_compliance')->name('store_compliance');
+        Route::post('admin/home/compliance/update', 'update_compliance')->name('update_compliance');
+        Route::get('admin/home/compliance/delete/{id?}', 'delete_compliance')->name('delete_compliance');
+    });
 });

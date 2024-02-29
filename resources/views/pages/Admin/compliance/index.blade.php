@@ -219,7 +219,7 @@
                                 <td>${compliance.certificate_no}</td>
                                 <td>${compliance.expire_date}</td>
                                 <td>${compliance.comment ? compliance.comment : ''}</td>
-                                <td>${compliance.document ? '<img src="https://www.api.eazytask.au/'+compliance.document+'}"/>': ''}</td>
+                                <td>${compliance.document ? '<img style="max-height: 100px; max-width: 100px;" src="https://www.api.eazytask.au/'+compliance.document+'}"/>': ''}</td>
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-soft-info btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -273,15 +273,17 @@
             flatpickr(date);
 
             $(document).on('click', '.edit-btn', function(){
+                $('#update').css('display', 'inline-block');
+                $('#store').css('display', 'none');
                 resetValue('#compliance_add_form');
                 let data_id = $(this).data('id');
                 let data = compliances.filter((compliance)=> compliance.id == data_id)[0];
-                console.log(data);
                 insertFormData(data);
                 $('#addCompliance').modal('show');
             });
             $('#add').on('click', ()=>{
-                console.log('clicked');
+                $('#update').css('display', 'none');
+                $('#store').css('display', 'inline-block');
                 resetValue('#compliance_add_form');
             });
             function resetValue(selector) {
@@ -320,6 +322,61 @@
                         error.insertAfter(element);
                     }
                 }
+            });
+            $('#store').on('click', function(){
+                var form = $('form#compliance_add_form');
+                var isValid = form.valid();
+                var fullFormIsValid = true;
+                if(isValid){
+                    $.ajax({
+                        url: "{{route('store_compliance')}}",
+                        type: 'POST',
+                        dataType: 'JSON',
+                        data: new FormData(form[0]),
+                        processData: false,
+                        contentType: false,
+                        success: function(result){
+                            console.log(result);
+                            if(result.status){
+                                get_compliance();
+                                $('#addCompliance').modal('hide');
+                                toastr.success(result.message);
+                            }
+                        },
+                        error: function(error){
+                            console.warn(error);
+                        }
+                    });
+                }
+            });
+            $('#update').on('click', function(){
+                var form = $('form#compliance_add_form');
+                var isValid = form.valid();
+                var fullFormIsValid = true;
+                if(isValid){
+                    $.ajax({
+                        url: "{{route('update_compliance')}}",
+                        type: 'POST',
+                        dataType: 'JSON',
+                        data: new FormData(form[0]),
+                        processData: false,
+                        contentType: false,
+                        success: function(result){
+                            console.log(result);
+                            if(result.status){
+                                get_compliance();
+                                $('#addCompliance').modal('hide');
+                                toastr.success(result.message);
+                            }
+                        },
+                        error: function(error){
+                            console.warn(error);
+                        }
+                    });
+                }
+            });
+            $('form#compliance_add_form').on('submit', (e)=>{
+                e.preventDefault();
             });
         });
     </script>

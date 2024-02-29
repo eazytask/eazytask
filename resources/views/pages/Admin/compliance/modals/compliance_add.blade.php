@@ -69,14 +69,15 @@
                             <label for="company-column">
                                 Document Image Upload
                             </label>
-                            <input type="file" class="form-control" id="document" placeholder="Avatar"  />
+                            <input type="file" class="form-control" name="document" id="document" placeholder="Avatar"  />
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success btn-submit">Save changes</button>
+                <button type="submit" id="update" class="btn btn-success btn-submit">Update changes</button>
+                <button type="submit" id="store" class="btn btn-success btn-submit">Save changes</button>
             </div>
         </form>
     </div>
