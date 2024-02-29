@@ -51,7 +51,9 @@ class AdminComplianceController extends Controller
             $file_ext = $file->extension();
             $image_name = date('sihdmy').'.'.$file_ext;
             $file_name = $folderPath.$image_name;
-            $user_compliance->document = $this->saveImage($file, $basePath, $file_name);
+            if($this->saveImage($file, $basePath, $file_name)){
+                $user_compliance->document = $file_name;
+            }
         }
         $user_compliance->save();
         return response()->json([
@@ -79,7 +81,9 @@ class AdminComplianceController extends Controller
             $file_ext = $file->extension();
             $image_name = date('sihdmy').'.'.$file_ext;
             $file_name = $folderPath.$image_name;
-            $user_compliance->document = $this->saveImage($file, $basePath, $file_name);
+            if($this->saveImage($file, $basePath, $file_name)){
+                $user_compliance->document = $file_name;
+            }
         }
         $user_compliance->save();
         return response()->json([
@@ -91,12 +95,11 @@ class AdminComplianceController extends Controller
     public static function saveImage($image, $path, $filename){
         try {
             if($image != null) {
-
                 // $image_path = $image->store($path, $option);
                 $image_path = Image::make($image)->save($path.$filename);
-                return $image_path;
+                return true;
             } else {
-                return null;
+                return false;
             }
         } catch (\Exception $e) {
             echo 'Image Helper saveImage ' .$e->getMessage();
