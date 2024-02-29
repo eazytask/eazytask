@@ -219,7 +219,7 @@
                                 <td>${compliance.certificate_no}</td>
                                 <td>${compliance.expire_date}</td>
                                 <td>${compliance.comment ? compliance.comment : ''}</td>
-                                <td>${compliance.document ? '<img style="max-height: 100px; max-width: 100px;" src="https://www.api.eazytask.au/'+compliance.document+'}"/>': ''}</td>
+                                <td>${compliance.document ? '<img style="max-height: 100px; max-width: 100px;" src="https://www.api.eazytask.au/'+compliance.document+'"/>': ''}</td>
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-soft-info btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
