@@ -63,7 +63,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="row" id="events">
 
         <!-- end col -->
@@ -152,7 +152,7 @@
             // $('#buttons-print').click(function(){
             //     $(".modern-nav-toggle").click()
             //      window.print();
-                
+
             //     $(".modern-nav-toggle").click()
             //  });
 
@@ -170,7 +170,7 @@
                     styleEl.remove();
                     parent.addClass('active');
                 }else{
-                    styles = ` 
+                    styles = `
                         ${cls} {
                             display:none;
                         }

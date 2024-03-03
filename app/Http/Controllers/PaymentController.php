@@ -205,7 +205,7 @@ class PaymentController extends Controller
         return redirect('admin/home/payment/search-again');
     }
 
-    //function for updating approved start and end 
+    //function for updating approved start and end
     public function DateUpdate(Request $request)
     {
         $id = $request->id;
@@ -217,7 +217,7 @@ class PaymentController extends Controller
         $amount = $request->amount;
         for ($i = 0; $i < $len; $i++) {
             $timekeeper = TimeKeeper::find($id[$i]);
-            
+
             $roaster_date =  Carbon::parse($timekeeper->roaster_date)->format('d-m-Y');
 
             $shift_start = Carbon::parse($roaster_date . $approved_start[$i]);

@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-    
+
             <!--end col-->
         <div class="card mb-0" id="employee_list">
             <div class="card-body">
@@ -38,8 +38,12 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Number</th>
+                                <th>Address</th>
+                                <th>Date of Birth</th>
+                                <th>Role</th>
                                 <th>License No</th>
                                 <th>First Aid</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -148,11 +152,13 @@
                     height: 14
                 });
             },
-            dom: 'Blfrtip', // Include 'l' for length menu
+            dom: 'Blfrtip',
             lengthMenu: [30, 50,
                 100, 200
-            ], // Set the options for the number of records to display
-            title: 'test',
+            ],
+            columnDefs: [
+                { targets: [4, 5, 6, 9], visible: false},
+            ],
             buttons: [
                 {
                     extend: 'colvis',
@@ -190,7 +196,7 @@
             ],
             initComplete: function() {
                 let table = this.api();
-            
+
                 let search = `<div class="search-box">
                                 <input type="text" class="form-control form-control-sm search" placeholder="Search for Employee...">
                                 <i class="ri-search-line search-icon"></i>

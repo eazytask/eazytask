@@ -7,7 +7,7 @@
 
     $isRequestAdminDashboard = request()->is('admin/home/dashboard');
     $isRequestUserDashboard = request()->is('user/home');
-    $isRequestSupervisorDashboard = request()->is('supervisor/home'); 
+    $isRequestSupervisorDashboard = request()->is('supervisor/home');
     $isRequestSchedule = request()->is('admin/home/schedule/status');
     $isRequestRosterEntry = request()->is('admin/home/report');
     $isRequestEventCalendar = request()->is('admin/home/event/request');
@@ -18,6 +18,7 @@
     $isRequestMyAvailability = request()->is('admin/home/myavailability/*');
     $isRequestLeave = request()->is('admin/home/leave/*');
     $isRequestInductedSite = request()->is('admin/home/inducted/site/*');
+    $isRequestCompliance = request()->is('admin/home/compliance/employees');
     $isRequestClient = request()->is('admin/home/client/*');
     $isRequestProject = request()->is('admin/home/project/*');
     $isRequestRevenue = request()->is('admin/home/revenue/*');
@@ -30,7 +31,7 @@
     $isRequestJobType = request()->is('admin/home/job/type');
     $isRequestRosterStatus = request()->is('admin/home/roster/status');
     $isRequestActivityLog = request()->is('admin/home/activity/log');
-    
+
     $companyId = Auth::user()->company_roles->first()->company->id;
     $companyCode = auth()->user()->user_roles->unique('company_code');
 @endphp
@@ -70,7 +71,7 @@
                             <span>Manager</span>
                         @elseif($isRoleAccount);
                             <span>Account</span>
-                        @endif    
+                        @endif
                     </li>
 
                     <li class="nav-item">
@@ -87,7 +88,7 @@
                                     Account
                                 @endif
 
-                                Dashboard    
+                                Dashboard
                             </span>
                         </a>
                     </li>
@@ -114,15 +115,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestNewTimesheet || $isRequestViewTimesheet || $isRequestViewTimesheet ? 'active' : '' }}" 
-                            href="#timesheet" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestNewTimesheet || $isRequestViewTimesheet || $isRequestViewTimesheet ? 'active' : '' }}"
+                            href="#timesheet"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="timesheet"
                         >
-                            <i data-feather='clock'></i> 
+                            <i data-feather='clock'></i>
                             <span>Timesheet</span>
                         </a>
 
@@ -144,23 +145,23 @@
                     </li>
 
                     <li class="nav-item">
-                        <a  class="nav-link menu-link {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestInductedSite ? 'active' : '' }}" 
+                        <a  class="nav-link menu-link {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestInductedSite || $isRequestCompliance ? 'active' : '' }}"
                             href="/admin/home/employee/{{ $companyId }}" >
-                            <i data-feather='user-check'></i> 
+                            <i data-feather='user-check'></i>
                             <span>Employee</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestClient || $isRequestProject || $isRequestRevenue ? 'active' : '' }}" 
-                            href="#client" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestClient || $isRequestProject || $isRequestRevenue ? 'active' : '' }}"
+                            href="#client"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="client"
                         >
-                            <i data-feather='users'></i> 
+                            <i data-feather='users'></i>
                             <span>Client</span>
                         </a>
 
@@ -188,15 +189,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestPaymentAdd || $isRequestPaymentList ? 'active' : '' }}" 
-                            href="#payment" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestPaymentAdd || $isRequestPaymentList ? 'active' : '' }}"
+                            href="#payment"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="payment"
                         >
-                            <i data-feather='dollar-sign'></i> 
+                            <i data-feather='dollar-sign'></i>
                             <span>Payment</span>
                         </a>
 
@@ -218,15 +219,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestEventReport || $isRequestSignInStatus || $isRequestCustomReport  ? 'active' : '' }}" 
-                            href="#report" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestEventReport || $isRequestSignInStatus || $isRequestCustomReport  ? 'active' : '' }}"
+                            href="#report"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="report"
                         >
-                            <i data-feather='file-plus'></i> 
+                            <i data-feather='file-plus'></i>
                             <span>Report</span>
                         </a>
 
@@ -261,15 +262,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestJobType || $isRequestRosterStatus || $isRequestActivityLog  ? 'active' : '' }}" 
-                            href="#settings" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestJobType || $isRequestRosterStatus || $isRequestActivityLog  ? 'active' : '' }}"
+                            href="#settings"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="settings"
                         >
-                            <i data-feather='users'></i> 
+                            <i data-feather='users'></i>
                             <span>Settings</span>
                         </a>
 
@@ -333,15 +334,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestNewTimesheet || $isRequestViewTimesheet || $isRequestViewTimesheet ? 'active' : '' }}" 
-                            href="#timesheet" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestNewTimesheet || $isRequestViewTimesheet || $isRequestViewTimesheet ? 'active' : '' }}"
+                            href="#timesheet"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="timesheet"
                         >
-                            <i data-feather='clock'></i> 
+                            <i data-feather='clock'></i>
                             <span>Timesheet</span>
                         </a>
 
@@ -363,15 +364,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestLeave || $isRequestInductedSite ? 'active' : '' }}" 
-                            href="#employee" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestEmployee || $isRequestMyAvailability || $isRequestLeave || $isRequestInductedSite ? 'active' : '' }}"
+                            href="#employee"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="employee"
                         >
-                            <i data-feather='user-check'></i> 
+                            <i data-feather='user-check'></i>
                             <span>Employee</span>
                         </a>
 
@@ -384,17 +385,17 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a 
-                                        href="#timeOff" 
-                                        class="nav-link" 
-                                        data-bs-toggle="collapse" 
-                                        role="button" 
-                                        aria-expanded="false" 
+                                    <a
+                                        href="#timeOff"
+                                        class="nav-link"
+                                        data-bs-toggle="collapse"
+                                        role="button"
+                                        aria-expanded="false"
                                         aria-controls="timeOff"
                                     >
                                         Time Off
                                     </a>
-        
+
                                     <div class="collapse menu-dropdown {{ $isRequestMyAvailability || $isRequestLeave ? 'show' : '' }}" id="timeOff">
                                         <ul class="nav nav-sm flex-column">
                                             <li class="nav-item">
@@ -422,15 +423,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestClient || $isRequestProject || $isRequestRevenue ? 'active' : '' }}" 
-                            href="#client" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestClient || $isRequestProject || $isRequestRevenue ? 'active' : '' }}"
+                            href="#client"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="client"
                         >
-                            <i data-feather='users'></i> 
+                            <i data-feather='users'></i>
                             <span>Client</span>
                         </a>
 
@@ -458,15 +459,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestPaymentAdd || $isRequestPaymentList ? 'active' : '' }}" 
-                            href="#payment" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestPaymentAdd || $isRequestPaymentList ? 'active' : '' }}"
+                            href="#payment"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="payment"
                         >
-                            <i data-feather='dollar-sign'></i> 
+                            <i data-feather='dollar-sign'></i>
                             <span>Payment</span>
                         </a>
 
@@ -488,15 +489,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestEventReport || $isRequestSignInStatus || $isRequestCustomReport  ? 'active' : '' }}" 
-                            href="#report" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestEventReport || $isRequestSignInStatus || $isRequestCustomReport  ? 'active' : '' }}"
+                            href="#report"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="report"
                         >
-                            <i data-feather='file-plus'></i> 
+                            <i data-feather='file-plus'></i>
                             <span>Report</span>
                         </a>
 
@@ -525,15 +526,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link {{ $isRequestJobType || $isRequestRosterStatus || $isRequestActivityLog  ? 'active' : '' }}" 
-                            href="#settings" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link {{ $isRequestJobType || $isRequestRosterStatus || $isRequestActivityLog  ? 'active' : '' }}"
+                            href="#settings"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="settings"
                         >
-                            <i data-feather='users'></i> 
+                            <i data-feather='users'></i>
                             <span>Settings</span>
                         </a>
 
@@ -575,28 +576,28 @@
                 </li>
                 <!-- All Employees Menu End -->
 
-                @if ($companyCode->count() - 1) 
+                @if ($companyCode->count() - 1)
                     <li class="menu-title">
                         <span>Switch Company</span>
                     </li>
 
                     <li class="nav-item">
-                        <a 
-                            class="nav-link menu-link" 
-                            href="#switchcompany" 
-                            data-bs-toggle="collapse" 
-                            role="button" 
-                            aria-expanded="false" 
+                        <a
+                            class="nav-link menu-link"
+                            href="#switchcompany"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
                             aria-controls="switchcompany"
                         >
-                            <i data-feather='refresh-cw'></i> 
+                            <i data-feather='refresh-cw'></i>
                             <span>Switch Company</span>
                         </a>
 
                         <div class="collapse menu-dropdown" id="switchcompany">
                             <ul class="nav nav-sm flex-column">
                                 @foreach ($companyCode as $c)
-                                    @if ($c->status == 1 && $c->company->status == 1 
+                                    @if ($c->status == 1 && $c->company->status == 1
                                         && \Carbon\Carbon::parse($c->company->expire_date) > \Carbon\Carbon::now()->toDateString())
                                         <li class="nav-item">
                                             <a href="/home/switch/company/{{ $c->company_code }}" class="nav-link {{ $c->company_code == Auth::user()->company_roles->first()->company->id ? 'text-danger disabled' : '' }}">

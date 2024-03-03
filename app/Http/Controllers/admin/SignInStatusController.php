@@ -69,7 +69,7 @@ class SignInStatusController extends Controller
         ->groupBy(function ($data) {
             return $data->roaster_date;
         });
-        
+
         $html = '';
         function img_($img)
         {
@@ -92,7 +92,7 @@ class SignInStatusController extends Controller
 
                 $distance = $this->haversineDistance(activity_($row, 'lat'), activity_($row, 'lon'), $row->project->lat, $row->project->lon);
                 $distance = $row->sing_in? round($distance, 2) : '0'; //Kilometer
-                
+
                 $html .= "
                         <tr class='".($row->sing_in && Carbon::parse($row->shift_start)>=Carbon::parse($row->sing_in)?'':'bg-light-danger')."'>
                         $rowspan
@@ -126,23 +126,23 @@ class SignInStatusController extends Controller
 
     private function haversineDistance($lat1, $lon1, $lat2, $lon2) {
         $earthRadius = 6371; // Radius of the Earth in kilometers
-    
+
         $lat1Rad = deg2rad($lat1);
         $lon1Rad = deg2rad($lon1);
         $lat2Rad = deg2rad($lat2);
         $lon2Rad = deg2rad($lon2);
-    
+
         $latDiff = $lat2Rad - $lat1Rad;
         $lonDiff = $lon2Rad - $lon1Rad;
-    
+
         $a = sin($latDiff / 2) * sin($latDiff / 2) +
              cos($lat1Rad) * cos($lat2Rad) *
              sin($lonDiff / 2) * sin($lonDiff / 2);
-    
+
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-    
+
         $distance = $earthRadius * $c; // Distance in kilometers
-    
+
         return $distance;
     }
 }

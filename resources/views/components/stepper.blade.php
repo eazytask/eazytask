@@ -2,10 +2,10 @@
 <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/plugins/forms/form-wizard.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/forms/wizard/bs-stepper.min.css')}}">
 <style>
-    .bs-stepper-box{
+    .active .bs-stepper-box{
         background-color: #405189 !important;
     }
-    .bs-stepper-title{
+    .active .bs-stepper-title{
         color: #405189 !important;
     }
 </style>

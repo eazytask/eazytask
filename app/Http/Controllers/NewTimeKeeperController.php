@@ -209,7 +209,7 @@ class NewTimeKeeperController extends Controller
         foreach($request->employee_ids as $employee_id) {
             if(empty($employee_id))
                 continue;
-            
+
             $timekeeper = new TimeKeeper();
 
             if ($request->roaster_type) {
@@ -251,7 +251,7 @@ class NewTimeKeeperController extends Controller
                 $timekeeper->remarks = $request->remarks;
                 $timekeeper->created_at = Carbon::now();
                 $timekeeper->save();
-                
+
                 if ($request->roaster_type == 'Schedueled') {
                     $pro = $timekeeper->project;
                     if($timekeeper->roaster_status_id == Session::get('roaster_status')['Accepted']){
@@ -264,7 +264,7 @@ class NewTimeKeeperController extends Controller
                         $timekeeper->employee->user->notify(new NewShiftNotification($noty,$timekeeper));
                     }
                 }
-                
+
                 $notification = array(
                     'message' => $msg,
                     'alert-type' => 'success'
@@ -275,7 +275,7 @@ class NewTimeKeeperController extends Controller
                     'alert-type' => 'info'
                 );
             }
-        }  
+        }
 
         if ($request->schedule_roaster) {
             return response()->json(['notification' => $msg]);
@@ -354,7 +354,7 @@ class NewTimeKeeperController extends Controller
                     {
                         $theEmployee = Employee::find($request->employee_ids[0]);
                         $timekeeper = TimeKeeper::find($request->timepeeper_id);
-                        
+
                         $noty = 'There is an shift at '.$pro->pName.' for week ending ' . Carbon::parse($timekeeper->roaster_date)->endOfWeek()->format('d-m-Y');
                         push_notify('Shift Alert :',$noty.' Please log on to eazytask to accept / declined it.',$timekeeper->employee->employee_role,$timekeeper->employee->firebase,'unconfirmed-shift');
                         $timekeeper->employee->user->notify(new NewShiftNotification($noty,$timekeeper));
@@ -406,7 +406,7 @@ class NewTimeKeeperController extends Controller
             $timekeeper->employee->user->notify(new UpdateShiftNotification($noty,$timekeeper));
 
             $timekeeper->delete();
-            
+
             $notification = array(
                 'message' => 'Timekeeper deleted successfully.',
                 'alert-type' => 'error'

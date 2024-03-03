@@ -4,9 +4,7 @@
         <div class="modal-content">
             <div class="modal-header bg-gradient-primary">
                 <h4 class="modal-title text-light" id="myModalLabel17">Roster Entry</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
             </div>
             <form method="POST" id="timekeeperAddForm" data-ajax="false">
                 <input type="text" id="timepeeper_id" name="timepeeper_id" value="" hidden>
@@ -189,11 +187,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success timekeer-btn" id="addTimekeeperSubmit"
-                        onclick="timekeeperAddFunc()"><i data-feather='save'></i></button>
+                        onclick="timekeeperAddFunc()">Save Changes</button>
                     <button type="button" class="btn btn-success timekeer-btn" id="editTimekeeperSubmit"
-                        onclick="timekeeperEditFunc()" hidden><i data-feather='check'></i></button>
-                    <button type="button" class="btn btn-outline-dark" data-dismiss="modal"><i
-                            data-feather='x'></i></button>
+                        onclick="timekeeperEditFunc()" hidden>Update Changes</button>
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>

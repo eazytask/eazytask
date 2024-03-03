@@ -225,7 +225,7 @@
                         <span class="mr-1" id="total_hours"></span>
                         <span class="" id="total_amount"></span>
                     </div>
-                    <div class="search-box d-inline-block">                
+                    <div class="search-box d-inline-block">
                         <input type="text" class="form-control form-control-sm search" placeholder="Search for Roster Entries">
                         <i class="ri-search-line search-icon"></i>
                     </div>`;
@@ -304,7 +304,7 @@
             $('#checkAllID').prop('checked', false)
             // event_id = info.extendedProps.id
             let employees = info.employees
-            
+
             let rows = ''
             $.each(employees, function(index, employee) {
                 if (status == 'available') {
@@ -734,7 +734,7 @@
             });
         }
         roasterStartTimeInit()
-        
+
         // var containerSelector = '#roaster_date_root';
         var picker = $('.format-pickers').pickadate({
             format: 'dd-mm-yyyy',
@@ -980,7 +980,7 @@
             });
 
         }
-    
+
     </script>
 @endpush
 

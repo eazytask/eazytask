@@ -87,6 +87,7 @@
                                     <th>Duration</th>
                                     <th>Rate</th>
                                     <th>Amount</th>
+                                    <th>Job Type</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -94,9 +95,9 @@
                                 @foreach ($timekeepers as $k => $row)
                                 @php
                                 $json = json_encode($row->toArray(), false);
-        
+
                                 @endphp
-                                <tr>
+                                <tr data-copy="true" data-row="{{ $json }}">
                                     <td>
                                         @if($row->is_approved)
                                         <i data-feather="{{$row->payment_status?'dollar-sign':'check-circle'}}" class="text-primary"></i>
@@ -107,7 +108,7 @@
                                     </td>
                                     <td>
                                         {{ $row->employee->fname }} {{ $row->employee->mname }} {{ $row->employee->lname }}
-        
+
                                     </td>
                                     <!-- <td>
                                             @if (isset($row->client->cname))
@@ -131,6 +132,7 @@
                                     <td>{{ $row->duration }}</td>
                                     <td>{{ $row->ratePerHour }}</td>
                                     <td>{{ $row->amount }}</td>
+                                    <td>{{ $row->job_type->name }}</td>
                                     <td>
                                         <div class="row">
                                             <!--<a href="#" data-toggle="modal" data-target="#editTimeKeeper{{$row->id}}"><i data-feather='edit'></i></a>-->
@@ -173,11 +175,11 @@
                                     </td>
                                 </tr>
                                 @endforeach
-        
-        
+
+
                             </tbody>
                         </table>
-        
+
                     </div>
                 </div>
             </div>
@@ -200,6 +202,10 @@
             const dataTableOptions = {
                 dom: 'Bfrtip',
                 paging: false,
+                columnDefs: [{
+                    targets: [9],
+                    visible: false
+                }],
                 buttons: [
                     {
                         extend: 'colvis',
@@ -237,7 +243,7 @@
                 initComplete: function() {
                     let table = this.api();
                     let search = `
-                        <div class="search-box d-inline-block">                
+                        <div class="search-box d-inline-block">
                             <input type="text" class="form-control form-control-sm search" placeholder="Search for Timesheet">
                             <i class="ri-search-line search-icon"></i>
                         </div>`;
@@ -453,7 +459,9 @@
                 }
             })
 
-            $(document).on("click", ".edit-btn", function() {
+            $(document).on('dblclick', '#mytable tbody tr', edit_or_copy)
+            $(document).on("click", ".edit-btn", edit_or_copy)
+            function edit_or_copy(){
                 resetValue()
                 window.current_emp = $(this).data("employee")
                 var rowData = $(this).data("row");
@@ -506,8 +514,7 @@
                 // initAllDatePicker();
                 allCalculation()
 
-            })
-
+            }
 
             $(document).on("input", ".reactive", function() {
                 allCalculation()

@@ -1,66 +1,60 @@
 @extends('layouts.Admin.master')
 @push('styles')
-<meta name="_token" content="{{ csrf_token() }}">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-
+    <meta name="_token" content="{{ csrf_token() }}">
 @endpush
+@section('admin_page_content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            Payment
+        @endslot
+        @slot('title')
+            Payment List
+        @endslot
+    @endcomponent
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="searchForm">
+                        @csrf
+                        <div class="row row-xs g-2">
+                            <div class="col-lg-4 mt-2">
+                                <input type="text" name="start_date" required class="form-control format-picker" placeholder="Roster Date From" id="start_date">
+                            </div>
+                            <div class="col-lg-4 mt-2">
+                                <input type="text" name="end_date" required class="form-control format-picker" placeholder="Roster Date To" id="end_date"/>
+                            </div>
 
-@section('admincontent')
-
-<div class="col-lg-12 col-md-12">
-    <div class="card p-0">
-        <div class="container">
-            <div class="card-header text-primary border-top-0 border-left-0 border-right-0">
-                <h3 class="card-title text-primary d-inline">
-                    Select Venue Dates
-                </h3>
-                <span class="float-right">
-                    <i class="fa fa-chevron-up clickable"></i>
-                </span>
-            </div>
-            <div class="card-body">
-
-                <form id="searchForm">
-                    @csrf
-                    <div class="row row-xs">
-                        <div class="col-lg-4 mt-1">
-                            <input type="text" name="start_date" required class="form-control format-picker" placeholder="Roster Date From" id="start_date">
+                            <div class="col-lg-4 mt-2">
+                                <select class="form-control select2" name="employee_id" id="employee_id">
+                                    <option value="">Select Employee</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->id }}">
+                                            {{ $employee->fname }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-lg-3 mt-2">
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn btn-primary" id="btn_search" onclick="searchNow()">Search</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-4 mt-1">
-                            <input type="text" name="end_date" required class="form-control format-picker" placeholder="Roster Date To" id="end_date"/>
-                        </div>
-
-                        <div class="col-lg-4 mt-1">
-                            <select class="form-control select2" name="employee_id" id="employee_id">
-                                <option value="">Select Employee</option>
-                                @foreach ($employees as $employee)
-                                    <option value="{{ $employee->id }}">
-                                        {{ $employee->fname }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2 col-lg-3 mt-1">
-                            <button type="button" class="btn btn btn-outline-primary btn-block" id="btn_search" onclick="searchNow()"><i data-feather="search"></i></button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-
-
-
-        <div class="row" id="table-hover-animation">
-            <div class="col-12">
-                <div class="card">
-                    <div class="container">
-                        <div class="card plan-card p-2" id="hasData">
-                    <div class="row">
-                        <!-- <button class="btn btn-outline-primary text-center border-primary mr-25" id="showAddModal"><i data-feather="plus" class="avatar-icon font-medium-3"></i></button> -->
-                        <button class="btn btn-gradient-primary text-center border-primary taskBtn" onclick="invoiceSend()" disabled><i data-feather="send" class="avatar-icon font-medium-3"></i></button>
-
-                    </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <button class="btn btn-info text-center border-primary taskBtn" onclick="invoiceSend()" disabled>Send Invoice</button>
                 </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="table-hover-animation">
                         <div class="table-responsive">
                             <table id="myTable" class="table table-bordered table-striped text-center text-capitalize">
                                 <thead>
@@ -87,108 +81,173 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 
-</div>
+@endsection
 
-
-<script type="text/javascript">
-</script>
-@push('scripts')
-<script>
-    let task_ids = []
-    let totalTaskId = []
-    let event_id = null
-
-    $(document).on("click", ".taskCheckID", function() {
-        if ($(this).is(':checked')) {
-            task_ids.push($(this).val())
-        } else {
-            let id = $(this).val()
-            task_ids = jQuery.grep(task_ids, function(value) {
-                return value != id
-            })
+@push('styles')
+    <style>
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-left: 10px;
         }
-
-        if (task_ids.length === 0) {
-            $(".taskBtn").prop('disabled', true)
-        } else {
-            $(".taskBtn").prop('disabled', false)
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-right: 20px;
         }
-
-        if (task_ids.length == totalTaskId.length) {
-            $('#taskcheckAllID').prop('checked', true)
-        } else {
-            $('#taskcheckAllID').prop('checked', false)
+        .dataTables_wrapper .dt-buttons{
+            margin-right: 20px;
         }
-    })
-    taskcheckAllID = function() {
-        if ($("#taskcheckAllID").is(':checked')) {
-            task_ids = totalTaskId
-            $('.taskCheckID').prop('checked', true)
-        } else {
-            task_ids = []
-            $('.taskCheckID').prop('checked', false)
-        }
-
-        if (task_ids.length === 0) {
-            $(".taskBtn").prop('disabled', true)
-        } else {
-            $(".taskBtn").prop('disabled', false)
-        }
-
-    }
-    function searchNow() {
-        $.ajax({
-            url: '/admin/home/payment/list/search',
-            type: 'POST',
-            dataType: 'json',
-            data: $('#searchForm').serialize(),
-            success: function(data) {
-                totalTaskId= data.totalTaskId
-                $('#myTable').DataTable().clear().destroy();
-                $('#tBody').html(data.data);
-                feather.replace();
-                // $("#myTable").dataTable();
-                $('#myTable').DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'copyHtml5',
-                        'excelHtml5',
-                        'csvHtml5',
-                        'pdfHtml5'
-                    ],
-                    // "bDestroy": true
-                });
-            },
-            error:function(err){
-                console.log(err)
-            }
-        });
-    }
-    searchNow()
-
-    function invoiceSend(timekeepers){
-        $.ajax({
-            url: '/admin/home/payment/invoice/send',
-            type: 'POST',
-            data: JSON.stringify({ ids: task_ids, _token: "{{ csrf_token() }}", }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(data) {
-                // searchNow()
-                toastr['success']('👋 Send Successfully', 'Success!', {
-                    closeButton: true,
-                    tapToDismiss: false,
-                });
-            }
-    })
-    }
-</script>
+    </style>
 @endpush
 
-@endsection
+@push('scripts')
+
+    @include('components.datatablescript')
+    <script>
+        let task_ids = []
+        let totalTaskId = []
+        let event_id = null
+
+        const dataTableTitle = 'Payment List Report';
+        const dataTableOptions = {
+            "drawCallback": function(settings) {
+                feather.replace({
+                    width: 14,
+                    height: 14
+                });
+            },
+            dom: 'Blfrtip',
+            lengthMenu: [30, 50,
+                100, 200
+            ],
+            buttons: [
+                {
+                    extend: 'colvis',
+                    fade: 0,
+                },
+                {
+                    extend: 'copy',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle,
+                    className: 'buttons-csv buttons-html5'
+                },
+                {
+                    extend: 'csv',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle
+                },
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    title: dataTableTitle
+                },
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible',
+                    },
+                    title: dataTableTitle
+                }
+            ],
+            initComplete: function() {
+                let table = this.api();
+
+                let search = `<div class="search-box">
+                                <input type="text" class="form-control form-control-sm search" placeholder="Search for Custom Report...">
+                                <i class="ri-search-line search-icon"></i>
+                            </div>`;
+                $('#myTable_filter').html(search);
+                $('.search').on('keyup', function(){
+                    table.search( this.value ).draw();
+                });
+                $('select[name="myTable_length"]').addClass('form-control select2');
+            },
+        }
+        $(document).on("click", ".taskCheckID", function() {
+            if ($(this).is(':checked')) {
+                task_ids.push($(this).val())
+            } else {
+                let id = $(this).val()
+                task_ids = jQuery.grep(task_ids, function(value) {
+                    return value != id
+                })
+            }
+
+            if (task_ids.length === 0) {
+                $(".taskBtn").prop('disabled', true)
+            } else {
+                $(".taskBtn").prop('disabled', false)
+            }
+
+            if (task_ids.length == totalTaskId.length) {
+                $('#taskcheckAllID').prop('checked', true)
+            } else {
+                $('#taskcheckAllID').prop('checked', false)
+            }
+        })
+        taskcheckAllID = function() {
+            if ($("#taskcheckAllID").is(':checked')) {
+                task_ids = totalTaskId
+                $('.taskCheckID').prop('checked', true)
+            } else {
+                task_ids = []
+                $('.taskCheckID').prop('checked', false)
+            }
+
+            if (task_ids.length === 0) {
+                $(".taskBtn").prop('disabled', true)
+            } else {
+                $(".taskBtn").prop('disabled', false)
+            }
+
+        }
+        function searchNow() {
+            $.ajax({
+                url: '/admin/home/payment/list/search',
+                type: 'POST',
+                dataType: 'json',
+                data: $('#searchForm').serialize(),
+                success: function(data) {
+                    totalTaskId= data.totalTaskId
+                    $('#myTable').DataTable().clear().destroy();
+                    $('#tBody').html(data.data);
+                    feather.replace();
+                    // $("#myTable").dataTable();
+                    $('#myTable').DataTable(dataTableOptions);
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            });
+        }
+        searchNow()
+
+        function invoiceSend(timekeepers){
+            $.ajax({
+                url: '/admin/home/payment/invoice/send',
+                type: 'POST',
+                data: JSON.stringify({ ids: task_ids, _token: "{{ csrf_token() }}", }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    // searchNow()
+                    toastr['success']('👋 Send Successfully', 'Success!', {
+                        closeButton: true,
+                        tapToDismiss: false,
+                    });
+                }
+        })
+        }
+    </script>
+@endpush
+

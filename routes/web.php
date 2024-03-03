@@ -113,7 +113,7 @@ Route::get('clear-cache', function () {
     Artisan::call('view:clear');
 
     // return Artisan::call('queue:restart');
-    
+
     echo 'all cache cleared';
 });
 
@@ -245,20 +245,20 @@ Route::group(['middleware' => ['company_status']], function () {
 
         // Upcoming event routes user
         Route::get('user/home/upcomingevent', [UpcomingeventController::class, 'userIndex']);
-        //user singin page 
+        //user singin page
         Route::get('home/sign/in', [SignInController::class, 'index']);
 
         //user calender
         Route::get('home/calender', [UserCalendarController::class, 'calender']);
 
-        //user all unconfirmed shift page 
+        //user all unconfirmed shift page
         Route::get('home/unconfirmed/shift', [UnconfirmedShiftController::class, 'index']);
         Route::get('home/unconfirmed/multiple/shift/{action}/{id}', [UnconfirmedShiftController::class, 'multiple']);
 
-        //user all upcoming shift page 
+        //user all upcoming shift page
         Route::get('home/upcoming/shift', [UpcomingShiftController::class, 'index']);
 
-        //user all past shift page 
+        //user all past shift page
         Route::get('home/past/shift', [PastShiftController::class, 'index']);
 
         #payment report routes
@@ -287,7 +287,7 @@ Route::group(['middleware' => ['company_status']], function () {
         Route::post('myavailability', [MyavailabilityController::class, 'store'])->name('myAvailability.store');
         Route::post('myavailability/edit', [MyavailabilityController::class, 'update'])->name('myAvailability.update');
         Route::get('myavailability/delete/{id}', [MyavailabilityController::class, 'destroy']);
-        
+
         #my leave
         Route::post('leave', [LeaveController::class, 'store'])->name('leave.store');
         Route::post('leave/edit', [LeaveController::class, 'update'])->name('leave.update');
@@ -295,7 +295,7 @@ Route::group(['middleware' => ['company_status']], function () {
 
         // Upcoming event routes user
         Route::post('user/home/event/store', [UpcomingeventController::class, 'eventStore'])->name('store-event');
-        //user singin page 
+        //user singin page
         Route::post('home/sign/in/timekeeper', [SignInController::class, 'signIn'])->name('sign-in-timekeeper');
         Route::post('home/sign/out/timekeeper', [SignInController::class, 'signOut'])->name('sign-out-timekeeper');
         Route::post('home/user/store/timekeeper', [SignInController::class, 'storeTimekeeper'])->name('user-store-timekeeper');
@@ -304,10 +304,10 @@ Route::group(['middleware' => ['company_status']], function () {
         Route::get('user/dataget', [UserCalendarController::class, 'dataget']);
         // Route::get('user/get_project/{user_id}/{id}',[CalenderDemoController::class,'get_project'])->middleware('is_admin');
 
-        //user all upcoming shift page 
+        //user all upcoming shift page
         Route::post('home/upcoming/shift/search', [UpcomingShiftController::class, 'search'])->name('upcoming-shift-search');
 
-        //user all past shift page 
+        //user all past shift page
         Route::post('home/past/shift/search', [PastShiftController::class, 'search'])->name('past-shift-search');
 
         //report
@@ -336,12 +336,12 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::post('home/messages/destroy', [MessagesController::class, 'destroy'])->middleware('auth');
     Route::post('home/messages/update-reply', [MessagesController::class, 'updateReply'])->middleware('auth');
     Route::post('home/messages/destroy-reply', [MessagesController::class, 'destroyReply'])->middleware('auth');
-    
+
     Route::get('admin/home/payment/list/{id}/{company}', [PaymentListcontroller::class, 'download']);
 
     #switch company
     Route::get('admin/home/switch/company', [HomeController::class, 'switch_company'])->middleware('is_admin');
-    #kiosk 
+    #kiosk
     Route::get('admin/kisok', [KioskController::class, 'index'])->middleware('is_admin');
     Route::get('admin/kisok/employees', [KioskController::class, 'search_employees']);
     Route::post('admin/kisok/check/pin', [KioskController::class, 'check_pin'])->middleware('is_admin');
@@ -363,10 +363,10 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::get('admin/home/date/wise/report', [PDFGeneratorController::class, 'date_wise'])->middleware('is_admin');
     Route::get('admin/home/all/report', [PDFGeneratorController::class, 'all_report'])->middleware('is_admin');
     Route::post('admin/home/all/report/search', [PDFGeneratorController::class, 'search_report'])->middleware('is_admin');
-    
+
     Route::post('admin/home/all/report/search/email', [PDFEmailController::class, 'emailpdf']);//->middleware('is_admin'); //dcw add route to generate pdf and send email
-    
-    
+
+
     //payment list
     Route::post('admin/home/payment/invoice/send', [PaymentListcontroller::class, 'invoice_send'])->middleware('is_admin');
     Route::get('admin/home/payment/list', [PaymentListcontroller::class, 'index'])->middleware('is_admin');
@@ -397,7 +397,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::post('admin/home/new/timekeeper/store', [NewTimeKeeperController::class, 'storeTimeKeeper'])->name('store-new-timekeeper')->middleware('is_admin');
     Route::post('admin/home/new/timekeeper/update', [NewTimeKeeperController::class, 'update'])->name('update-new-timekeeper')->middleware('is_admin');
     Route::get('admin/home/new/timekeeper/delete/{id}', [NewTimeKeeperController::class, 'delete'])->middleware('is_admin');
-    
+
     //admin sign-in status
     Route::get('admin/home/sign/in/status', [SignInStatusController::class, 'index'])->middleware('is_admin');
     Route::get('admin/home/sign/in/status/search', [SignInStatusController::class, 'search'])->middleware('is_admin');
@@ -420,7 +420,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::get('admin/home/event-report/delete/{id}', [EventReportController::class, 'delete'])->middleware('is_admin');
     Route::get('admin/home/event-report/publish/{id}', [EventReportController::class, 'publish_shift'])->middleware('is_admin');
     Route::get('open-event/{id}', [EventReportController::class, 'openEvent'])->middleware('is_admin');
- 
+
     #admin roster sign in status
     Route::get('admin/home/schedule/status', [ScheduleStatusController::class, 'index'])->middleware('is_admin');
     Route::get('admin/home/schedule/status/search', [ScheduleStatusController::class, 'search'])->middleware('is_admin');
@@ -481,7 +481,7 @@ Route::group(['middleware' => ['company_status']], function () {
     Route::post('admin/home/contractor/store', [ContractorController::class, 'store'])->name('store-contractor')->middleware('is_admin');
     Route::post('admin/home/contractor/update', [ContractorController::class, 'update'])->name('update-contractor')->middleware('is_admin');
     Route::get('admin/home/contractor/delete/{id}', [ContractorController::class, 'delete'])->middleware('is_admin');
-    
+
     //admin add project
     Route::get('admin/home/fetch/project', [ProjectController::class, 'fetch'])->middleware('is_admin');
     Route::get('admin/home/project/{id}', [ProjectController::class, 'index'])->middleware('is_admin');

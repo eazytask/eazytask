@@ -122,29 +122,18 @@
                                                             <div class="col-md-6 col-6">
                                                                 <label for="email-id-column">Select Role *</label>
                                                                 <div class="mb-3 select2-error-handle">
-                                                                    <select class="form-select select2"
-                                                                        name="role" id="role"
-                                                                        aria-label="Default select example" required>
-                                                                        <option value="" disabled selected
-                                                                            hidden>Please Choose...
-                                                                        </option>
-                                                                        <option value="3" selected>Employee
-                                                                        </option>
-                                                                        @if (
-                                                                            !auth()->user()->company_roles->contains('role', 4) &&
-                                                                                !auth()->user()->company_roles->contains('role', 5) &&
-                                                                                !auth()->user()->company_roles->contains('role', 6) &&
-                                                                                !auth()->user()->company_roles->contains('role', 7))
-                                                                            <option value="4">Supervisor
-                                                                            </option>
-                                                                            {{-- <option value="2">Admin
-                                                                            </option> --}}
-                                                                            <option value="5">Operation
-                                                                            </option>
-                                                                            <option value="6">Manager
-                                                                            </option>
-                                                                            <option value="7">Account
-                                                                            </option>
+                                                                    <select class="form-select select2" name="role" id="role" aria-label="Default select example" required>
+                                                                        <option value="" disabled selected hidden>Please Choose...</option>
+                                                                        <option value="3" selected>Employee</option>
+                                                                        @if (!auth()->user()->company_roles->contains('role', 4) &&
+                                                                            !auth()->user()->company_roles->contains('role', 5) &&
+                                                                            !auth()->user()->company_roles->contains('role', 6) &&
+                                                                            !auth()->user()->company_roles->contains('role', 7))
+                                                                            <option value="4">Supervisor</option>
+                                                                            {{-- <option value="2">Admin</option> --}}
+                                                                            <option value="5">Operation</option>
+                                                                            <option value="6">Manager</option>
+                                                                            <option value="7">Account</option>
                                                                         @endif
                                                                     </select>
                                                                 </div>
@@ -153,10 +142,8 @@
                                                             <div class="col-md-6 col-6">
                                                                 <label for="email-id-column">Select Status *</label>
                                                                 <div class="mb-3 select2-error-handle">
-                                                                    <select class="form-control select2"
-                                                                        name="status" id="status" required>
-                                                                        <option value="" disabled selected
-                                                                            hidden>Please Choose...
+                                                                    <select class="form-control select2" name="status" id="status" required>
+                                                                        <option value="" disabled selected hidden>Please Choose...
                                                                         </option>
                                                                         <option value="1" selected>Active</option>
                                                                         <option value="2">Inactive</option>
@@ -174,27 +161,19 @@
                                                             <div class="col-md-6 col-12">
                                                                 <div class="mb-3">
                                                                     <label for="email-id-column">Street*</label>
-                                                                    <input type="text" id="address"
-                                                                        class="form-control" name="address"
-                                                                        placeholder="Address" required />
+                                                                    <input type="text" id="address" class="form-control" name="address" placeholder="Address" required />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-12">
                                                                 <div class="mb-3">
                                                                     <label for="email-id-column">Suburb*</label>
-                                                                    <input type="text" id="suburb"
-                                                                        class="form-control" name="suburb"
-                                                                        placeholder="Address" required />
+                                                                    <input type="text" id="suburb" class="form-control" name="suburb" placeholder="Address" required />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">
                                                                 <div class="mb-3">
                                                                     <label for="email-id-column">Post Code*</label>
-                                                                    <input type="number" id="postal_code"
-                                                                        minlength="4" maxlength="4"
-                                                                        class="form-control" name="postal_code"
-                                                                        value="3381" placeholder="Postal Code"
-                                                                        required />
+                                                                    <input type="number" id="postal_code" minlength="4" maxlength="4" class="form-control" name="postal_code" value="3381" placeholder="Postal Code" required />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-6">

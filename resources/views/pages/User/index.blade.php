@@ -92,26 +92,27 @@
                     <ul class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link fs-14 active" data-bs-toggle="tab" href="#overview-tab" role="tab">
-                                <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span
-                                    class="d-none d-md-inline-block">Overview</span>
+                                <i class="ri-airplay-fill d-inline-block d-md-none"></i>
+                                <span class="d-none d-md-inline-block">Overview</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link fs-14" data-bs-toggle="tab" href="#compliances" role="tab">
-                                <i class="ri-list-unordered d-inline-block d-md-none"></i> <span
-                                    class="d-none d-md-inline-block">Compliances</span>
+                                <i class="ri-list-unordered d-inline-block d-md-none"></i>
+                                <span class="d-none d-md-inline-block">Compliances</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link fs-14" data-bs-toggle="tab" href="#projects" role="tab">
-                                <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span
-                                    class="d-none d-md-inline-block">Projects</span>
+                                <i class="ri-price-tag-line d-inline-block d-md-none"></i>
+                                <span class="d-none d-md-inline-block">Activities</span>
                             </a>
                         </li>
                     </ul>
                     <div class="flex-shrink-0">
-                        <a href="/admin/company/profile-settings/{{ Auth::user()->id }}" class="btn btn-success"><i
-                                class="ri-edit-box-line align-bottom"></i> Edit Profile</a>
+                        <a href="/admin/company/profile-settings/{{ Auth::user()->id }}" class="btn btn-success">
+                            <i class="ri-edit-box-line align-bottom"></i> Edit Profile
+                        </a>
                     </div>
                 </div>
                 <!-- Tab panes -->
@@ -146,8 +147,8 @@
                                     </div><!-- end card body -->
                                 </div><!-- end card -->
 
-                                
-                                {{-- 
+
+                                {{--
                                 Start Schedule Section
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 col-sm-6">
@@ -160,7 +161,7 @@
                                                 <form action="" id="mainForm" method="post">
                                                     @csrf
                                                     <div class="row">
-                            
+
                                                         <input type="text" name="lat" class="lat" hidden>
                                                         <input type="text" name="lon" class="lon" hidden>
                                                         <input type="text" name="timekeeper_id" id="timekeeperID" hidden>
@@ -171,8 +172,8 @@
                                                                         $not_ready_sign_in = false;
                                                                     @endphp
                                                                 @endif
-                            
-                            
+
+
                                                                 <input type="datetime" id="shift_start{{ $k }}"
                                                                     value="{{ $roster->shift_start }}" hidden>
                                                                 <input type="datetime" id="shift_end{{ $k }}"
@@ -181,7 +182,7 @@
                                                                     hidden>
                                                                 <input type="datetime" id="sing_out{{ $k }}"
                                                                     value="{{ $roster->sing_out }}" hidden>
-                            
+
                                                                 <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
                                                                     <div class="card plan-card border-primary text-center">
                                                                         <div class="justify-content-between align-items-center p-75">
@@ -189,19 +190,19 @@
                                                                                 {{ $roster->sing_in == null ? '' : 'hidden' }}></p>
                                                                             <h3 id="working{{ $k }}" class="mb-0"
                                                                                 {{ $roster->sing_in == null ? 'hidden' : '' }}></h3>
-                            
+
                                                                             <p id="shift-end-in{{ $k }}" class="mb-1"
                                                                                 {{ $roster->sing_in == null ? 'hidden' : '' }}></p>
-                            
-                            
+
+
                                                                             <div class="badge badge-light-primary text-uppercase">
                                                                                 <h6>{{ $roster->project->pName }}</h6>
                                                                             </div>
                                                                             <p class="mb-1">Shift time, {{ getTime($roster->shift_start) }} -
                                                                                 {{ getTime($roster->shift_end) }} </p>
-                            
+
                                                                             <div class="d-none">
-                            
+
                                                                                 <select class="form-control" name="project_id" id="project-select"
                                                                                     hidden>
                                                                                     <option selected>{{ $roster->project->pName }}</option>
@@ -214,7 +215,7 @@
                                                                                 {{ $roster->sing_out == null && $roster->shift_start <= \Carbon\Carbon::now()->addMinutes(15) ? '' : 'disabled' }}>
                                                                                 {{ $roster->sing_in == null ? 'Start Shift' : 'Sign Out' }}
                                                                             </button>
-                            
+
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -223,47 +224,47 @@
                                                             <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
                                                                 <div class="card plan-card border-primary text-center">
                                                                     <div class="justify-content-between align-items-center pt-75">
-                            
+
                                                                         <div class="card-body">
                                                                             <p class="text-black-50">You have no scheduled shift at this time</p>
                                                                             <button type="button"
                                                                                 class="btn btn-gradient-primary text-center btn-block setForm"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#userAddTimeKeeper">Unscheduled</button>
-                            
+
                                                                         </div>
-                            
+
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         @endif
-                            
+
                                                         @if ($not_ready_sign_in)
                                                             <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
                                                                 <div class="card plan-card border-primary text-center">
                                                                     <div class="justify-content-between align-items-center pt-75">
-                            
+
                                                                         <div class="card-body">
                                                                             <p class="mb-0 text-muted">You have no scheduled shift at this time</p>
                                                                             <button type="button"
                                                                                 class="btn btn-gradient-primary text-center btn-block"
                                                                                 data-bs-toggle="modal" data-bs-target="#userAddTimeKeeper">Start unscheduled
                                                                                 shift</button>
-                            
+
                                                                         </div>
-                            
+
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         @endif
                                                         @php
-                            
+
                                                             $form_action = $already_sign_in == false ? '/home/sign/in/timekeeper' : '/home/sign/out/timekeeper';
-                            
+
                                                             if ($not_ready_sign_in) {
                                                                 $form_action = '/home/user/store/timekeeper';
                                                             }
-                            
+
                                                         @endphp
                                                     </div>
                                                 </form>
@@ -307,7 +308,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="flex-shrink-0 ms-2">
-        
+
                                                             <form action="{{ route('store-event') }}" method="POST">
                                                                 @csrf
                                                                 <input type="hidden" name="event_id"
@@ -526,7 +527,7 @@
                             </div>
                             <!--end col-->
                             <div class="col-xxl-9">
-                                
+
 
                                 <div class="row">
                                     <div class="col-md-12">
@@ -536,7 +537,7 @@
                                                 <div class="container p-0 mb-2">
                                                     <div class=" pt-0 pb-0">
                                                         <!-- <div id="editor"> -->
-        
+
                                                         <button type="button" class="btn bg-light-primary pt-50 pb-50 mt-25"
                                                             id="prev"><i data-feather='arrow-left'></i></button>
                                                         <button type="button" class="btn bg-light-primary pt-50 pb-50 mt-25"
@@ -545,7 +546,7 @@
                                                         <button type="button"
                                                             class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" id="next"><i
                                                                 data-feather='arrow-right'></i></button>
-        
+
                                                         <button class="btn p-0 pt-50 pb-50 mr-50 mt-25">
                                                             <select id="project" class="form-control"
                                                                 style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
@@ -557,7 +558,7 @@
                                                         <!-- </div> -->
                                                     </div>
                                                 </div>
-                
+
                                                 <div id="table-hover-animation">
                                                     <div class="table-responsive">
                                                         <table id="myTable"
@@ -586,17 +587,17 @@
                                                                     <td></td>
                                                                 </tr>
                                                             </tbody>
-    
+
                                                         </table>
                                                     </div>
                                                 </div>
                                             </div>
-                            
+
                                         </div>
                                     </div><!-- end col -->
                                     <div class="col-md-12">
                                         <div class="card card-company-table">
-                            
+
                                             <div class="card-body px-0 pb-0">
                                                 <div>
                                                     <h5 class="card-title mb-3 ms-3">Calendar</h5>
@@ -611,7 +612,7 @@
                                                                 <option value="">Select</option>
                                                             </select>
                                                         </div>
-                                                        
+
                                                         <!-- Calendar -->
                                                         <div class="col position-relative">
                                                             <div class="card shadow-none border-0 mb-0 rounded-0">
@@ -636,7 +637,7 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                         </div>
-                        
+
                                                         <div class="modal-body flex-grow-1 pb-sm-0 pb-3">
                                                             <section id="multiple-column-form">
                                                                 <div class="row">
@@ -656,7 +657,7 @@
                                                                                                 {{ $project->pName }}
                                                                                             </option>
                                                                                         @endforeach
-                        
+
                                                                                     </select>
                                                                                 </div>
                                                                             </div>
@@ -668,15 +669,15 @@
                                                                                         placeholder="Roster Date" />
                                                                                 </div>
                                                                             </div>
-                        
+
                                                                             <div class="col-md-12 col-12">
                                                                                 <label for="email-id-column">Shift Start</label>
                                                                                 <div class="mb-3">
-                        
+
                                                                                     <input type="text" disabled id="shift_start"
                                                                                         name="shift_start" class="form-control pickatime-format"
                                                                                         placeholder="Shift Start Time" />
-                        
+
                                                                                     <span id="shift_start_error"
                                                                                         class="text-danger text-small"></span>
                                                                                 </div>
@@ -684,14 +685,14 @@
                                                                             <div class="col-md-12 col-12">
                                                                                 <label for="email-id-column">Shift Ends Date & Time</label>
                                                                                 <div class="mb-3">
-                        
+
                                                                                     <input type="text" disabled id="shift_end"
                                                                                         name="shift_end" class="form-control pickatime-format"
                                                                                         placeholder="Shift End Time" />
                                                                                     <span id="shift_end_error" class="text-danger"></span>
                                                                                 </div>
                                                                             </div>
-                        
+
                                                                             <div class="col-md-12 col-12">
                                                                                 <label for="email-id-column">Duration</label>
                                                                                 <div class="mb-3">
@@ -700,7 +701,7 @@
                                                                                         id="days" disabled />
                                                                                 </div>
                                                                             </div>
-                        
+
                                                                             <div class="col-md-12 col-12">
                                                                                 <label for="email-id-column">Amount Per Hour</label>
                                                                                 <div class="mb-3">
@@ -729,7 +730,7 @@
                                                                                                 {{ $job_type->name }}
                                                                                             </option>
                                                                                         @endforeach
-                        
+
                                                                                     </select>
                                                                                 </div>
                                                                             </div>
@@ -797,7 +798,7 @@
                                                         </form>
                                                     </div>
                                                 </div>
-            
+
                                                 <div id="myModal" class="modal fade">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content post-modal">
@@ -810,7 +811,7 @@
                                                                     <h2 id="modalTitle"></h2>
                                                                     <p id="modalDescription"></p>
                                                                 </div>
-                    
+
                                                                 <div class="horizontal-line"></div>
                                                                 <br>
                                                                 <h5>Comments:</h5>
@@ -823,19 +824,19 @@
                                                                         <input type="hidden" name="message_id" id="reply_message_id">
                                                                         <textarea name="text" id="replyContent" class="form-control" rows="3" required></textarea><br><br>
                                                                         <input type="submit" class="btn btn-primary" value="Submit Reply">
-                    
+
                                                                         <button type="button" style="float: right;" id="confirmationButton"
                                                                             class="btn btn-info">
                                                                             <i data-feather="check-circle"></i> Confirm
                                                                         </button>
                                                                     </form>
-                    
+
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                             </div>
                                         </div>
                                         <div class="card p-0">
@@ -844,13 +845,13 @@
                                                 <h3 class="card-title mb-3">
                                                     Messages
                                                 </h3>
-    
+
                                                 <div class="card-body pt-0 pb-0">
                                                     <div class="row row-xs">
-    
+
                                                     </div>
                                                 </div>
-    
+
                                                 <div id="postList" class="border-0 p-0 mb-2">
                                                     <!-- This is where the posts will be dynamically added -->
                                                 </div>
@@ -859,7 +860,7 @@
                                                     <!-- Updated pagination links with IDs -->
                                                     <!-- ... Your existing pagination links ... -->
                                                 </div>
-                                  
+
                                                 <div class=" text-end">
                                                     <a href="/home/messages">More...</a>
                                                 </div>
@@ -901,7 +902,7 @@
                                                                     <p class="text-muted text-truncate mb-0">
                                                                         Induction Date : <span class="fw-semibold text-body">{{$induction->induction_date}}</span>
                                                                     </p>
-                                                                    
+
                                                                 </div>
                                                             </div>
                                                             <div class="d-flex mt-4">
@@ -971,7 +972,7 @@
                                             <p class="mb-2 text-muted"><i class="ri-discuss-line ms-2"></i> {{$compliance->comment}}</p>
                                             @endif
                                             <p class="mb-2 text-muted"><i class="ri-hashtag ms-2"></i> {{$compliance->certificate_no}}</p>
-                                            
+
                                             <p class="mb-2 text-muted ms-2">Expired At: {{$compliance->expire_date}}</p>
                                             @if($compliance->document)
                                             <div class="row">
@@ -1775,7 +1776,7 @@
         .avatar-lg img{
             aspect-ratio: 1/1;
         }
-        
+
         /* Other styles */
         #postList {
             height: auto;
@@ -1949,7 +1950,7 @@
     @include('components.datatablescript')
     @include('components.select2')
 
-    
+
     <script src="{{asset('app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js')}}"></script>
     <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
     <script src="{{asset('app-assets/vendors/js/calendar/fullcalendar.min.js')}}"></script>
@@ -2227,7 +2228,7 @@
                     keyboard: false
                 });
                 myModal.show();
-                
+
 
 
                 if (need_confirm == 'Y') {
@@ -2377,8 +2378,8 @@
                     handlePageClick(page);
                 });
             }
-            
-        
+
+
     </script>
     <script>
         $(document).ready(function() {
@@ -2702,7 +2703,7 @@
                 document.getElementById("shift-end-in" + i).innerHTML = "Shift ending in " + shift_end_in_indexes[
                         "hours" + i] + " hours, " +
                     shift_end_in_indexes["minutes" + i] + " minutes ";
-                // If the count down is over, write some text 
+                // If the count down is over, write some text
                 if (shift_end_in_indexes["distance" + i] < 0) {
                     clearInterval(shift_end_in_indexes["x" + i]);
                     document.getElementById("shift-end-in" + i).innerHTML = "end";

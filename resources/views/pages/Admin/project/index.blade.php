@@ -43,7 +43,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="projectBody">
-    
+
                                 </tbody>
                             </table>
                             <div class="noresult" style="display: none">
@@ -153,7 +153,7 @@
             ],
             initComplete: function() {
                 let table = this.api();
-            
+
                 let search = `<div class="search-box">
                                 <input type="text" class="form-control form-control-sm search" placeholder="Search for Venue/Site">
                                 <i class="ri-search-line search-icon"></i>
@@ -179,7 +179,7 @@
                         $('#projectBody').html(data.data)
                         if (data.data.length > 100) {
                             $('#example').DataTable(dataTableOptions);
-                            
+
                         }
                     }
 
@@ -210,7 +210,7 @@
                             $('#example').DataTable().clear().destroy();
                             $('#projectBody').html(data.data)
                             let table = $('#example').DataTable(dataTableOptions);
-                           
+
                         }
 
                         $("#addProject").modal("hide")
@@ -472,10 +472,10 @@
                     country: 'AU',
                 }
             };
-            autocompleteAddress = new google.maps.places.Autocomplete(document.getElementById(
-                    'search_address'),
-                AUTOCOMPLETE_OPTIONS);
-
+            let input = document.getElementById( 'search_address');
+            console.log(input)
+            autocompleteAddress = new google.maps.places.Autocomplete(input, AUTOCOMPLETE_OPTIONS);
+            console.log('google map',autocompleteAddress);
             autocompleteAddress.addListener('place_changed', function() {
                 fillInAddress(autocompleteAddress)
             });
@@ -561,8 +561,7 @@
         //     selected.val(name);
         // }
     </script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUiC49n0UCoKfiz4TrHQwK-BCsLzc_LY4&callback=myMap&libraries=places">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUiC49n0UCoKfiz4TrHQwK-BCsLzc_LY4&callback=myMap&libraries=places">
     </script>
 
 @endpush

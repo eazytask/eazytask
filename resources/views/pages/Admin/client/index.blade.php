@@ -39,6 +39,8 @@
                                     <th>Contact No</th>
                                     <th>Email</th>
                                     <th>No of Sites</th>
+                                    <th>Address</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -112,10 +114,14 @@
                     height: 14
                 });
             },
-            dom: 'Blfrtip', // Include 'l' for length menu
+            dom: 'Blfrtip',
             lengthMenu: [30, 50,
                 100, 200
-            ], // Set the options for the number of records to display
+            ],
+            columnDefs: [{
+                targets: [6, 7],
+                visible: false
+            }],
             buttons: [
                 {
                     extend: 'colvis',
@@ -153,7 +159,7 @@
             ],
             initComplete: function() {
                 let table = this.api();
-            
+
                 let search = `<div class="search-box">
                                 <input type="text" class="form-control form-control-sm search" placeholder="Search for client...">
                                 <i class="ri-search-line search-icon"></i>
@@ -317,7 +323,7 @@
     </script>
 
 
-    
+
 
     <style>
 

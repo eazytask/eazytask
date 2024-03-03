@@ -51,11 +51,12 @@ class EmployeeController extends Controller
         }else{
             $numbering = 1;
             foreach ($employees as $loop => $row) {
+                // dd($row);
                 if (!$row->image) {
                     $row->image = 'images/app/no-image.png';
                 }
                 $json = json_encode($row->toArray(), false);
-    
+
                 $role = '';
                 if ($row->role == 2) {
                     $role = "<span class='badge badge-pill badge-light-info mr-1'>Admin</span>";
@@ -70,14 +71,26 @@ class EmployeeController extends Controller
                 } elseif ($row->role == 7) {
                     $role = "<span class='badge badge-pill badge-light-info mr-1'>Account</span>";
                 }
-    
-    
+
+
                 if ($row->status == 1) {
                     $status = "<span class='badge badge-pill badge-light-success mr-1'>Active</span>";
                 } else {
                     $status = "<span class='badge badge-pill badge-light-danger mr-1'>Inactive</span>";
                 }
-    
+                $role = '';
+                if($row->role == 3){
+                    $role = 'Employee';
+                }elseif($row->role == 4){
+                    $role = 'Supervisor';
+                }elseif($row->role == 5){
+                    $role = 'Operation';
+                }elseif($row->role == 6){
+                    $role = 'Manager';
+                }elseif($row->role == 7){
+                    $role = 'Account';
+                }
+                $status = $row->status == 1 ? 'Active': 'Inactive';
                 $html .= "
                 <tr>
                                     <td>" . $numbering++ . "</td>
@@ -92,17 +105,22 @@ class EmployeeController extends Controller
                                     <td>$row->email
                                     </td>
                                     <td>$row->contact_number </td>
+                                    <td>$row->address, $row->suburb, $row->state, $row->postal_code</td>
+                                    <td>$row->date_of_birth </td>
+                                    <td>$role</td>
                                     <td>
                                         $row->license_no
                                         (".Carbon::parse($row->license_expire_date)->format('d-m-Y').")
                                     </td>
                                     <td>
-                                        ".Carbon::parse($row->first_aid_expire_date)->format('d-m-Y')."
+                                        $row->first_aid_license
+                                        (".Carbon::parse($row->first_aid_expire_date)->format('d-m-Y').")
                                     </td>
+                                    <td>$status</td>
                                     <td>
                                         <input type='hidden' name='id' value='$row->id'>
                                         <input type='hidden' name='user_id' value='$row->user_id'>
-    
+
                                         <div class='dropdown'>
                                             <button class='btn btn-soft-info btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
                                                 <i class='ri-more-2-fill'></i>
@@ -113,7 +131,7 @@ class EmployeeController extends Controller
                                             </ul>
                                         </div>
                                     </td>
-    
+
                                 </tr>
                 ";
             }
@@ -121,7 +139,7 @@ class EmployeeController extends Controller
         }
 
         // $admins = DB::table('users')->join('user_roles', 'users.id', '=', 'user_roles.user_id')->where('user_roles.company_code', Auth::user()->company_roles->first()->company->id)->whereIn('user_roles.role', [2,5,6,7])->get();
-        
+
         // foreach ($admins as $loop => $row) {
         //     if (!$row->image) {
         //         $row->image = 'images/app/no-image.png';
@@ -157,7 +175,7 @@ class EmployeeController extends Controller
         //                             </div>
         //                         </td>
         //                         <td>
-        //                              $row->name  $row->mname $row->lname 
+        //                              $row->name  $row->mname $row->lname
         //                         </td>
         //                         <td>$row->email
         //                         </td>
@@ -302,14 +320,14 @@ class EmployeeController extends Controller
         $employee->license_expire_date = set_date($request->license_expire_date);
         $employee->first_aid_license = $request->first_aid_license;
         $employee->first_aid_expire_date = set_date($request->first_aid_expire_date);
-        
+
         $employee->company = Auth::user()->company_roles->first()->company->id;
         $employee->role = 3;
         $employee->image = $filename;
         if ($filename) {
             $employee->image = $filename;
             $user = User::find($employee->userID);
-            
+
             try{
                 unlink($basePath.$user->image);
             }catch(\Throwable $e){}
@@ -319,16 +337,16 @@ class EmployeeController extends Controller
             DB::table('employees')->where('userID', $employee->userID)->update(array(
                 'image' => $filename,
             ));
-            
+
         }
-        
+
 
         if ($employee->save()) {
             $employees = Employee::where([
                 ['userID', $employee->userID],
                 ['role',$request->role]
             ])->get();
-    
+
             foreach ($employees as $row) {
                 $row->fname = $request->fname;
                 $row->mname = $request->mname;
@@ -345,10 +363,10 @@ class EmployeeController extends Controller
                 $row->license_expire_date = set_date($request->license_expire_date);
                 $row->first_aid_license = $request->first_aid_license;
                 $row->first_aid_expire_date = set_date($request->first_aid_expire_date);
-                
+
                 if ($filename) {
                     $employee->image = $filename;
-    
+
                     $user = User::find($employee->userID);
                     $user->image = $filename;
                     $user->save();
@@ -378,7 +396,7 @@ class EmployeeController extends Controller
 
                     $image = $compliance['document'];
                     $filename = null;
-            
+
                     if ($image) {
                         $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                         $folderPath = "images/compliance/";
@@ -400,20 +418,20 @@ class EmployeeController extends Controller
                         $user_compliance->comment = $compliance['comment'];
                         $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
                         $user_compliance->document = $filename;
-                        
+
                         $user_compliance->save();
                     } else {
                         $exist_comp->certificate_no = $compliance['certificate_no'];
                         $exist_comp->comment = $compliance['comment'];
                         $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
                         $user_compliance->document = $filename;
-                        
+
                         $exist_comp->save();
                     }
                 }
             }
         }
-        
+
         if($request->role == 2) {
             // WILL CREATE ADMIN
             $image = $request->file('file');
@@ -656,10 +674,10 @@ class EmployeeController extends Controller
                     'alertType' => 'warning'
                 ]);
             }
-    
+
             $image = $request->file;
             $filename = null;
-    
+
             $user = User::where('email', $request->email)->first();
             if (!$user) {
                 if ($request->password) {
@@ -674,7 +692,7 @@ class EmployeeController extends Controller
                 $email_data['lname'] = $request['lname'];
                 $email_data['password'] = $password;
                 $email_data['company']=Auth::user()->company->company;
-    
+
                 $user = new User;
                 $user->name = $request->fname;
                 $user->mname = $request->mname;
@@ -683,7 +701,7 @@ class EmployeeController extends Controller
                 $user->password = Hash::make($password);
                 $user->save();
                 $GLOBALS['data'] = $user;
-    
+
                 try {
                     $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
                 } catch (\Exception $e) {
@@ -724,7 +742,7 @@ class EmployeeController extends Controller
                 $employee->fname = $request->fname;
                 $employee->mname = $request->mname;
                 $employee->lname = $request->lname;
-    
+
             $employee->address = $request->address;
             $employee->suburb = $request->suburb;
             $employee->state = $request->state;
@@ -732,43 +750,43 @@ class EmployeeController extends Controller
             $employee->email = $request->email;
             $employee->contact_number = $request->contact_number;
             $employee->status = $request->status;
-    
+
             function set_date($date=null){
                 return $date? Carbon::parse($date)->toDateString():null;
             }
-    
+
             $employee->date_of_birth = set_date($request->date_of_birth);
             $employee->license_no = $request->license_no;
             $employee->license_expire_date = set_date($request->license_expire_date);
             $employee->first_aid_license = $request->first_aid_license;
             $employee->first_aid_expire_date = set_date($request->first_aid_expire_date);
-            
+
             $employee->company = Auth::user()->company_roles->first()->company->id;
             $employee->role = $request->role;
             $employee->image = $filename;
             if ($filename) {
                 $employee->image = $filename;
                 $user = User::find($employee->userID);
-                
+
                 try{
                     unlink($basePath.$user->image);
                 }catch(\Throwable $e){}
-    
+
                 $user->image = $filename;
                 $user->save();
                 DB::table('employees')->where('userID', $employee->userID)->update(array(
                     'image' => $filename,
                 ));
-                
+
             }
-            
-    
+
+
             if ($employee->save()) {
                 $employees = Employee::where([
                     ['userID', $employee->userID],
                     ['role',$request->role]
                 ])->get();
-        
+
                 foreach ($employees as $row) {
                     $row->fname = $request->fname;
                     $row->mname = $request->mname;
@@ -785,10 +803,10 @@ class EmployeeController extends Controller
                     $row->license_expire_date = set_date($request->license_expire_date);
                     $row->first_aid_license = $request->first_aid_license;
                     $row->first_aid_expire_date = set_date($request->first_aid_expire_date);
-                    
+
                     if ($filename) {
                         $employee->image = $filename;
-        
+
                         $user = User::find($employee->userID);
                         $user->image = $filename;
                         $user->save();
@@ -796,7 +814,7 @@ class EmployeeController extends Controller
                     }
                     $row->save();
                 }
-    
+
                 $user_role = new UserRole;
                 $user_role->company_code = Auth::user()->company_roles->first()->company->id;
                 $user_role->user_id = $employee->userID;
@@ -808,17 +826,17 @@ class EmployeeController extends Controller
                 }
                 $user_role->sub_domain = Auth::user()->company_roles->first()->company->sub_domain ? 1 : 0;
                 $user_role->save();
-    
+
                 if ($request->has_compliance == 'on' || $request->has_compliance == 1) {
                     foreach ($request->Compliance as $compliance) {
                         $exist_comp = UserCompliance::where([
                             ['user_id', $employee->userID],
                             ['compliance_id', $compliance['compliance']]
                         ])->first();
-    
+
                         $image = $compliance['document'];
                         $filename = null;
-                
+
                         if ($image) {
                             $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                             $folderPath = "images/compliance/";
@@ -830,7 +848,7 @@ class EmployeeController extends Controller
                             $filename = $folderPath . $img_name;
                             Image::make($image_base64)->save($basePath.$filename);
                         }
-    
+
                         if (!$exist_comp) {
                             $user_compliance = new UserCompliance;
                             $user_compliance->user_id = $employee->userID;
@@ -840,28 +858,28 @@ class EmployeeController extends Controller
                             $user_compliance->comment = $compliance['comment'];
                             $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
                             $user_compliance->document = $filename;
-                            
+
                             $user_compliance->save();
                         } else {
                             $exist_comp->certificate_no = $compliance['certificate_no'];
                             $exist_comp->comment = $compliance['comment'];
                             $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
                             $user_compliance->document = $filename;
-                            
+
                             $exist_comp->save();
                         }
                     }
                 }
             }
-            
+
             return response()->json([
                 'message' => 'Account Added Successfully Added.',
                 'alertType' => 'success'
             ]);
         }
         else{
-            
-            
+
+
             return response()->json([
                 'message' => 'Employee Added Successfully Added.',
                 'alertType' => 'success'
@@ -956,7 +974,7 @@ class EmployeeController extends Controller
                 $row->license_expire_date = set_date($request->license_expire_date);
                 $row->first_aid_license = $request->first_aid_license;
                 $row->first_aid_expire_date = set_date($request->first_aid_expire_date);
-                
+
                 if ($filename) {
                     $employee->image = $filename;
 
@@ -968,10 +986,10 @@ class EmployeeController extends Controller
                 $row->save();
             }
 
-            
 
 
-            
+
+
 
                 if ($request->password) {
                     User::findOrFail($employee->userID)->update([
@@ -1033,10 +1051,10 @@ class EmployeeController extends Controller
                             ['user_id', $employee->userID],
                             ['compliance_id', $compliance['compliance']]
                         ])->first();
-    
+
                         $image = $compliance['document'];
                         $filename = null;
-                
+
                         if ($image) {
                             $basePath = "/home/eazytask-api/htdocs/www.api.eazytask.au/public/";
                             // $basePath = "/Applications/MAMP/htdocs/eazytask/public/";
@@ -1049,7 +1067,7 @@ class EmployeeController extends Controller
                             $filename = $folderPath . $img_name;
                             Image::make($image_base64)->save($basePath.$filename);
                         }
-    
+
                         if (!$exist_comp) {
                             $user_compliance = new UserCompliance;
                             $user_compliance->user_id = $employee->userID;
@@ -1059,14 +1077,14 @@ class EmployeeController extends Controller
                             $user_compliance->comment = $compliance['comment'];
                             $user_compliance->expire_date = Carbon::parse($compliance['expire_date']);
                             $user_compliance->document = $filename;
-                            
+
                             $user_compliance->save();
                         } else {
                             $exist_comp->certificate_no = $compliance['certificate_no'];
                             $exist_comp->comment = $compliance['comment'];
                             $exist_comp->expire_date = Carbon::parse($compliance['expire_date']);
                             $user_compliance->document = $filename;
-                            
+
                             $exist_comp->save();
                         }
                     }

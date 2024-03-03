@@ -163,7 +163,7 @@ class EventReportController extends Controller
             'employees' => $employees
         ]);
     }
-    
+
     public function getProjects($client_id)
     {
         $projects = Project::where('clientName', $client_id)->orderBy('pName', 'asc')->get();
@@ -175,7 +175,7 @@ class EventReportController extends Controller
         Session::put('current_week', 0);
 
         $clients = Client::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('cName', 'asc')->get();
-        
+
         $projects = Project::whereHas('client', function ($query) {
             $query->where('status', 1);
         })->where([
@@ -187,7 +187,7 @@ class EventReportController extends Controller
         ->orderBy('id', 'ASC')
         ->groupBy('name')
         ->get();
-        
+
         $roaster_status = RoasterStatus::where('company_code', Auth::user()->company_roles->first()->company->id)->orderBy('name', 'asc')->get();
 
         return view('pages.Admin.event_report.index', compact('projects', 'job_types', 'roaster_status', 'clients'));
@@ -317,30 +317,30 @@ class EventReportController extends Controller
 
                     $unique_id = 'drag' . $event->id;
                     if (!$request->project) {
-                        $project_name = "<span class='font-small-2 font-weight-bolder'>" . $event->project->pName . "</span><br>";
+                        $project_name = "<span class='font-small-2 fw-bold'>" . $event->project->pName . "</span><br>";
                     } else {
                         $project_name = '';
                     }
 
                     $has_app = $event->status_text == 'complete' || $event->event_date < Carbon::now() ? true : false;
                     //mb-50 dan border-radius
-                    $val = "<div ".($has_app ? '' : "onclick='openEvent(".$event->id.");' ")."id='$unique_id' $colors draggable='" . ($has_app ? 'false' : 'true') . "' ondragstart='drag(event,$event->id)' class='font-weight-bolder text-uppercase shadow p-50 roster mt-50'>
-                    <div class='dropdown-items-wrapper'>
-                    
+                    $val = "<div ".($has_app ? '' : "onclick='openEvent(".$event->id.");' ")."id='$unique_id' $colors draggable='" . ($has_app ? 'false' : 'true') . "' ondragstart='drag(event,$event->id)' class='fw-bold text-uppercase shadow p-2 roster mt-2'>
+                    <div class='dropdown-items-wrapper float-end'>
+
                     <i data-feather='" . ($event->status_text == 'complete' || $event->event_date < Carbon::now() ? 'check-circle' : 'dollar-sign') . "' class='float-right' " . ($has_app ? '' : 'hidden') . "></i>
-                    
+
                 </div>
                 <div>$project_name" . "<span class='font-small-2 font-weight-bold'>(".$event->project->cName.")<br>" . Carbon::parse($event->shift_start)->format('H:i') . "-" . Carbon::parse($event->shift_end)->format('H:i') . " (".$duration.") <br>Rate $".$event->rate."</span><br>" .
-                // <span class='font-small-2' style='background-color: ".$event->roaster_status->color."; color: ".$event->roaster_status->text_color."; padding: 5px; display: inline-block; width: 100%;'>" . $event->roaster_status->name  
+                // <span class='font-small-2' style='background-color: ".$event->roaster_status->color."; color: ".$event->roaster_status->text_color."; padding: 5px; display: inline-block; width: 100%;'>" . $event->roaster_status->name
                 // "<span class='font-small-2'>" . $event->job_type->name . "</span>
-                
+
                 "<span class='font-small-1'>" . $event->no_employee_required . " required </span>
-                        
+
                  </div></div>
                  <br>
                  <span class='font-small-2' style='background-color: #82868b; color: #fff; padding: 5px; display: inline-block; width: 125px;'><b>" . ($event->status_text == 'complete' || $event->event_date < Carbon::now() ? 'Complete' : 'Incomplete') . "</b></span>";
-                 
-                    $val_r = "<div class='text-uppercase p-50 roster $colors><span class='font-small-2 font-weight-bolder'>" . Carbon::parse($event->shift_start)->format('H:i') . "-" . Carbon::parse($event->shift_end)->format('H:i') . "</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $event->job_type->name . "</span></div><br>";
+
+                    $val_r = "<div class='text-uppercase p-50 roster $colors><span class='font-small-2 fw-bold'>" . Carbon::parse($event->shift_start)->format('H:i') . "-" . Carbon::parse($event->shift_end)->format('H:i') . "</span><br>" . "<span class='font-small-2 font-weight-bold'>" . $event->job_type->name . "</span></div><br>";
 
                     if ($event_day == 'Mon') {
                         $mon_ .= $val;
@@ -401,7 +401,7 @@ class EventReportController extends Controller
 
                 // '<td class="text-center font-weight-bold ' . $bg . '">
                 // <div class="avatar-content">
-                    
+
                 // </div>
                 // '.$event->project->pName.' ('.$event->project->cName.')</td>' .
                 $output .= '<tr class="">' .
@@ -419,7 +419,7 @@ class EventReportController extends Controller
 
                 // '<td class="text-center font-weight-bold ' . $bg . '">
                 //     <div class="avatar-content">
-                        
+
                 //     </div>
                 // '.$event->project->pName.' ('.$event->project->cName.')</td>' .
                 $report .= '<tr class="">' .
@@ -755,7 +755,7 @@ class EventReportController extends Controller
         $result['events'][$i]['employees'] = $employees;
         $result['events'][$i]['start'] = $value->event_date;
         $result['events'][$i]['end'] = $value->event_date;
-        // $result['events'][$i]['start'] = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse(date('Y-m-d',strtotime($value->shift_start)),'UTC'));          
+        // $result['events'][$i]['start'] = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse(date('Y-m-d',strtotime($value->shift_start)),'UTC'));
         // $result['events'][$i]['end'] = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse(date('Y-m-d',strtotime($value->shift_end)),'UTC'));
 
         // $start = date_create($value->shift_start);

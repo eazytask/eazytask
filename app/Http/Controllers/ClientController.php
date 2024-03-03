@@ -39,15 +39,15 @@ class ClientController extends Controller
           $row->cimage = 'images/app/no-image.png';
         }
         $json = json_encode($row->toArray(), false);
-  
+
         if ($row->status == 1) {
           $status = "<span class='badge badge-pill badge-light-success mr-1'>Active</span>";
         } else {
           $status = "<span class='badge badge-pill badge-light-danger mr-1'>Inactive</span>";
         }
-  
+
         $no_of_sites = Project::where('clientName', $row->id)->count();
-  
+
         // <td>
         // <div class='avatar bg-light-primary'>
         //     <div class='avatar-content'>
@@ -57,7 +57,7 @@ class ClientController extends Controller
         // <td>$row->caddress</td>
         // <td>$row->cstate</td>
         // <td>$row->cpostal_code</td>
-  
+        $status = $row->status == 1 ? 'Active': 'Inactive';
         $html .= "
               <tr>
                   <td>". $loop + 1 ."</td>
@@ -66,6 +66,8 @@ class ClientController extends Controller
                   <td>$row->cnumber</td>
                   <td>$row->cemail</td>
                   <td>$no_of_sites</td>
+                  <td>$row->caddress, $row->suburb, $row->cstate, $row->cpostal_code</td>
+                  <td>$status</td>
                   <td>
                     <div class='dropdown'>
                       <button class='btn btn-soft-info btn-sm' type='button' data-bs-toggle='dropdown' aria-expanded='false'>

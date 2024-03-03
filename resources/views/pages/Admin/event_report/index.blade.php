@@ -1,82 +1,43 @@
 @extends('layouts.Admin.master')
-@section('admincontent')
-    <style>
-        .dt-buttons {
-            display: none !important;
-        }
 
-        #myTable {
-            /* width: 1000px !important; */
-        }
-
-        .font-small-2 {
-            font-size: 0.7rem !important;
-        }
-
-        .button-unstyled {
-            background: none;
-            color: inherit;
-            border: none;
-            padding: 0;
-            font: inherit;
-            cursor: pointer;
-            outline: inherit;
-        }
-    </style>
-
-    <div class="col-lg-12 col-md-12 p-0">
-        <div class="card p-0">
-            <div class="container p-0">
-                <div class="card-header text-primary border-top-0 border-left-0 border-right-0">
-                    <h3 class="card-title text-primary d-inline">
-                        Event Report
-                    </h3>
-                    <span class="float-right">
-                        <div class=" text-center">
-                            {{-- <button class="p-50 btn">
-                                <span class="bullet mr-50" style='background:#00cfe8 !important'></span>Unscheduled
-                            </button> --}}
-                            {{-- @foreach ($roaster_status as $row)
-                                <button class="p-50 btn">
-                                    <span class="bullet mr-50"
-                                        style='background: {{ $row->color }} !important'></span>{{ $row->name }}
-                                </button>
-                            @endforeach --}}
-                        </div>
-                    </span>
+@section('admin_page_content')
+    @component('components.breadcrumb')
+    @slot('li_1')
+        Report
+    @endslot
+    @slot('title')
+        Event Report
+    @endslot
+    @endcomponent
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <button class="btn btn-success" id="addEvent">
+                        <i class="ri-add-fill me-1 align-bottom"></i> Add Event Report
+                    </button>
                 </div>
-                <div class="card-body pb-0">
-
-                </div>
-                <div class="card-body pt-0 pb-0">
-                    <div class="row row-xs">
-                        <div class="col-12 mb-1">
-                            <span class="font-weight-bolder float-left mt-25 mr-25 text-capitalize">Search a date:</span>
-                            <input type="text" id="search_date" name="search_date"
-                                class="form-control format-picker form-control-sm float-left text-center bg-light-info"
-                                placeholder="dd-mm-yyyy" style="width:135px">
-                            <button class="btn btn-gradient-primary float-right mt-50 pt-50 pb-50" id="addEvent"><i
-                                    data-feather='plus'></i></button>
-                        </div>
-                        <div class="col-12 text-center">
-
-                            <!-- <div id="editor"> -->
-
-                            <button type="button" class="btn bg-light-primary pt-50 pb-50 mt-25" id="prev"><i
-                                    data-feather='arrow-left'></i></button>
-                            <button type="button" class="btn bg-light-primary pt-50 pb-50 mt-25"
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <div class="flex-grow-1 text-center">
+                            <button type="button" class="btn bg-light-secondary pt-50 pb-50 mt-25" id="prev"><i
+                                data-feather='arrow-left'></i></button>
+                            <button type="button" class="btn bg-light-secondary pt-50 pb-50 mt-25"
                                 id="currentWeek">{{ \Carbon\Carbon::now()->startOfWeek()->format('d M, Y') }} -
                                 {{ \Carbon\Carbon::now()->endOfWeek()->format('d M, Y') }}</button>
-                            <button type="button" class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" id="next"><i
+                            <button type="button" class="btn bg-light-secondary pt-50 pb-50 mr-50 mt-25" id="next"><i
                                     data-feather='arrow-right'></i></button>
                             {{-- <button type="button" class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" id="publishAll"><i
                                     data-feather='calendar' class="mr-50"></i>Publish All</button> --}}
                             {{-- <button type="button" disabled class="btn bg-light-primary pt-50 pb-50 mr-50 mt-25" --}}
                             {{-- id="copyWeek"><i data-feather='copy' class="mr-50"></i>Copy All</button> --}}
 
-                            <button class="p-0 pt-50 pb-50 mr-50 mt-25 button-unstyled">
-                                <select id="client" class="form-control select2"
-                                    style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
+                            <button class="btn border-0">
+                                <select id="client" class="form-control select2" style="width:150px; display: inline; font-size: 12px; height: 30px;"
                                     name="client_id" onchange="handleClientChange(this)">
                                     <option value="">Select Client</option>
                                     @foreach ($clients as $client)
@@ -86,9 +47,9 @@
                                 </select>
                             </button>
 
-                            <button class="p-0 pt-50 pb-50 mr-50 mt-25 button-unstyled">
+                            <button class="btn border-0">
                                 <select id="project" class="form-control select2"
-                                    style="width:150px; color:#7367f0 !important; display: inline; font-size: 12px; height: 30px;"
+                                    style="width:150px; display: inline; font-size: 12px; height: 30px;"
                                     name="project_id" onchange="handleProjectChange(this)">
                                     <option value="">Select Venue</option>
                                     @foreach ($projects as $project)
@@ -97,72 +58,81 @@
                                     @endforeach
                                 </select>
                             </button>
-                            {{-- <button id="download" disabled
-                                class="btn text-white bg-gradient-primary pt-50 pb-50 mr-50 mr-25"><i
-                                    data-feather='download' class="mr-25"></i>Download</button> --}}
-                            <!-- </div> -->
-
                         </div>
-
-                        {{-- @include('pages.Admin.report.modals.timeKeeperAddModal') --}}
                     </div>
                 </div>
             </div>
-
-            <div class="row" id="table-hover-animation">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="container">
-
-                            <div class="table-responsive">
-
-                                {{-- <div class="mt-2 total-display p-25 pb-75 pt-75 bg-light-primary font-weight-bold border-primary rounded"
-                                    style="margin-bottom: -46px; width: 308px;">
-                                    <span class="mr-1" id="total_hours"></span>
-                                    <span class="" id="total_amount"></span>
-                                </div> --}}
-                                <table id="myTable" class="myTable table table-bordered table-striped ">
-                                    <thead>
-                                        <tr>
-                                            {{-- <th>Site</th> --}}
-                                            <th>Monday</th>
-                                            <th>Tuesday</th>
-                                            <th>Wednesday</th>
-                                            <th>Thursday</th>
-                                            <th>Friday</th>
-                                            <th>Saturday</th>
-                                            <th>Sunday</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tBody">
-                                        <tr>
-                                            {{-- <td></td> --}}
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-
         </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
 
+                    <div class="table-responsive">
+                        <table id="myTable" class="myTable table table-bordered table-striped ">
+                            <thead>
+                                <tr>
+                                    {{-- <th>Site</th> --}}
+                                    <th>Monday</th>
+                                    <th>Tuesday</th>
+                                    <th>Wednesday</th>
+                                    <th>Thursday</th>
+                                    <th>Friday</th>
+                                    <th>Saturday</th>
+                                    <th>Sunday</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tBody">
+                                <tr>
+                                    {{-- <td></td> --}}
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
     @include('pages.Admin.event_report.modals.eventClickModal')
     @include('pages.Admin.event_request.modals.addUpcomingeventModal')
+@endsection
 
-    {{-- <script src="{{ asset('app-assets/js/scripts/pages/app-calendar-event-request.js') }}"></script> --}}
+
+@push('styles')
+<style>
+    .font-small-2 {
+        font-size: 0.6rem !important;
+    }
+    .font-small-1 {
+        font-size: 0.5rem !important;
+    }
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        margin-left: 10px;
+    }
+    .dataTables_wrapper .dataTables_length {
+        float: left;
+        margin-right: 20px;
+    }
+    .dataTables_wrapper .dt-buttons{
+        margin-right: 20px;
+    }
+</style>
+@endpush
+
+@push('scripts')
+    @include('components.datatablescript')
+    @include('components.select2')
+    <script src="{{asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
+    <script src="{{asset('app-assets/velzon/libs/moment/moment.js')}}"></script>
     <script type="text/javascript" src="{{ asset('backend') }}/lib/toastr/toastr.min.js"></script>
     <script type="text/javascript">
         let eventTitle = $('#title');
@@ -509,50 +479,68 @@
                     }
                 });
             });
-
-            $('#myTable').DataTable({
-                dom: 'Bfrtip',
-                paging: false,
-                buttons: [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'csvHtml5',
-                    'pdfHtml5'
+            const dataTableTitle = 'Event Report';
+            const dataTableOptions = {
+                "drawCallback": function(settings) {
+                    feather.replace({
+                        width: 14,
+                        height: 14
+                    });
+                },
+                dom: 'Blfrtip',
+                lengthMenu: [30, 50,
+                    100, 200
                 ],
-                autoWidth: false, //step 1
-                columnDefs: [
-                    // { width: '140px', targets: 0 }, //step 2, column 1 out of 4
+                buttons: [
                     {
-                        width: '125px',
-                        targets: 1
-                    }, //step 2, column 2 out of 4
+                        extend: 'colvis',
+                        fade: 0,
+                    },
                     {
-                        width: '125px',
-                        targets: 2
-                    }, //step 2, column 3 out of 4
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle,
+                        className: 'buttons-csv buttons-html5'
+                    },
                     {
-                        width: '125px',
-                        targets: 3
-                    }, //step 2, column 3 out of 4
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle
+                    },
                     {
-                        width: '125px',
-                        targets: 4
-                    }, //step 2, column 3 out of 4
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        title: dataTableTitle
+                    },
                     {
-                        width: '125px',
-                        targets: 5
-                    }, //step 2, column 3 out of 4
-                    {
-                        width: '125px',
-                        targets: 6
-                    }, //step 2, column 3 out of 4
-                    {
-                        width: '125px',
-                        targets: 7
-                    }, //step 2, column 3 out of 4
-                ]
-                // "bDestroy": true
-            });
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible',
+                        },
+                        title: dataTableTitle
+                    }
+                ],
+                initComplete: function() {
+                    let table = this.api();
+
+                    let search = `<div class="search-box">
+                                    <input type="text" class="form-control form-control-sm search" placeholder="Search for Event Report...">
+                                    <i class="ri-search-line search-icon"></i>
+                                </div>`;
+                    $('#myTable_filter').html(search);
+                    $('.search').on('keyup', function(){
+                        table.search( this.value ).draw();
+                    });
+                    $('select[name="myTable_length"]').addClass('form-control select2');
+                },
+            }
+            $('#myTable').DataTable(dataTableOptions);
 
         });
 
@@ -798,278 +786,269 @@
             }
         }
     </script>
-    <!-- <script type="text/javascript">
-        $.ajaxSetup({
-            headers: {
-                'csrftoken': '{{ csrf_token() }}'
-            }
-        });
-    </script> -->
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
-                searchNow()
+    <script>
+        $(document).ready(function() {
+            searchNow()
 
-                $('#search_date').on('change', function() {
-                    searchNow('search_date', $('#search_date').val())
-                })
-                $("#timekeeperAddForm").validate({
-                    errorPlacement: function(error, element) {
-                        if (element.hasClass('select2') && element.next('.select2-container').length) {
-                            error.insertAfter(element.next('.select2-container'));
-                        } else if (element.parent('.input-group').length) {
-                            error.insertAfter(element.parent());
-                        } else if (element.prop('type') === 'radio' && element.parent('.radio-inline')
-                            .length) {
-                            error.insertAfter(element.parent().parent());
-                        } else if (element.prop('type') === 'checkbox' || element.prop('type') ===
-                            'radio') {
-                            error.appendTo(element.parent().parent());
-                        } else {
-                            error.insertAfter(element);
-                        }
-                    }
-                })
-
-                $('#project-select').on('change', function() {
-                    console.log('project')
-                    filterEmployee()
-                    if ($(this).val()) {
-                        $('#inducted').prop('disabled', false)
+            $('#search_date').on('change', function() {
+                searchNow('search_date', $('#search_date').val())
+            })
+            $("#timekeeperAddForm").validate({
+                errorPlacement: function(error, element) {
+                    if (element.hasClass('select2') && element.next('.select2-container').length) {
+                        error.insertAfter(element.next('.select2-container'));
+                    } else if (element.parent('.input-group').length) {
+                        error.insertAfter(element.parent());
+                    } else if (element.prop('type') === 'radio' && element.parent('.radio-inline')
+                        .length) {
+                        error.insertAfter(element.parent().parent());
+                    } else if (element.prop('type') === 'checkbox' || element.prop('type') ===
+                        'radio') {
+                        error.appendTo(element.parent().parent());
                     } else {
-                        $('#inducted').prop('disabled', true)
+                        error.insertAfter(element);
                     }
-                })
-
-                $('input[name="filter_employee"]').on('change', function() {
-
-                    console.log('filter')
-                    filterEmployee()
-                })
-
-                function filterEmployee() {
-                    $.ajax({
-                        url: '/admin/home/filter/employee',
-                        type: 'get',
-                        dataType: 'json',
-                        data: {
-                            'filter': $('input[name="filter_employee"]:checked').val(),
-                            'project_id': $("#project-select").val(),
-                            'roster_date': $("#roaster_date").val(),
-                            'shift_start': $("#shift_start").val(),
-                            'shift_end': $("#shift_end").val(),
-                        },
-                        success: function(data) {
-                            // console.log(data)
-                            let html = '<option value="">please choose...</option>'
-                            if (emp = window.current_emp) {
-                                html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp
-                                    .mname) ? emp.mname : '') + " " + emp.lname + "</option>"
-                            }
-                            jQuery.each(data.employees, function(i, val) {
-                                html += "<option value='" + val.id + "'>" + val.fname + " " + ((val
-                                    .mname) ? val.mname : '') + "" + val.lname + "</option>"
-                            })
-                            // console.log(html)
-                            $('#employee_id').html(html)
-                            if (data.notification) {
-                                toastr.success(data.notification)
-                            }
-                        },
-                        error: function(err) {
-                            console.log(err)
-                        }
-                    });
                 }
+            })
 
-                $(document).on('show.bs.modal', '.modal', function() {
-                    const zIndex = 1040 + 10 * $('.modal:visible').length;
-                    $(this).css('z-index', zIndex);
-                    setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
-                        .addClass('modal-stack'));
+            $('#project-select').on('change', function() {
+                console.log('project')
+                filterEmployee()
+                if ($(this).val()) {
+                    $('#inducted').prop('disabled', false)
+                } else {
+                    $('#inducted').prop('disabled', true)
+                }
+            })
+
+            $('input[name="filter_employee"]').on('change', function() {
+
+                console.log('filter')
+                filterEmployee()
+            })
+
+            function filterEmployee() {
+                $.ajax({
+                    url: '/admin/home/filter/employee',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        'filter': $('input[name="filter_employee"]:checked').val(),
+                        'project_id': $("#project-select").val(),
+                        'roster_date': $("#roaster_date").val(),
+                        'shift_start': $("#shift_start").val(),
+                        'shift_end': $("#shift_end").val(),
+                    },
+                    success: function(data) {
+                        // console.log(data)
+                        let html = '<option value="">please choose...</option>'
+                        if (emp = window.current_emp) {
+                            html += "<option value='" + emp.id + "' selected>" + emp.fname + " " + ((emp
+                                .mname) ? emp.mname : '') + " " + emp.lname + "</option>"
+                        }
+                        jQuery.each(data.employees, function(i, val) {
+                            html += "<option value='" + val.id + "'>" + val.fname + " " + ((val
+                                .mname) ? val.mname : '') + "" + val.lname + "</option>"
+                        })
+                        // console.log(html)
+                        $('#employee_id').html(html)
+                        if (data.notification) {
+                            toastr.success(data.notification)
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err)
+                    }
+                });
+            }
+
+            $(document).on('show.bs.modal', '.modal', function() {
+                const zIndex = 1040 + 10 * $('.modal:visible').length;
+                $(this).css('z-index', zIndex);
+                setTimeout(() => $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1)
+                    .addClass('modal-stack'));
+            });
+
+            $(document).on("click", "#addTimekeeperModal", function() {
+                resetData()
+                $("#project-select").val("").trigger('change');
+                $("#editTimekeeperSubmit").prop("hidden", true)
+                $("#addTimekeeperSubmit").prop("hidden", false)
+                $("#addTimeKeeper").modal("show")
+            })
+
+
+            function timeToSeconds(time) {
+                time = time.split(/:/);
+                return time[0] * 3600 + time[1] * 60;
+            }
+            $.time = function(dateObject) {
+                var t = dateObject.split(/[- :]/);
+                // Apply each element to the Date function
+                var actiondate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
+                var d = new Date(actiondate);
+
+                // var d = new Date(dateObject);
+                var curr_hour = d.getHours();
+                var curr_min = d.getMinutes();
+                var date = curr_hour + ':' + curr_min;
+                return date;
+            };
+
+            function allCalculation() {
+                var start = $("#shift_start").val();
+                var end = $("#shift_end").val();
+                var rate = $("#rate").val();
+
+                if (start && end) {
+                    // calculate hours
+                    var diff = (timeToSeconds(end) - timeToSeconds(start)) / 3600
+                    if (diff < 0) {
+                        diff = 24 - Math.abs(diff)
+                    }
+                    if (diff) {
+                        $("#duration").val(diff);
+                        if (rate) {
+                            $("#amount").val(parseFloat(rate) * diff);
+                        }
+                    }
+
+                } else {
+                    $("#duration").val('');
+                    $("#amount").val('');
+                }
+            }
+
+            function roasterEndTimeInit() {
+                $("#shift_end").change(function() {
+                    console.log('end')
+                    filterEmployee()
+                    allCalculation()
                 });
 
-                $(document).on("click", "#addTimekeeperModal", function() {
-                    resetData()
-                    $("#project-select").val("").trigger('change');
+            }
+            roasterEndTimeInit()
+
+            function roasterStartTimeInit() {
+                $("#shift_start").change(function() {
+                    console.log('start')
+                    filterEmployee()
+                    if ($(this).val()) {
+                        $("#shift_end").removeAttr("disabled")
+                    } else {
+                        $("#shift_end").prop('disabled', true);
+                    }
+
+                    allCalculation()
+                });
+            }
+            roasterStartTimeInit()
+
+            const initDatePicker = () => {
+                $("#roaster_date").change(function() {
+                    console.log('roster date')
+                    filterEmployee()
+                    if ($(this).val()) {
+                        $("#shift_start").removeAttr("disabled")
+                    } else {
+                        $(".picker__button--clear").removeAttr("disabled")
+
+                        $(".picker__button--clear")[1].click()
+                        $(".picker__button--clear")[2].click()
+
+                        $("#shift_start").prop('disabled', true)
+
+                        $("#shift_end").prop('disabled', true);
+                        allCalculation()
+                    }
+                });
+            }
+
+            initDatePicker();
+
+            // const initAllDatePicker = () => {
+            //     initDatePicker();
+            //     roasterStartTimeInit();
+            //     roasterEndTimeInit();
+            // }
+
+            $(document).on("click", ".editBtn", function() {
+                // $("#roasterClick").modal("hide")
+                resetData()
+                window.current_emp = $(this).data("employee")
+
+                let rowData = $(this).data("row")
+                if ($(this).data("copy")) {
                     $("#editTimekeeperSubmit").prop("hidden", true)
                     $("#addTimekeeperSubmit").prop("hidden", false)
-                    $("#addTimeKeeper").modal("show")
-                })
-
-
-                function timeToSeconds(time) {
-                    time = time.split(/:/);
-                    return time[0] * 3600 + time[1] * 60;
+                    $("#roster").val("{{ Session::get('roaster_status')['Not published'] }}").trigger(
+                        'change')
+                } else {
+                    $("#editTimekeeperSubmit").prop("hidden", false)
+                    $("#addTimekeeperSubmit").prop("hidden", true)
+                    $("#timepeeper_id").val(rowData.id);
+                    $('#timepeeper_id').attr('value', rowData.id);
+                    $("#roster").val(rowData.roaster_status_id).trigger('change')
                 }
-                $.time = function(dateObject) {
-                    var t = dateObject.split(/[- :]/);
-                    // Apply each element to the Date function
-                    var actiondate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-                    var d = new Date(actiondate);
+                $("#employee_id").val(rowData.employee_id).trigger('change');
+                $("#client-select").val(rowData.client_id).trigger('change');
 
-                    // var d = new Date(dateObject);
-                    var curr_hour = d.getHours();
-                    var curr_min = d.getMinutes();
-                    var date = curr_hour + ':' + curr_min;
-                    return date;
-                };
+                $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
+                $("#shift_start").val($.time(rowData.shift_start))
+                $("#shift_end").val($.time(rowData.shift_end))
 
-                function allCalculation() {
-                    var start = $("#shift_start").val();
-                    var end = $("#shift_end").val();
-                    var rate = $("#rate").val();
-
-                    if (start && end) {
-                        // calculate hours
-                        var diff = (timeToSeconds(end) - timeToSeconds(start)) / 3600
-                        if (diff < 0) {
-                            diff = 24 - Math.abs(diff)
-                        }
-                        if (diff) {
-                            $("#duration").val(diff);
-                            if (rate) {
-                                $("#amount").val(parseFloat(rate) * diff);
-                            }
-                        }
-
-                    } else {
-                        $("#duration").val('');
-                        $("#amount").val('');
-                    }
-                }
-
-                function roasterEndTimeInit() {
-                    $("#shift_end").change(function() {
-                        console.log('end')
-                        filterEmployee()
-                        allCalculation()
-                    });
-
-                }
-                roasterEndTimeInit()
-
-                function roasterStartTimeInit() {
-                    $("#shift_start").change(function() {
-                        console.log('start')
-                        filterEmployee()
-                        if ($(this).val()) {
-                            $("#shift_end").removeAttr("disabled")
-                        } else {
-                            $("#shift_end").prop('disabled', true);
-                        }
-
-                        allCalculation()
-                    });
-                }
-                roasterStartTimeInit()
-
-                const initDatePicker = () => {
-                    $("#roaster_date").change(function() {
-                        console.log('roster date')
-                        filterEmployee()
-                        if ($(this).val()) {
-                            $("#shift_start").removeAttr("disabled")
-                        } else {
-                            $(".picker__button--clear").removeAttr("disabled")
-
-                            $(".picker__button--clear")[1].click()
-                            $(".picker__button--clear")[2].click()
-
-                            $("#shift_start").prop('disabled', true)
-
-                            $("#shift_end").prop('disabled', true);
-                            allCalculation()
-                        }
-                    });
-                }
-
-                initDatePicker();
-
-                // const initAllDatePicker = () => {
-                //     initDatePicker();
-                //     roasterStartTimeInit();
-                //     roasterEndTimeInit();
-                // }
-
-                $(document).on("click", ".editBtn", function() {
-                    // $("#roasterClick").modal("hide")
-                    resetData()
-                    window.current_emp = $(this).data("employee")
-
-                    let rowData = $(this).data("row")
-                    if ($(this).data("copy")) {
-                        $("#editTimekeeperSubmit").prop("hidden", true)
-                        $("#addTimekeeperSubmit").prop("hidden", false)
-                        $("#roster").val("{{ Session::get('roaster_status')['Not published'] }}").trigger(
-                            'change')
-                    } else {
-                        $("#editTimekeeperSubmit").prop("hidden", false)
-                        $("#addTimekeeperSubmit").prop("hidden", true)
-                        $("#timepeeper_id").val(rowData.id);
-                        $('#timepeeper_id').attr('value', rowData.id);
-                        $("#roster").val(rowData.roaster_status_id).trigger('change')
-                    }
-                    $("#employee_id").val(rowData.employee_id).trigger('change');
-                    $("#client-select").val(rowData.client_id).trigger('change');
-
-                    $("#roaster_date").val(moment(rowData.roaster_date).format('DD-MM-YYYY'))
-                    $("#shift_start").val($.time(rowData.shift_start))
-                    $("#shift_end").val($.time(rowData.shift_end))
-
-                    $("#shift_start").removeAttr("disabled")
-                    $("#shift_end").removeAttr("disabled")
+                $("#shift_start").removeAttr("disabled")
+                $("#shift_end").removeAttr("disabled")
 
 
-                    $("#rate").val(rowData.ratePerHour)
-                    $("#duration").val(rowData.duration)
-                    $("#amount").val(rowData.amount)
-                    $("#job").val(rowData.job_type_id).trigger('change');
-                    $("#roster_type").val(rowData.roaster_type).trigger('change');
+                $("#rate").val(rowData.ratePerHour)
+                $("#duration").val(rowData.duration)
+                $("#amount").val(rowData.amount)
+                $("#job").val(rowData.job_type_id).trigger('change');
+                $("#roster_type").val(rowData.roaster_type).trigger('change');
 
-                    $("#remarks").val(rowData.remarks)
+                $("#remarks").val(rowData.remarks)
 
-                    $("#project-select").val(rowData.project_id).trigger('change');
-                    $("#addTimeKeeper").modal("show")
+                $("#project-select").val(rowData.project_id).trigger('change');
+                $("#addTimeKeeper").modal("show")
 
-                    // initAllDatePicker();
-                    allCalculation()
+                // initAllDatePicker();
+                allCalculation()
 
-                })
-                $(document).on("input", ".reactive", function() {
-                    allCalculation()
-                })
+            })
+            $(document).on("input", ".reactive", function() {
+                allCalculation()
+            })
 
-                function resetData() {
-                    window.current_emp = null
-                    window.rowData = ""
-                    $("#timepeeper_id").val("");
-                    $('#timepeeper_id').attr('value', "");
-                    $("#employee_id").val("").trigger('change');
+            function resetData() {
+                window.current_emp = null
+                window.rowData = ""
+                $("#timepeeper_id").val("");
+                $('#timepeeper_id').attr('value', "");
+                $("#employee_id").val("").trigger('change');
 
-                    $("#roaster_date").val("")
-                    $("#shift_start").val("")
-                    $("#shift_end").val("")
+                $("#roaster_date").val("")
+                $("#shift_start").val("")
+                $("#shift_end").val("")
 
-                    $("#shift_start").val("")
-                    $("#shift_end").val("")
-                    $("#sing_in").val("")
-                    $("#sing_out").val("")
-                    $(".sing_body").hide()
+                $("#shift_start").val("")
+                $("#shift_end").val("")
+                $("#sing_in").val("")
+                $("#sing_out").val("")
+                $(".sing_body").hide()
 
-                    $("#rate").val("")
-                    $("#duration").val("")
-                    $("#amount").val("")
-                    $("#roster_type").val('Schedueled').trigger('change');
-                    // $("#job").val("")
-                    // $("#roster").val("")
-                    $("#roster").val("{{ Session::get('roaster_status')['Not published'] }}").trigger('change')
-                    $("#remarks").val("")
-                }
-            });
-        </script>
-    @endpush
-@endsection
+                $("#rate").val("")
+                $("#duration").val("")
+                $("#amount").val("")
+                $("#roster_type").val('Schedueled').trigger('change');
+                // $("#job").val("")
+                // $("#roster").val("")
+                $("#roster").val("{{ Session::get('roaster_status')['Not published'] }}").trigger('change')
+                $("#remarks").val("")
+            }
+        });
+    </script>
+@endpush
 
 @section('pdf_generator')
     <style>
