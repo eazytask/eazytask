@@ -1,7 +1,5 @@
 @extends('layouts.Admin.master')
 @section('admin_page_content')
-
-
     @component('components.breadcrumb')
         @slot('li_1')
             Roster
