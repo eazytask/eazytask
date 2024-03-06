@@ -454,6 +454,18 @@
 
             $(document).on("click", "#add", function() {
                 resetValue()
+                var licence = moment().format("YMMDDHHmmss");
+                $('#date_of_birth').val(moment().subtract(20, 'years').format('YYYY-MM-DD'));
+                $("#role").val(3).trigger('change');
+                $('#status').val(1).trigger('change');
+                $('#address').val('Unknown');
+                $('#suburb').val('Unknown');
+                $('#postal_code').val(1234);
+                $('#state').val('Unknown');
+                $('#license_no').val(licence);
+                $('#license_expire_date').val(moment().add(5, 'years').format('YYYY-MM-DD'));
+                $('#first_aid_license').val('f'+licence);
+                $('#first_aid_expire_date').val(moment().add(5, 'years').format('YYYY-MM-DD'));
                 $("#addEmployee").modal("show")
             })
 
