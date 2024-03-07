@@ -36,7 +36,9 @@
                                                     <button type="button" class="step-trigger">
                                                         <span class="bs-stepper-box">2</span>
                                                         <span class="bs-stepper-label">
-                                                            <span class="bs-stepper-title">Address & License</span>
+                                                            <span class="bs-stepper-title">Address @if (Auth::user()->company->company_type_id == 1)
+                                                                & License
+                                                            @endif</span>
                                                             <span class="bs-stepper-subtitle">Add Info</span>
                                                         </span>
                                                     </button>
@@ -218,7 +220,7 @@
                                                 </div>
                                                 <div id="personal-info" class="content">
                                                     <div class="content-header">
-                                                        <h5 class="mb-0">Address & License</h5>
+                                                        <h5 class="mb-0">Address @if (Auth::user()->company->company_type_id == 1) & License @endif</h5>
                                                         <small>Enter Info</small>
                                                     </div>
                                                     <form>
@@ -264,57 +266,59 @@
                                                             @php
                                                                 $is_required = Auth::user()->company->company_type->id == 1 ? 'required' : '';
                                                             @endphp
-                                                            @if (Auth::user()->company->company_type->id == 1)
-                                                                <div class="col-12">
-                                                                    <hr class="invoice-spacing">
-                                                                </div>
-                                                                <div class="col-md-6 col-6">
-                                                                    <div class="form-group">
+                                                            
+                                                            <div class="@if (Auth::user()->company->company_type_id != 1) d-none @endif col-12">
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        <hr class="invoice-spacing">
+                                                                    </div>
+                                                                    <div class="col-md-6 col-6">
+                                                                        <div class="form-group">
+                                                                            <label for="company-column">Security License No</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="license_no" name="license_no"
+                                                                                placeholder="Security License No"
+                                                                                {{ $is_required }} />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 col-6">
                                                                         <label for="company-column">Security License
+                                                                            Expire</label>
+                                                                        <div class="form-group">
+                                                                            <input type="date"
+                                                                                class="form-control flatpickr-basic"
+                                                                                id="license_expire_date"
+                                                                                name="license_expire_date"
+                                                                                placeholder="License Expire Date"
+                                                                                {{ $is_required }} />
+                                                                        </div>
+                                                                    </div>
+    
+                                                                    <div class="col-md-6 col-6">
+                                                                        <label for="company-column">First Aid License
                                                                             No</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="license_no" name="license_no"
-                                                                            placeholder="Security License No"
-                                                                            {{ $is_required }} />
+                                                                        <div class="form-group">
+                                                                            <input type="text" class="form-control"
+                                                                                id="first_aid_license"
+                                                                                name="first_aid_license"
+                                                                                placeholder="First Aid License Number"
+                                                                                {{ $is_required }} />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 col-6">
+                                                                        <label for="company-column">First Aid License
+                                                                            Expire</label>
+                                                                        <div class="form-group">
+                                                                            <input type="date"
+                                                                                class="form-control flatpickr-basic"
+                                                                                id="first_aid_expire_date"
+                                                                                name="first_aid_expire_date"
+                                                                                placeholder="Expire Date"
+                                                                                {{ $is_required }} />
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6 col-6">
-                                                                    <label for="company-column">Security License
-                                                                        Expire</label>
-                                                                    <div class="form-group">
-                                                                        <input type="date"
-                                                                            class="form-control flatpickr-basic"
-                                                                            id="license_expire_date"
-                                                                            name="license_expire_date"
-                                                                            placeholder="License Expire Date"
-                                                                            {{ $is_required }} />
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6 col-6">
-                                                                    <label for="company-column">First Aid License
-                                                                        No</label>
-                                                                    <div class="form-group">
-                                                                        <input type="text" class="form-control"
-                                                                            id="first_aid_license"
-                                                                            name="first_aid_license"
-                                                                            placeholder="First Aid License Number"
-                                                                            {{ $is_required }} />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 col-6">
-                                                                    <label for="company-column">First Aid License
-                                                                        Expire</label>
-                                                                    <div class="form-group">
-                                                                        <input type="date"
-                                                                            class="form-control flatpickr-basic"
-                                                                            id="first_aid_expire_date"
-                                                                            name="first_aid_expire_date"
-                                                                            placeholder="Expire Date"
-                                                                            {{ $is_required }} />
-                                                                    </div>
-                                                                </div>
-                                                            @endif
+                                                            </div>
                                                         </div>
                                                     </form>
                                                     <div class="d-flex justify-content-between">

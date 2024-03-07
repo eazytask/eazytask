@@ -454,7 +454,10 @@
 
             $(document).on("click", "#add", function() {
                 resetValue()
-                var licence = moment().format("YMMDDHHmmss");
+                var time = moment().format("YMMDDHHmmss");
+                $('#email').val(time+'@eazytask.au');
+                $('#password').val('11111111');
+                $('#contact_number').val(moment().format("MMDDHHmmss"));
                 $('#date_of_birth').val(moment().subtract(20, 'years').format('YYYY-MM-DD'));
                 $("#role").val(3).trigger('change');
                 $('#status').val(1).trigger('change');
@@ -462,9 +465,9 @@
                 $('#suburb').val('Unknown');
                 $('#postal_code').val(1234);
                 $('#state').val('Unknown');
-                $('#license_no').val(licence);
+                $('#license_no').val(time);
                 $('#license_expire_date').val(moment().add(5, 'years').format('YYYY-MM-DD'));
-                $('#first_aid_license').val('f'+licence);
+                $('#first_aid_license').val('f'+time);
                 $('#first_aid_expire_date').val(moment().add(5, 'years').format('YYYY-MM-DD'));
                 $("#addEmployee").modal("show")
             })
