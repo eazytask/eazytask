@@ -81,12 +81,12 @@ class CompanyController extends Controller
             try {
                 $mail = $GLOBALS['data']->notify(new UserCredential($email_data));
             } catch (\Exception $e) {
-                $GLOBALS['data']->delete();
-                $notification = array(
-                    'message' => 'Sorry! this email is incorrect.',
-                    'alert-type' => 'warning'
-                );
-                return Redirect()->back()->with($notification);
+                // $GLOBALS['data']->delete();
+                // $notification = array(
+                //     'message' => 'Sorry! this email is incorrect.',
+                //     'alert-type' => 'warning'
+                // );
+                // return Redirect()->back()->with($notification);
             }
         } else {
             $GLOBALS['data'] = $user;
